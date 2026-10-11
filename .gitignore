@@ -17,3 +17,7 @@ next-env.d.ts
 
 # Generated: the SDK script-tag build copied into the web app at build time
 apps/web/public/sdk/
+
+# Playwright
+test-results/
+playwright-report/

@@ -12,6 +12,11 @@
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
+    },
+    "test:e2e": {
+      "dependsOn": ["@simw/web#build", "@simw/demo-sites#build"],
+      "cache": false,
+      "passThroughEnv": ["BASE_URL", "CI", "PLAYWRIGHT_BROWSERS_PATH"]
     }
   }
 }

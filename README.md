@@ -56,8 +56,24 @@ pnpm dev                              # web app on http://localhost:3000
 pnpm --filter @simw/demo-sites dev    # retrofit fixtures on http://localhost:5174
 pnpm check                            # Biome format/lint + typecheck + unit tests, every package
 pnpm build                            # build everything (SDK bundles, Next app, fixtures)
+pnpm test:e2e                         # browser-test invariants against the built output (Playwright)
 pnpm lint:fix                         # apply Biome's safe fixes and formatting
 ```
+
+Configuration is optional and env-driven (`apps/web/.env.example`, `apps/web/src/lib/config.ts`):
+`NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SDK_URL`, `NEXT_PUBLIC_EVENTS_URL`, `NEXT_PUBLIC_SCANNER_URL`.
+Nothing hard-codes a hostname; protocol identity stays `urn:simw:protocol:0.1`.
+
+### Quality gates
+
+CI (`.github/workflows/ci.yml`) runs, in order: `pnpm install --frozen-lockfile`, `biome ci .`,
+typecheck, unit tests, build, then the browser-test invariants. A broken invariant fails CI by name:
+
+| ID    | Promise                                                                                           | Spec                              |
+| ----- | ------------------------------------------------------------------------------------------------- | --------------------------------- |
+| INV-1 | A live OS preference change is detected, and the Checkup updates and celebrates without a refresh | `tests/e2e/specs/checkup.spec.ts` |
+| INV-2 | A stored dark Passport paints dark first on a light device, with no light flash                   | `tests/e2e/specs/passport.spec.ts` |
+| INV-3 | The plain-HTML SDK suppresses autoplaying visual motion under reduced motion                      | `tests/e2e/specs/sdk.spec.ts`     |
 
 ## The core idea in code
 
@@ -95,7 +111,8 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
   browser (`/privacy` shows them). Connect a backend by calling `setEventSink()` in `apps/web/src/lib/telemetry.ts`.
 - **Some "Show me how" steps need vendor review before launch.** See
   [`docs/instructions-review.md`](./docs/instructions-review.md).
-- The SDK isn't published to npm or a CDN yet; the snippet on `/listen` uses a placeholder URL.
+- The SDK isn't published to npm or a CDN yet. The `/listen` snippet loads the script-tag build that
+  the web app serves itself (`/sdk/simw.global.js`); `NEXT_PUBLIC_SDK_URL` can point it at a CDN later.
 - **TypeScript is pinned to 5.9 for V0** (TS 7 drops the compiler API Next.js uses). See
   [`docs/tech-debt.md`](./docs/tech-debt.md) TD-1.
 - V0C (Site Listener Test) and the open protocol spec are next; the Passport extension comes later.

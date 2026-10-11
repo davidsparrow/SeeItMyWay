@@ -17,6 +17,7 @@ Next.js app is just one consumer of them.
 pnpm install
 pnpm check                         # Biome (format + lint) + typecheck + tests (run before every commit)
 pnpm build                         # everything
+pnpm test:e2e                      # browser-test invariants INV-1…INV-3 (builds first; Playwright)
 pnpm lint:fix                      # apply Biome's safe fixes and formatting
 pnpm format                        # format only
 pnpm dev                           # apps/web on :3000

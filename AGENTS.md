@@ -1,3 +1,8 @@
+# AGENTS.md
+
+Project rules: see [CLAUDE.md](./CLAUDE.md). It is the working agreement for every agent and human
+changing this repo; the block below is Turborepo's own guidance and is managed by `turbo`.
+
 <!-- BEGIN:turborepo-agent-rules -->
 
 # This is NOT the Turborepo you know
