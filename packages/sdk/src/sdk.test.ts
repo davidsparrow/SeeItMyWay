@@ -6,6 +6,8 @@ import {
   createLocalPassport,
   createSeeItMyWay,
   memoryStore,
+  PASSPORT_KEY,
+  readPreferences,
   type SeeItMyWayOptions,
   siteKeys,
 } from './index';
@@ -139,6 +141,53 @@ describe('createSeeItMyWay', () => {
     sdk.stop();
   });
 
+  it('applies device constraints to the effective experience but never to storage', () => {
+    const { sdk, storage, media } = setup({
+      'prefers-reduced-motion': 'reduce',
+      'forced-colors': 'active',
+    });
+    createLocalPassport(storage).write({
+      motion: 'full',
+      autoplay: 'allowed',
+      colorScheme: 'dark',
+    });
+    sdk.start();
+    sdk.setOverride('density', 'roomy');
+    const passportBefore = storage.get(PASSPORT_KEY);
+    const overridesBefore = storage.get(siteKeys('test').overrides);
+
+    const state = sdk.getState();
+    expect(state.stated).toMatchObject({
+      motion: 'full',
+      autoplay: 'allowed',
+      colorScheme: 'dark',
+    });
+    expect(state.experience).toMatchObject({
+      motion: 'reduced',
+      autoplay: 'allowed',
+      colorScheme: 'light',
+      density: 'roomy',
+    });
+    expect(state.constraints.map((c) => c.id)).toEqual(['os-reduced-motion', 'forced-colors']);
+    expect(document.documentElement.getAttribute('data-simw-motion')).toBe('reduced');
+
+    // Re-resolve a few times, as live changes and re-checks do.
+    media.change('prefers-color-scheme', 'dark');
+    sdk.recheck();
+    media.change('prefers-reduced-motion', 'no-preference');
+    expect(sdk.getState().experience.motion).toBe('full');
+
+    expect(storage.get(PASSPORT_KEY)).toBe(passportBefore);
+    expect(storage.get(siteKeys('test').overrides)).toBe(overridesBefore);
+    expect(readPreferences(storage, PASSPORT_KEY)).toEqual({
+      motion: 'full',
+      autoplay: 'allowed',
+      colorScheme: 'dark',
+    });
+    expect(readPreferences(storage, siteKeys('test').overrides)).toEqual({ density: 'roomy' });
+    sdk.stop();
+  });
+
   it('keeps a stable anonymous seed when variants are enabled', () => {
     const { sdk, storage } = setup({}, { variants: 4 });
     sdk.start();
@@ -166,6 +215,26 @@ describe('bootScript', () => {
     expect(html.getAttribute('data-simw-density')).toBe('roomy');
     expect(html.hasAttribute('onclick')).toBe(false);
     expect(html.style.getPropertyValue('--simw-spacing-scale')).toBe('1.3');
+    localStorage.clear();
+  });
+
+  it('lets forced colors and reduced motion win over the snapshot before first paint', () => {
+    localStorage.setItem(
+      siteKeys('forced').applied,
+      JSON.stringify({
+        attrs: { 'data-simw-color-scheme': 'dark', 'data-simw-motion': 'full' },
+        tokens: {},
+        followsSystemScheme: false,
+      }),
+    );
+    window.matchMedia = ((q: string) => ({
+      matches: q.includes('forced-colors') || q.includes('reduced-motion'),
+    })) as never;
+    new Function(bootScript('forced'))();
+    const html = document.documentElement;
+    expect(html.getAttribute('data-simw-color-scheme')).toBe('light');
+    expect(html.getAttribute('data-simw-forced-colors')).toBe('active');
+    expect(html.getAttribute('data-simw-motion')).toBe('reduced');
     localStorage.clear();
   });
 

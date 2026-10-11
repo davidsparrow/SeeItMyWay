@@ -22,18 +22,39 @@ export function transitionStyle(exp: Experience): 'slide' | 'fade' | 'none' {
   return 'none';
 }
 
-/** Carousels and slideshows may move on their own only with full motion and autoplay allowed. */
-export function allowsAutoAdvance(exp: Experience): boolean {
-  return exp.motion === 'full' && exp.autoplay === 'allowed';
+/** What a piece of media is, so autoplay decisions can tell visual motion from sound. */
+export interface MediaTraits {
+  /** It moves on screen: video, an animated hero, a timelapse, a slideshow. Audio-only media doesn't. */
+  visualMotion: boolean;
+  /** The motion carries meaning the visitor needs. Rare for autoplaying media; reduced motion doesn't stop it. */
+  essential?: boolean;
+  /** A large download. Defaults to true; pass false for small clips and pure UI motion. */
+  heavy?: boolean;
 }
 
 export type AutoplayMode = 'play' | 'play-muted' | 'off';
 
-/** Minimal motion means nothing moves unless the visitor asks, so it also stops autoplay. */
-export function autoplayMode(exp: Experience): AutoplayMode {
-  if (exp.autoplay === 'never' || exp.motion === 'minimal') return 'off';
-  if (exp.autoplay === 'muted') return 'play-muted';
+/**
+ * Whether this media may start on its own, from the *effective* experience.
+ *
+ * - The visitor's autoplay preference is the ceiling: `never` stops
+ *   everything, `muted` allows muted visual media only.
+ * - Reduced or minimal effective motion stops non-essential visual motion,
+ *   but not audio-only media. The stated autoplay preference is unchanged.
+ * - Reduced data (Save-Data, `prefers-reduced-data`) stops heavy media,
+ *   which then loads only on request.
+ */
+export function autoplayMode(exp: Experience, media: MediaTraits): AutoplayMode {
+  if (exp.autoplay === 'never') return 'off';
+  if (media.visualMotion && !media.essential && exp.motion !== 'full') return 'off';
+  if ((media.heavy ?? true) && !loadsHeavyMediaAutomatically(exp)) return 'off';
+  if (exp.autoplay === 'muted') return media.visualMotion ? 'play-muted' : 'off';
   return 'play';
+}
+
+/** Carousels and slideshows: light visual motion that may advance on its own only when autoplay fully allows it. */
+export function allowsAutoAdvance(exp: Experience): boolean {
+  return autoplayMode(exp, { visualMotion: true, heavy: false }) === 'play';
 }
 
 export function showCaptions(exp: Experience, siteDefault = false): boolean {

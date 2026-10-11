@@ -5,8 +5,13 @@ export interface PreferenceControlProps<K extends PreferenceKey> {
   prefKey: K;
   value: PreferenceValue<K>;
   onChange: (value: PreferenceValue<K>) => void;
-  /** Values that can't be chosen right now (e.g. looser than a native floor). */
+  /**
+   * Values that can't be chosen at all in this context. Don't use this for
+   * device constraints: let the visitor store any value, and explain the
+   * constraint with `note` instead.
+   */
   disabledValues?: readonly PreferenceValue<K>[];
+  /** Shown under the control, e.g. why a device constraint is overriding the choice right now. */
   note?: string;
   size?: 'sm' | 'md';
   showDescription?: boolean;

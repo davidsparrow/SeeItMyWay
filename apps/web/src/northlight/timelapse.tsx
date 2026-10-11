@@ -1,6 +1,11 @@
 'use client';
 
-import { autoplayMode, loadsHeavyMediaAutomatically, showCaptions } from '@simw/adapters';
+import {
+  autoplayMode,
+  loadsHeavyMediaAutomatically,
+  type MediaTraits,
+  showCaptions,
+} from '@simw/adapters';
 import type { Experience } from '@simw/protocol';
 import { useEffect, useRef, useState } from 'react';
 import { TIMELAPSE_CAPTIONS } from './content';
@@ -69,10 +74,13 @@ function drawPoster(ctx: CanvasRenderingContext2D, w: number, h: number) {
   drawSilhouette(ctx, w, h);
 }
 
+/** An 18 MB star-trail video: visual motion and a heavy download. */
+export const TIMELAPSE_MEDIA: MediaTraits = { visualMotion: true, heavy: true };
+
 export function Timelapse({ exp }: { exp: Experience }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const mode = autoplayMode(exp);
+  const mode = autoplayMode(exp, TIMELAPSE_MEDIA);
   const heavyOk = loadsHeavyMediaAutomatically(exp);
   const [loaded, setLoaded] = useState(heavyOk);
   const [playing, setPlaying] = useState(false);

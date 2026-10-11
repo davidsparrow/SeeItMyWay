@@ -12,6 +12,7 @@ import {
 import type { SeeItMyWay, SeeItMyWayState } from '@simw/sdk';
 import { Disclosure, PreferenceControl, ScaleControl } from '@simw/ui';
 import { useState } from 'react';
+import { constraintNote } from '@/content/constraints';
 import { track } from '@/lib/telemetry';
 import { ENVIRONMENT_LABELS, ENVIRONMENTS, type Tone } from './content';
 
@@ -57,7 +58,8 @@ export function TunePanel({
 }) {
   const [open, setOpen] = useState(false);
   const exp = state.experience;
-  const osReducesMotion = state.detected['prefers-reduced-motion'] === 'reduce';
+  // Controls show what the visitor chose; notes explain when the device overrides it.
+  const stated = state.stated;
 
   const set = <K extends PreferenceKey>(
     key: K,
@@ -104,30 +106,27 @@ export function TunePanel({
           <h2 className="mt-1 font-display text-2xl font-semibold">Tune this site</h2>
           <p className="mt-1 text-sm text-muted">
             Changes apply to Northlight only and stay on this device. Your device&rsquo;s
-            accessibility settings always win.
+            accessibility settings still decide what happens here, but your choices are saved either
+            way.
           </p>
 
           <div className="mt-5 space-y-4">
             <ScaleControl
               label="Motion"
               poles={['Calmer', 'Livelier']}
-              value={exp.motion}
+              value={stated.motion}
               options={[
                 { value: 'minimal', label: 'Minimal' },
                 { value: 'reduced', label: 'Reduced' },
-                { value: 'full', label: 'Full', disabled: osReducesMotion },
+                { value: 'full', label: 'Full' },
               ]}
               onChange={(v) => set('motion', v, 'liveliness')}
-              note={
-                osReducesMotion
-                  ? 'Your device asks for reduced motion, so this site won’t go livelier.'
-                  : undefined
-              }
+              note={constraintNote('motion', state)}
             />
             <ScaleControl
               label="Visual richness"
               poles={['Minimal', 'Rich']}
-              value={exp.visualRichness}
+              value={stated.visualRichness}
               options={VOCABULARY.visualRichness.values.map((v) => ({
                 value: v,
                 label: VOCABULARY.visualRichness.valueLabels[v],
@@ -137,7 +136,7 @@ export function TunePanel({
             <ScaleControl
               label="Density"
               poles={['Compact', 'Roomy']}
-              value={exp.density}
+              value={stated.density}
               options={VOCABULARY.density.values.map((v) => ({
                 value: v,
                 label: VOCABULARY.density.valueLabels[v],
@@ -147,7 +146,7 @@ export function TunePanel({
             <ScaleControl
               label="Detail"
               poles={['Concise', 'Detailed']}
-              value={exp.detail}
+              value={stated.detail}
               options={DETAIL_STOPS.map((s) => ({ value: s.value, label: s.label }))}
               onChange={(v) => {
                 const stop = DETAIL_STOPS.find((s) => s.value === v);
@@ -181,41 +180,39 @@ export function TunePanel({
             <div className="space-y-4">
               <PreferenceControl
                 prefKey="colorScheme"
-                value={state.overrides.colorScheme ?? state.passport.colorScheme ?? 'system'}
+                value={stated.colorScheme}
                 onChange={(v) => set('colorScheme', v)}
+                note={constraintNote('colorScheme', state)}
                 size="sm"
               />
               <PreferenceControl
                 prefKey="textSize"
-                value={exp.textSize}
+                value={stated.textSize}
                 onChange={(v) => set('textSize', v)}
                 size="sm"
               />
               <PreferenceControl
                 prefKey="navigation"
-                value={exp.navigation}
+                value={stated.navigation}
                 onChange={(v) => set('navigation', v)}
                 size="sm"
               />
               <PreferenceControl
                 prefKey="autoplay"
-                value={exp.autoplay}
+                value={stated.autoplay}
                 onChange={(v) => set('autoplay', v)}
-                disabledValues={osReducesMotion ? ['allowed', 'muted'] : []}
-                note={
-                  osReducesMotion ? 'Off while your device asks for reduced motion.' : undefined
-                }
+                note={constraintNote('autoplay', state)}
                 size="sm"
               />
               <PreferenceControl
                 prefKey="captions"
-                value={exp.captions}
+                value={stated.captions}
                 onChange={(v) => set('captions', v)}
                 size="sm"
               />
               <PreferenceControl
                 prefKey="controls"
-                value={exp.controls}
+                value={stated.controls}
                 onChange={(v) => set('controls', v)}
                 size="sm"
               />
@@ -242,6 +239,17 @@ export function TunePanel({
                 ))}
               </tbody>
             </table>
+            {state.constraints.length > 0 ? (
+              <div className="mt-3 rounded-2xl bg-surface-2 p-3 text-xs">
+                <p className="font-semibold">Your device right now</p>
+                <ul className="mt-1 list-disc space-y-1 pl-4 text-muted">
+                  {state.constraints.map((c) => (
+                    <li key={c.id}>{c.reason}</li>
+                  ))}
+                </ul>
+                <p className="mt-1 text-muted">Your saved choices stay as you set them.</p>
+              </div>
+            ) : null}
           </Disclosure>
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-surface-2 p-3 text-sm">

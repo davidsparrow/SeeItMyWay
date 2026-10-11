@@ -70,13 +70,18 @@ createSeeItMyWay({ site: 'example.com' }).start();
 
 Sites style against `data-simw-*` attributes and `--simw-*` tokens rather than raw media queries. The
 same CSS then serves native signals, Passport preferences, local Tune overrides and preview simulations,
-because they all resolve to one `Experience` first, in this order (PRD §20):
+because they all resolve to one effective `Experience` first, in this order (PRD §20):
 
-1. **Your device**: accessibility / browser / OS requirements. These are floors; nothing can loosen them.
+1. **Your device**: accessibility / browser / OS requirements. They decide what happens on this device
+   (reduced motion, forced colors, saving data) without rewriting anything the visitor saved.
 2. **Set on this site**: the visitor's local Tune overrides.
 3. **Your Passport**: portable preferences.
 4. **Site design**: the owner's defaults.
 5. **Random variation**: anonymous, decoration only, switched off when it could fight a contrast request.
+
+Resolution keeps two layers apart: what the visitor **stated** (layers 2–4, stored exactly as chosen) and
+the **effective** experience after device constraints. A Passport saying "Full motion" stays "Full" on a
+phone that asks for reduced motion; that phone just gets calm motion, and the UI says why.
 
 ## Deployment
 

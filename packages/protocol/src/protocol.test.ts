@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  constraintsAffecting,
   createPacket,
   createSeed,
   DEFAULT_EXPERIENCE,
@@ -56,15 +57,31 @@ describe('resolveExperience precedence', () => {
     expect(sources.visualRichness).toBe('site-default');
   });
 
-  it('native reduced motion is a floor that later layers cannot loosen', () => {
-    const { experience, sources } = resolveExperience({
+  it('native reduced motion is a floor on effective motion, not on what was stated', () => {
+    const { stated, statedSources, experience, sources, constraints } = resolveExperience({
       native: { 'prefers-reduced-motion': 'reduce' },
-      siteOverrides: { motion: 'full', autoplay: 'allowed' },
+      siteOverrides: { motion: 'full' },
     });
+    expect(stated.motion).toBe('full');
+    expect(statedSources.motion).toBe('site-override');
     expect(experience.motion).toBe('reduced');
     expect(sources.motion).toBe('native');
-    expect(experience.autoplay).toBe('never');
-    expect(sources.autoplay).toBe('native');
+    expect(constraints.map((c) => c.id)).toEqual(['os-reduced-motion']);
+  });
+
+  it('never rewrites autoplay: reduced motion is reported as a constraint instead', () => {
+    const { stated, statedSources, experience, sources, constraints } = resolveExperience({
+      native: { 'prefers-reduced-motion': 'reduce' },
+      passport: { autoplay: 'allowed' },
+    });
+    expect(stated.autoplay).toBe('allowed');
+    expect(statedSources.autoplay).toBe('passport');
+    expect(experience.autoplay).toBe('allowed');
+    expect(sources.autoplay).toBe('passport');
+    expect(constraintsAffecting(constraints, 'autoplay').map((c) => c.id)).toEqual([
+      'os-reduced-motion',
+    ]);
+    expect(constraints[0]?.reason).toMatch(/reduced motion/);
   });
 
   it('lets a visitor ask for even less motion than the OS floor', () => {
@@ -76,10 +93,54 @@ describe('resolveExperience precedence', () => {
     expect(sources.motion).toBe('passport');
   });
 
-  it('save-data means no autoplay', () => {
-    const { experience } = resolveExperience({ native: { 'save-data': 'on' } });
-    expect(experience.data).toBe('reduced');
-    expect(experience.autoplay).toBe('never');
+  it('save-data and reduced data reduce effective data use without rewriting autoplay', () => {
+    const saveData = resolveExperience({
+      native: { 'save-data': 'on' },
+      passport: { autoplay: 'allowed' },
+    });
+    expect(saveData.experience.data).toBe('reduced');
+    expect(saveData.experience.autoplay).toBe('allowed');
+    expect(saveData.stated.autoplay).toBe('allowed');
+    expect(saveData.constraints.map((c) => c.id)).toEqual(['save-data']);
+
+    const reducedData = resolveExperience({ native: { 'prefers-reduced-data': 'reduce' } });
+    expect(reducedData.experience.data).toBe('reduced');
+    expect(reducedData.experience.autoplay).toBe('allowed');
+    expect(reducedData.constraints.map((c) => c.id)).toEqual(['reduced-data']);
+  });
+
+  it('reports no constraints when the device asks for nothing', () => {
+    const { constraints, stated, experience } = resolveExperience({
+      native: { 'prefers-color-scheme': 'dark', 'prefers-reduced-motion': 'no-preference' },
+      passport: { motion: 'full' },
+    });
+    expect(constraints).toEqual([]);
+    expect(experience.motion).toBe(stated.motion);
+  });
+
+  it('forced colors override an explicit theme; the stated theme stays as chosen', () => {
+    const forced = resolveExperience({
+      native: { 'forced-colors': 'active', 'prefers-color-scheme': 'light' },
+      passport: { colorScheme: 'dark' },
+      seed: '0123456789abcdef',
+      variants: 4,
+    });
+    expect(forced.stated.colorScheme).toBe('dark');
+    expect(forced.statedSources.colorScheme).toBe('passport');
+    expect(forced.experience.colorScheme).toBe('light');
+    expect(forced.sources.colorScheme).toBe('native');
+    expect(forced.experience.forcedColors).toBe(true);
+    expect(forced.experience.transparency).toBe('reduced');
+    expect(forced.experience.variant).toBeNull();
+    expect(forced.constraints.map((c) => c.id)).toEqual(['forced-colors']);
+    expect(constraintsAffecting(forced.constraints, 'colorScheme')).toHaveLength(1);
+
+    const darkCanvas = resolveExperience({
+      native: { 'forced-colors': 'active', 'prefers-color-scheme': 'dark' },
+      siteOverrides: { colorScheme: 'light' },
+    });
+    expect(darkCanvas.experience.colorScheme).toBe('dark');
+    expect(darkCanvas.stated.colorScheme).toBe('light');
   });
 
   it('system color scheme follows the device, explicit choice overrides it', () => {

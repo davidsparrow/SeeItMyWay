@@ -44,8 +44,21 @@ rule fights an intentional pattern, use a targeted `biome-ignore <rule>: <reason
   Copy says what the browser says, never why someone might want it.
 - **Preference ≠ device characteristic.** Touch, hover and screen gamut are `nature: 'environment'` and
   are never described, shared or put on a result card as preferences.
-- **Native accessibility signals are floors** in `resolveExperience`: an OS "reduce motion" can't be
-  loosened by a Passport or Tune setting. Color scheme is a default that explicit choices may override.
+- **Stated preferences ≠ effective behavior.** `resolveExperience` returns the visitor's `stated`
+  preferences (Tune → Passport → site default → protocol default, no device signals), the effective
+  `experience`, and the active device `constraints` (`os-reduced-motion`, `save-data`, `reduced-data`,
+  `forced-colors`, `more-contrast`), each with a plain-language reason.
+  - Device signals constrain effective behavior and never rewrite what's stored. OS reduced motion makes
+    effective motion at least `reduced`; a saved "Full" stays "Full" and applies on other devices.
+  - `autoplay` is never rewritten. Media asks `autoplayMode(exp, { visualMotion, essential?, heavy? })`:
+    reduced or minimal motion stops non-essential visual motion (video, animated heroes, carousels) but
+    not audio-only media; reduced data stops heavy media until the visitor asks for it.
+  - Hard requirements beat explicit presentation choices: under forced colors the effective color scheme
+    follows the device even when a Passport says dark, and translucency and variation are off. An explicit
+    light/dark choice still overrides an ordinary `prefers-color-scheme`. Treat any future hard
+    requirement the same way.
+  - UIs let visitors pick and save any value. Where a constraint overrides it, explain it in plain
+    language (`apps/web/src/content/constraints.ts`); never disable the option.
 - **Fail closed** (PRD §21): safe adapters uninstall themselves on error. The original site wins.
 - **Counting** goes only through `track()` → `sanitizeEvent()`. Every property is a closed enum or a
   small bounded integer. No free text, URLs, IDs or timestamps. Add new events to `ANONYMOUS_EVENTS` in

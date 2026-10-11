@@ -272,9 +272,7 @@ export function SignalDemo({ kind, base }: { kind: DemoKind; base: Experience })
             { value: 'reduced', label: 'Data saver' },
           ]}
           initial={base.data === 'reduced' ? 'standard' : 'reduced'}
-          patch={(v) =>
-            v === 'reduced' ? { data: 'reduced', autoplay: 'never' } : { data: 'standard' }
-          }
+          patch={(v) => (v === 'reduced' ? { data: 'reduced' } : { data: 'standard' })}
           sections={['timelapse']}
           caption={(v) =>
             v === 'reduced'

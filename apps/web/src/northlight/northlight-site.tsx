@@ -37,7 +37,7 @@ import {
 } from './content';
 import { EventsCarousel } from './events';
 import { Sky } from './sky';
-import { Timelapse } from './timelapse';
+import { TIMELAPSE_MEDIA, Timelapse } from './timelapse';
 import './northlight.css';
 
 export type NorthlightSection =
@@ -272,7 +272,10 @@ function Tonight({
 }
 
 function TimelapseSection({ exp, notes }: { exp: Experience; notes: ReturnType<typeof useNotes> }) {
-  const mode = autoplayMode(exp);
+  const mode = autoplayMode(exp, TIMELAPSE_MEDIA);
+  // Credit whatever is actually holding the video back.
+  const why: ExperienceKey =
+    exp.autoplay === 'never' ? 'autoplay' : exp.motion !== 'full' ? 'motion' : 'autoplay';
   return (
     <section className="nl-section nl-enter" aria-labelledby="nl-tl-title">
       <div className="nl-wrap">
@@ -283,7 +286,7 @@ function TimelapseSection({ exp, notes }: { exp: Experience; notes: ReturnType<t
               : mode === 'play-muted'
                 ? 'Autoplays muted'
                 : 'Autoplays',
-            'autoplay',
+            mode === 'off' ? why : 'autoplay',
           ],
           [showCaptions(exp) ? 'Captions on' : 'Captions off by default', 'captions'],
           ...(loadsHeavyMediaAutomatically(exp)

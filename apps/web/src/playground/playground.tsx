@@ -12,6 +12,7 @@ import { useSeeItMyWay } from '@simw/sdk/react';
 import type { NativeSnapshot } from '@simw/types';
 import { Badge, PreferenceControl, SegmentedControl, Switch } from '@simw/ui';
 import { useEffect, useState } from 'react';
+import { constraintNote } from '@/content/constraints';
 import { track } from '@/lib/telemetry';
 import { ENVIRONMENT_SHORT, ENVIRONMENTS, type Tone } from '@/northlight/content';
 import { NorthlightSite } from '@/northlight/northlight-site';
@@ -50,7 +51,7 @@ export function Playground() {
   }, [real.ready, real.detected]);
 
   const current = sim ?? simFrom(real.detected);
-  const { experience, sources } = resolveExperience({
+  const resolution = resolveExperience({
     native: {
       ...real.detected,
       'prefers-reduced-motion': current.motion === 'full' ? 'no-preference' : 'reduce',
@@ -66,6 +67,7 @@ export function Playground() {
     seed: 'playground000000',
     variants: ENVIRONMENTS.length,
   });
+  const { experience, sources, stated } = resolution;
   const shown = { ...experience, variant: experience.variant === null ? null : variant };
 
   const note = (control: AnonymousEventProps<'playground_changed'>['control']) =>
@@ -80,8 +82,6 @@ export function Playground() {
     setExtended((e) => ({ ...e, [key]: value }));
     note(key);
   };
-
-  const reducedMotion = current.motion !== 'full';
 
   return (
     <div className="mx-auto grid max-w-[90rem] gap-8 px-4 pb-10 pt-10 sm:px-6 lg:grid-cols-[24rem_1fr]">
@@ -175,22 +175,12 @@ export function Playground() {
             <PreferenceControl
               key={key}
               prefKey={key}
-              value={
-                (extended[key] ?? experience[key as keyof typeof experience]) as PreferenceValue<
-                  typeof key
-                >
-              }
+              value={(extended[key] ?? stated[key]) as PreferenceValue<typeof key>}
               onChange={(v) => setPref(key, v)}
-              disabledValues={
-                key === 'autoplay' && reducedMotion
-                  ? (['allowed', 'muted'] as PreferenceValue<typeof key>[])
-                  : []
-              }
-              note={
-                key === 'autoplay' && reducedMotion
-                  ? 'Less motion also means no autoplay.'
-                  : undefined
-              }
+              note={constraintNote(key, resolution, {
+                lead: 'Set to',
+                device: 'This preview’s device',
+              })}
               showDescription={false}
               size="sm"
             />

@@ -1,5 +1,5 @@
 import type { Experience } from '@simw/protocol';
-import { type AutoplayMode, autoplayMode } from './policies';
+import { autoplayMode, type MediaTraits } from './policies';
 
 /**
  * Level 1 "automatic / safe" adaptations (PRD §8) for existing websites.
@@ -63,22 +63,29 @@ function styleAdapter(name: string, css: string): AdapterFactory {
   };
 }
 
-function applyAutoplay(media: HTMLMediaElement, mode: AutoplayMode): void {
+/** `<video>` is visual motion; `<audio>` is sound only. `data-simw-essential-motion` marks meaningful motion. */
+function traitsOf(media: HTMLMediaElement): MediaTraits {
+  if (!(media instanceof HTMLVideoElement)) return { visualMotion: false };
+  return { visualMotion: true, essential: media.closest('[data-simw-essential-motion]') !== null };
+}
+
+function applyAutoplay(media: HTMLMediaElement, exp: Experience): void {
   if (media.closest('[data-simw-ignore]')) return;
   const originallyAutoplay = media.autoplay || media.dataset.simwAutoplay === 'original';
   if (!originallyAutoplay) return;
   media.dataset.simwAutoplay = 'original';
 
+  const mode = autoplayMode(exp, traitsOf(media));
   if (mode === 'play') {
     media.autoplay = true;
     return;
   }
-  if (mode === 'play-muted' && media instanceof HTMLVideoElement) {
+  if (mode === 'play-muted') {
     media.autoplay = true;
     media.muted = true;
     return;
   }
-  // Off (or muted audio, which would be pointless): stop it and hand control to the visitor.
+  // Off: stop it and hand control to the visitor.
   media.autoplay = false;
   media.controls = true;
   try {
@@ -88,30 +95,31 @@ function applyAutoplay(media: HTMLMediaElement, mode: AutoplayMode): void {
   }
 }
 
+/** The parts of an Experience that can change an autoplay decision. */
+const autoplayKey = (exp: Experience) => `${exp.autoplay}|${exp.motion}|${exp.data}`;
+
 const autoplayAdapter: AdapterFactory = (doc, initial) => {
-  let mode = autoplayMode(initial);
+  let exp = initial;
   const applyAll = (root: ParentNode) => {
-    for (const m of root.querySelectorAll<HTMLMediaElement>('video, audio')) applyAutoplay(m, mode);
+    for (const m of root.querySelectorAll<HTMLMediaElement>('video, audio')) applyAutoplay(m, exp);
   };
   applyAll(doc);
 
   const observer = new MutationObserver((records) => {
     for (const record of records) {
-      record.addedNodes.forEach((node) => {
-        if (node instanceof HTMLMediaElement) applyAutoplay(node, mode);
+      for (const node of record.addedNodes) {
+        if (node instanceof HTMLMediaElement) applyAutoplay(node, exp);
         else if (node instanceof Element) applyAll(node);
-      });
+      }
     }
   });
   observer.observe(doc.documentElement, { childList: true, subtree: true });
 
   return {
-    update(exp) {
-      const next = autoplayMode(exp);
-      if (next !== mode) {
-        mode = next;
-        applyAll(doc);
-      }
+    update(next) {
+      const changed = autoplayKey(next) !== autoplayKey(exp);
+      exp = next;
+      if (changed) applyAll(doc);
     },
     uninstall() {
       observer.disconnect();

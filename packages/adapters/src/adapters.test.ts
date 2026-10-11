@@ -65,9 +65,42 @@ describe('policies', () => {
     expect(transitionStyle(reduced)).toBe('fade');
   });
 
-  it('treats minimal motion as no autoplay', () => {
-    expect(autoplayMode(exp({ autoplay: 'allowed', motion: 'minimal' }))).toBe('off');
-    expect(autoplayMode(exp({ autoplay: 'muted' }))).toBe('play-muted');
+  it('stops visual-motion media under reduced or minimal motion, but not audio', () => {
+    const video = { visualMotion: true };
+    const audio = { visualMotion: false };
+    for (const motion of ['reduced', 'minimal'] as const) {
+      const calm = exp({ autoplay: 'allowed', motion });
+      expect(autoplayMode(calm, video)).toBe('off');
+      expect(autoplayMode(calm, audio)).toBe('play');
+      expect(autoplayMode(calm, { visualMotion: true, essential: true })).toBe('play');
+    }
+    expect(autoplayMode(exp({ autoplay: 'allowed' }), video)).toBe('play');
+  });
+
+  it('follows the stated autoplay preference from a real resolution under OS reduced motion', () => {
+    const { stated, experience } = resolveExperience({
+      native: { 'prefers-reduced-motion': 'reduce' },
+      passport: { autoplay: 'allowed' },
+    });
+    expect(stated.autoplay).toBe('allowed');
+    expect(autoplayMode(experience, { visualMotion: true })).toBe('off');
+    expect(autoplayMode(experience, { visualMotion: false })).toBe('play');
+  });
+
+  it('lets the autoplay preference cap everything, and mutes only what can be muted', () => {
+    expect(autoplayMode(exp({ autoplay: 'never' }), { visualMotion: false })).toBe('off');
+    expect(autoplayMode(exp({ autoplay: 'muted' }), { visualMotion: true })).toBe('play-muted');
+    // Muted audio would be pointless.
+    expect(autoplayMode(exp({ autoplay: 'muted' }), { visualMotion: false })).toBe('off');
+  });
+
+  it('holds back heavy media when data is reduced, without touching the preference', () => {
+    const { experience } = resolveExperience({ native: { 'save-data': 'on' } });
+    expect(experience.autoplay).toBe('allowed');
+    expect(autoplayMode(experience, { visualMotion: true })).toBe('off');
+    expect(autoplayMode(experience, { visualMotion: false })).toBe('off');
+    expect(autoplayMode(experience, { visualMotion: false, heavy: false })).toBe('play');
+    expect(allowsAutoAdvance(experience)).toBe(true);
   });
 
   it('adjusts columns for density without dropping below one', () => {
@@ -115,6 +148,26 @@ describe('safe adapters', () => {
 
     adapters.update(exp({ autoplay: 'allowed' }));
     expect(first?.autoplay).toBe(true);
+    adapters.uninstall();
+  });
+
+  it('treats <video> as visual motion and <audio> as sound under reduced motion', () => {
+    document.body.innerHTML =
+      '<video autoplay></video><audio autoplay></audio><div data-simw-essential-motion><video autoplay></video></div>';
+    const reduced = resolveExperience({
+      native: { 'prefers-reduced-motion': 'reduce' },
+      passport: { autoplay: 'allowed' },
+    }).experience;
+    const adapters = installSafeAdapters(document, reduced, ['autoplay']);
+    const [video, essential] = Array.from(document.querySelectorAll('video'));
+    const audio = document.querySelector('audio');
+    expect(video?.autoplay).toBe(false);
+    expect(audio?.autoplay).toBe(true);
+    expect(essential?.autoplay).toBe(true);
+
+    // Motion back to full: the visitor's own preference applies again.
+    adapters.update(exp({ autoplay: 'allowed', motion: 'full' }));
+    expect(video?.autoplay).toBe(true);
     adapters.uninstall();
   });
 

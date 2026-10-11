@@ -14,6 +14,7 @@ import { createLocalPassport } from '@simw/sdk';
 import { useSeeItMyWay } from '@simw/sdk/react';
 import { PreferenceControl } from '@simw/ui';
 import { useEffect, useMemo, useState } from 'react';
+import { constraintNote } from '@/content/constraints';
 import { track } from '@/lib/telemetry';
 import { NorthlightSite } from '@/northlight/northlight-site';
 import { ExtensionUpsell } from './extension-upsell';
@@ -51,7 +52,7 @@ export function PassportBuilder() {
   const saved = { ...DEFAULT_PREFERENCES, ...real.passport };
   const dirty = !hasSaved || PREFERENCE_KEYS.some((k) => draft[k] !== saved[k]);
 
-  const { experience, sources } = useMemo(
+  const resolution = useMemo(
     () =>
       resolveExperience({
         native: real.detected,
@@ -63,23 +64,26 @@ export function PassportBuilder() {
     [real.detected, draft],
   );
 
-  const osReducesMotion = real.detected['prefers-reduced-motion'] === 'reduce';
+  const { experience, sources } = resolution;
   const deviceDark = real.detected['prefers-color-scheme'] === 'dark';
 
-  const notes: Partial<Record<PreferenceKey, string>> = {
-    colorScheme: `Your device currently says ${deviceDark ? 'dark' : 'light'}.`,
-    motion: osReducesMotion
-      ? 'Your device asks for reduced motion, and that always wins.'
-      : undefined,
-    autoplay: osReducesMotion ? 'Off while your device asks for reduced motion.' : undefined,
-    textSize:
-      real.detected['default-font-size'] && real.detected['default-font-size'] !== 'standard'
-        ? 'Your browser’s default text size already applies; this adds to it.'
-        : undefined,
+  // Every value can be chosen and saved. Where the current device stops a
+  // choice taking effect, say so instead of disabling it.
+  const note = (key: PreferenceKey): string | undefined => {
+    const lead = hasSaved && draft[key] === saved[key] ? 'Saved as' : 'Set to';
+    const constrained = constraintNote(key, resolution, { lead });
+    if (constrained) return constrained;
+    if (key === 'colorScheme')
+      return `Your device currently says ${deviceDark ? 'dark' : 'light'}.`;
+    if (
+      key === 'textSize' &&
+      real.detected['default-font-size'] &&
+      real.detected['default-font-size'] !== 'standard'
+    ) {
+      return 'Your browser’s default text size already applies; this adds to it.';
+    }
+    return undefined;
   };
-  const disabled: Partial<Record<PreferenceKey, string[]>> = osReducesMotion
-    ? { motion: ['full'], autoplay: ['allowed', 'muted'] }
-    : {};
 
   const set = <K extends PreferenceKey>(key: K, value: PreferenceValue<K>) => {
     setDraft((d) => ({ ...d, [key]: value }));
@@ -114,8 +118,7 @@ export function PassportBuilder() {
                 prefKey={key}
                 value={draft[key]}
                 onChange={(v) => set(key, v)}
-                disabledValues={(disabled[key] ?? []) as PreferenceValue<typeof key>[]}
-                note={notes[key]}
+                note={note(key)}
                 size="sm"
               />
             ))}

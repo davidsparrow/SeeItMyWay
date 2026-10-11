@@ -17,6 +17,7 @@ import {
 } from '@simw/detector';
 import { filterForSharing } from '@simw/privacy';
 import {
+  type Constraint,
   createSeed,
   type Experience,
   type ExperienceSources,
@@ -27,6 +28,8 @@ import {
   type PreferencePacket,
   type PreferenceValue,
   resolveExperience,
+  type SIMWPreferences,
+  type StatedSources,
 } from '@simw/protocol';
 import type { KeyValueStore, NativeSignals, NativeSnapshot, Unsubscribe } from '@simw/types';
 import type { BootSnapshot } from './boot';
@@ -59,8 +62,14 @@ export interface SeeItMyWayOptions {
 export interface SeeItMyWayState {
   /** False on the server and before `start()`; components should render defaults. */
   ready: boolean;
+  /** The effective experience: stated preferences combined with current-device constraints. */
   experience: Experience;
   sources: ExperienceSources;
+  /** What the visitor stated (Tune → Passport → site default), before device constraints. */
+  stated: SIMWPreferences;
+  statedSources: StatedSources;
+  /** Device constraints active right now, each with a plain-language reason. */
+  constraints: Constraint[];
   /** Full detector output (null until started). */
   signals: NativeSignals | null;
   /** What the browser actually says. */
@@ -94,15 +103,16 @@ export interface SeeItMyWay {
   sharedPacket(): PreferencePacket;
 }
 
+type Resolved = 'experience' | 'sources' | 'stated' | 'statedSources' | 'constraints';
+
 function emptyState(options: SeeItMyWayOptions): SeeItMyWayState {
-  const { experience, sources } = resolveExperience({
+  const resolution = resolveExperience({
     native: {},
     siteDefaults: options.siteDefaults ?? null,
   });
   return {
     ready: false,
-    experience,
-    sources,
+    ...resolution,
     signals: null,
     detected: {},
     native: {},
@@ -136,8 +146,8 @@ export function createSeeItMyWay(options: SeeItMyWayOptions = {}): SeeItMyWay {
         : document.documentElement
       : options.root;
 
-  function commit(next: Omit<SeeItMyWayState, 'experience' | 'sources'>) {
-    const { experience, sources } = resolveExperience({
+  function commit(next: Omit<SeeItMyWayState, Resolved>) {
+    const resolution = resolveExperience({
       native: next.native,
       siteOverrides: next.overrides,
       passport: next.passport,
@@ -145,7 +155,8 @@ export function createSeeItMyWay(options: SeeItMyWayOptions = {}): SeeItMyWay {
       seed: next.seed,
       variants: options.variants ?? 0,
     });
-    state = { ...next, experience, sources };
+    const { experience } = resolution;
+    state = { ...next, ...resolution };
 
     const el = root();
     if (el) {
@@ -155,7 +166,8 @@ export function createSeeItMyWay(options: SeeItMyWayOptions = {}): SeeItMyWay {
         const snapshot: BootSnapshot = {
           attrs: experienceToAttributes(experience),
           tokens: experienceToTokens(experience),
-          followsSystemScheme: sources.colorScheme === 'native',
+          // Forced colors are handled by the boot script itself, so only "system" follows the device.
+          followsSystemScheme: resolution.stated.colorScheme === 'system',
         };
         storage.set(keys().applied, JSON.stringify(snapshot));
       }
