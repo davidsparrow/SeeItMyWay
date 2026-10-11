@@ -1,0 +1,21 @@
+{
+  "name": "@simw/scanner-core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Site Listener Test logic, framework- and runtime-free: URL guards, the in-page fact collector, a Playwright-shaped driver, and the deterministic Preference Awareness Score.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./fixtures": "./src/fixtures.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@simw/tsconfig": "workspace:*",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.3"
+  }
+}

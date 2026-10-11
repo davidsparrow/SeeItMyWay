@@ -8,7 +8,7 @@ to know who they are. Personalization without profiling.
 - Product docs: [`Seeitmyway-PRD`](./Seeitmyway-PRD) and [`Seeitmyway-PRD-prefix+addendum`](./Seeitmyway-PRD-prefix+addendum)
 - Working agreement for AI agents and humans: [`CLAUDE.md`](./CLAUDE.md)
 
-## What's built (V0A + V0B)
+## What's built (V0A, V0B and V0C)
 
 | Route         | What it is                                                                                                             | PRD           |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------- |
@@ -36,7 +36,7 @@ apps/
   web/          Next.js 16 app (marketing, Checkup, Playground, Passport, demo) → Vercel
   demo-sites/   Plain-HTML fixtures retrofitted with the SDK (npm and <script> tag) → proves framework independence
   events/       Anonymous research counts: Cloudflare Worker + D1, aggregates only → Cloudflare
-  scanner/      Planned: Site Listener Test on Cloudflare Workers + Browser Run (V0C)
+  scanner/      Site Listener Test (V0C): Cloudflare Worker + Browser Run + D1 → Cloudflare
   extension/    Planned: Passport browser extension, WXT + React (V1.5)
 packages/
   protocol/     SIMW vocabulary, coarse values, sharing classes, packet + JSON Schema, precedence resolver
@@ -44,6 +44,7 @@ packages/
   adapters/     Experience → data-simw-* attributes + --simw-* tokens; policies; Level 1 safe adaptations
   sdk/          The website runtime (vanilla TS, script-tag IIFE build, optional React bindings)
   privacy/      What may be shared, what may go on a card, what may be counted (closed allowlist)
+  scanner-core/ Site Listener Test logic: URL/SSRF guards, in-page collector, driver, deterministic score
   types/        Shared shapes: native signals, platforms, storage
   ui/           Shared React controls (web now, extension later)
 tooling/
@@ -120,7 +121,8 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 - **Events (Cloudflare Worker + D1): deploy-ready, not deployed yet.** See
   [`apps/events/README.md`](./apps/events/README.md): `wrangler d1 create`, migrations, `wrangler deploy`
   with `ALLOWED_ORIGINS`, then `NEXT_PUBLIC_EVENTS_URL` in Vercel.
-- **Scanner (Cloudflare):** planned, see [`apps/scanner/README.md`](./apps/scanner/README.md).
+- **Scanner (Cloudflare Worker + Browser Run + D1): deploy-ready, not deployed yet.** See
+  [`apps/scanner/README.md`](./apps/scanner/README.md); then set `NEXT_PUBLIC_SCANNER_URL` in Vercel.
 
 ## Status and known gaps
 
@@ -133,5 +135,8 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
   the web app serves itself (`/sdk/simw.global.js`); `NEXT_PUBLIC_SDK_URL` can point it at a CDN later.
 - **TypeScript is pinned to 5.9 for V0** (TS 7 drops the compiler API Next.js uses). See
   [`docs/tech-debt.md`](./docs/tech-debt.md) TD-1.
-- V0C (Site Listener Test) and the open protocol spec are next; the Passport extension comes later.
+- **The Site Listener Test (V0C) is built and deploy-ready, not deployed.** It scores one public page
+  under five emulated preferences ([rubric](./docs/scanner-rubric.md)); calibration runs in CI against
+  the demo fixtures. A live Browser Run scan needs the deployment.
+- The open protocol spec is next; the Passport extension comes later.
   The plan for the next session is in [`docs/handoff/session-02.md`](./docs/handoff/session-02.md).

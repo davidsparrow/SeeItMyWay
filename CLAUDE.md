@@ -31,7 +31,11 @@ rule fights an intentional pattern, use a targeted `biome-ignore <rule>: <reason
 
 - `packages/*` never import from `apps/*`.
 - Only `packages/ui` and `packages/sdk/src/react.tsx` may import React. `sdk`, `protocol`, `detector`,
-  `adapters`, `privacy` and `types` must stay framework-free; the SDK ships as a `<script>` tag.
+  `adapters`, `privacy`, `scanner-core` and `types` must stay framework-free and deployment-free (no
+  Next, Vercel or Cloudflare imports); the SDK ships as a `<script>` tag.
+- `packages/scanner-core/src/collector.ts` runs inside scanned pages via `fn.toString()`: keep its
+  functions self-contained (no imports or outer references). Changing the score means changing
+  `RUBRIC_VERSION` and `docs/scanner-rubric.md`, and re-running the calibration specs.
 - Internal packages export TypeScript source (`exports: "./src/index.ts"`); Next compiles them via
   `transpilePackages`. Only `@simw/sdk` has a build step (tsup → ESM + IIFE).
 - New preference values go in `packages/protocol/src/vocabulary.ts` and nowhere else. Keep it coarse:

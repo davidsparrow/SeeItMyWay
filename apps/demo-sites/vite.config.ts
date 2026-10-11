@@ -12,6 +12,7 @@ export default defineConfig({
       input: {
         npm: resolve(here, 'index.html'),
         scriptTag: resolve(here, 'script-tag.html'),
+        plain: resolve(here, 'plain.html'),
       },
     },
   },

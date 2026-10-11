@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bramble &amp; Co. (no SeeItMyWay)</title>
+    <!-- The same site with no SeeItMyWay: the scanner's known-bad calibration page. -->
+    <link rel="stylesheet" href="/src/site.css" />
+  </head>
+  <body>
+    <div class="ticker" aria-hidden="true">
+      <span>Autumn sale: 20% off all ceramics this week only · Free delivery over £50 ·</span>
+    </div>
+    <header>
+      <h1>Bramble &amp; Co. <span class="badge decorative" aria-hidden="true">SALE</span></h1>
+      <p>
+        Handmade ceramics from a small studio. An ordinary website, retrofitted with SeeItMyWay.
+      </p>
+    </header>
+    <main>
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        aria-label="Studio video (no source in this fixture)"
+      ></video>
+      <p id="video-status"></p>
+      <section class="grid" aria-label="Products">
+        <article class="card">
+          <h2>Stoneware mug</h2>
+          <p>£24 · speckled glaze</p>
+        </article>
+        <article class="card">
+          <h2>Serving bowl</h2>
+          <p>£48 · ash glaze</p>
+        </article>
+        <article class="card">
+          <h2>Bud vase</h2>
+          <p>£18 · celadon</p>
+        </article>
+      </section>
+      <h2>What the SDK applied to &lt;html&gt;</h2>
+      <pre id="applied"></pre>
+    </main>
+    <footer>
+      <p>
+        Fixture for apps/demo-sites: the same page without SeeItMyWay, so it ignores your motion,
+        theme and contrast settings.
+      </p>
+    </footer>
+  </body>
+</html>

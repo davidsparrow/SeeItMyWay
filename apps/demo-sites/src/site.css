@@ -86,6 +86,13 @@ footer {
   padding: var(--gap);
   border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
 }
+/* Secondary text: --muted becomes full-strength ink when the visitor asks for more contrast. */
+header p,
+.card p,
+footer,
+#video-status {
+  color: var(--muted);
+}
 :root[data-simw-visual-richness='minimal'] .decorative {
   display: none;
 }
