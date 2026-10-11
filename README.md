@@ -16,7 +16,8 @@ to know who they are. Personalization without profiling.
 | `/playground` | **Preference Playground**: preview native and SeeItMyWay preferences on one site, without touching device settings     | A.6           |
 | `/passport`   | **Passport builder**: a local profile, live preview, exact shared packet, "My Web Wants" card, extension upsell        | A.8, A.9, E   |
 | `/demo`       | **Northlight**, an adaptive demo site with a "Tune this site" panel and anonymous experience seed                      | V0B, §18–20   |
-| `/listen`     | Site-owner entry point ("Does your website listen?"). The scanner itself is V0C, not built yet                         | B.1           |
+| `/listen`     | **Site Listener Test** ("Does your website listen?"): streamed progress, Preference Awareness Score, ✓/△/✕ rows, emulated screenshots. Needs `NEXT_PUBLIC_SCANNER_URL`; "coming soon" without it | B.1, V0C      |
+| `/listen/report/[id]` | A shareable Site Listener Test report, kept 30 days (screenshots 24 hours)                                     | B.1           |
 | `/privacy`    | The SeeItMyWay Promise, the exact list of anonymous events, where counts go, the GPC policy, and what's on this device | §27, §29      |
 
 The site runs the SDK on itself: theme, motion, contrast, transparency, density and text size all come

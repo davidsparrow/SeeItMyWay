@@ -1,5 +1,6 @@
 import { ANONYMOUS_EVENTS, type AnonymousEventName, MINIMUM_COHORT } from '@simw/privacy';
 import type { Metadata } from 'next';
+import { SCANNER_RETENTION } from '@/content/listen';
 import { config } from '@/lib/config';
 import { GpcStatus } from './gpc-status';
 import { LocalData } from './local-data';
@@ -38,6 +39,8 @@ const EVENT_DESCRIPTIONS: Record<AnonymousEventName, string> = {
   result_card_shared: 'How a result card was shared: download, copy or share',
   extension_interest: 'Someone said they’d use the Passport extension',
   owner_test_interest: 'A site owner wanted the Site Listener Test (never the URL)',
+  owner_test_completed:
+    'A Site Listener Test finished, and which quarter its score fell in: 0–24, 25–49, 50–74 or 75–100 (never the URL or the exact score)',
 };
 
 export default function PrivacyPage() {
@@ -145,6 +148,32 @@ export default function PrivacyPage() {
           that carries the GPC signal.
         </p>
         <GpcStatus />
+      </section>
+
+      <section aria-labelledby="scanner-title" className="space-y-4">
+        <h2 id="scanner-title" className="font-display text-3xl font-semibold tracking-tight">
+          The Site Listener Test
+        </h2>
+        <ul className="max-w-3xl list-disc space-y-2 pl-5 text-muted">
+          <li>
+            When a site owner tests a page on{' '}
+            <a href="/listen" className="font-semibold text-accent underline underline-offset-4">
+              /listen
+            </a>
+            , our scanner loads that one public page from Cloudflare&rsquo;s network, once for each
+            preference it checks. It removes anything after a <code>?</code> or <code>#</code> in
+            the address first, and never logs in, sends cookies or follows links.
+          </li>
+          <li>
+            It keeps the report and the page&rsquo;s address for {SCANNER_RETENTION.reportDays} days
+            and its screenshots for {SCANNER_RETENTION.viewHours} hours, so the report can be
+            shared. It keeps nothing about who asked.
+          </li>
+          <li>
+            Like the counter, it uses the requester&rsquo;s network address only as a short-lived
+            rate-limit key in Cloudflare&rsquo;s memory, never stored or logged.
+          </li>
+        </ul>
       </section>
 
       <section aria-labelledby="local-title" className="space-y-5">

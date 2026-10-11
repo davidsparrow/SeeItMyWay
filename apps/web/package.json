@@ -16,6 +16,7 @@
     "@simw/detector": "workspace:*",
     "@simw/privacy": "workspace:*",
     "@simw/protocol": "workspace:*",
+    "@simw/scanner-core": "workspace:*",
     "@simw/sdk": "workspace:*",
     "@simw/types": "workspace:*",
     "@simw/ui": "workspace:*",

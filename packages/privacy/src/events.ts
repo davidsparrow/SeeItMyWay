@@ -25,6 +25,17 @@ const TUNE_CONTROLS = [
   ...PREFERENCE_KEYS,
 ] as const;
 
+/** Preference Awareness Scores, bucketed into quarters before they can be counted. */
+export const SCORE_BUCKETS = ['0-24', '25-49', '50-74', '75-100'] as const;
+export type ScoreBucket = (typeof SCORE_BUCKETS)[number];
+
+export function scoreBucket(score: number): ScoreBucket {
+  if (score >= 75) return '75-100';
+  if (score >= 50) return '50-74';
+  if (score >= 25) return '25-49';
+  return '0-24';
+}
+
 export const ANONYMOUS_EVENTS = {
   /** Clicked "Show Me Mine". */
   checkup_started: {},
@@ -52,6 +63,8 @@ export const ANONYMOUS_EVENTS = {
   result_card_shared: { method: ['download', 'copy', 'share'] },
   extension_interest: {},
   owner_test_interest: {},
+  /** A Site Listener Test finished. Only the score's quarter: never the URL, never the exact score. */
+  owner_test_completed: { score: SCORE_BUCKETS },
 } as const satisfies Record<string, Record<string, PropSpec>>;
 
 export type AnonymousEventName = keyof typeof ANONYMOUS_EVENTS;

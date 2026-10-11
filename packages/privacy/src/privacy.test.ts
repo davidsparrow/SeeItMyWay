@@ -3,6 +3,7 @@ import {
   buildResultCardItems,
   filterForSharing,
   sanitizeEvent,
+  scoreBucket,
   suppressSmallCohorts,
 } from './index';
 
@@ -66,5 +67,24 @@ describe('sanitizeEvent', () => {
     expect(sanitizeEvent('signals_detected', { count: 400 })).toBeNull();
     expect(sanitizeEvent('signals_detected', { count: 2.5 })).toBeNull();
     expect(sanitizeEvent('demo_viewed', {})).toBeNull();
+  });
+
+  it('counts a finished Site Listener Test only as a score quarter', () => {
+    expect(sanitizeEvent('owner_test_completed', { score: scoreBucket(42) })).toEqual({
+      name: 'owner_test_completed',
+      props: { score: '25-49' },
+    });
+    expect(sanitizeEvent('owner_test_completed', { score: 42 })).toBeNull();
+    expect(
+      sanitizeEvent('owner_test_completed', { score: '25-49', url: 'https://example.com' }),
+    ).toBeNull();
+    expect([0, 24, 25, 74, 75, 100].map(scoreBucket)).toEqual([
+      '0-24',
+      '0-24',
+      '25-49',
+      '50-74',
+      '75-100',
+      '75-100',
+    ]);
   });
 });

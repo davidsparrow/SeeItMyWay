@@ -104,6 +104,9 @@ importers:
       '@simw/protocol':
         specifier: workspace:*
         version: link:../../packages/protocol
+      '@simw/scanner-core':
+        specifier: workspace:*
+        version: link:../../packages/scanner-core
       '@simw/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk

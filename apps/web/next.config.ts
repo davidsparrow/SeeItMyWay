@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     '@simw/detector',
     '@simw/privacy',
     '@simw/protocol',
+    '@simw/scanner-core',
     '@simw/sdk',
     '@simw/types',
     '@simw/ui',
