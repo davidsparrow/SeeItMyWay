@@ -127,6 +127,10 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 
 ## Status and known gaps
 
+- **Nothing is deployed yet; everything is deploy-ready.** No Vercel or Cloudflare credentials were
+  available to the build session. Order: the two Workers first ([events](./apps/events/README.md),
+  [scanner](./apps/scanner/README.md)), then `apps/web` on Vercel with their URLs
+  ([`docs/deploy/vercel.md`](./docs/deploy/vercel.md)), then the `BASE_URL` smoke test.
 - **The events Worker is deploy-ready, not deployed** (no Cloudflare credentials were available to the
   build session). Until it's deployed and `NEXT_PUBLIC_EVENTS_URL` is set, counting stays on the
   visitor's device, and `/privacy` says so. Deploy steps: [`apps/events/README.md`](./apps/events/README.md).
@@ -139,5 +143,7 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 - **The Site Listener Test (V0C) is built and deploy-ready, not deployed.** It scores one public page
   under five emulated preferences ([rubric](./docs/scanner-rubric.md)); calibration runs in CI against
   the demo fixtures. A live Browser Run scan needs the deployment.
-- The open protocol spec is next; the Passport extension comes later.
-  The plan for the next session is in [`docs/handoff/session-02.md`](./docs/handoff/session-02.md).
+- The Worker packages pin Vitest 4 for the Workers test pool (TD-2). Other deliberate deferrals are in
+  [`docs/tech-debt.md`](./docs/tech-debt.md).
+- The open protocol spec is next; the Passport extension comes later. Session 2's brief, now delivered,
+  is [`docs/handoff/session-02.md`](./docs/handoff/session-02.md).
