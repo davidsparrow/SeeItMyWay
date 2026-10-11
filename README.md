@@ -101,8 +101,10 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 
 ## Deployment
 
-- **Web (Vercel):** import the repo, set the Root Directory to `apps/web`. Vercel detects Next.js and
-  pnpm workspaces; Turborepo builds the workspace packages first.
+- **Web (Vercel): deploy-ready, not deployed yet** (no Vercel credentials were available to the build
+  session). Steps, env vars and the CLI path are in [`docs/deploy/vercel.md`](./docs/deploy/vercel.md):
+  Root Directory `apps/web`, Node 22, and `apps/web/vercel.json` builds through Turborepo so the SDK is
+  bundled first. Production will be a standard `seeitmyway.vercel.app`-style URL.
 - **Scanner (Cloudflare):** planned, see [`apps/scanner/README.md`](./apps/scanner/README.md).
 
 ## Status and known gaps
