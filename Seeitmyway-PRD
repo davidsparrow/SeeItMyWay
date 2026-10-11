@@ -1,0 +1,1894 @@
+Here’s the PRD. I’ve kept **SeeItMyWay** focused on the strongest wedge: existing websites become preference-aware first, while the extension/passport remains optional and experimental.
+
+# SeeItMyWay
+## Product Requirements Document
+**Working name:** SeeItMyWay  
+**Category:** Adaptive Web / User-Controlled Personalization  
+**Status:** Concept / V0 PRD  
+**Core idea:** Websites adapt to how visitors prefer to experience the web — without needing to know who those visitors are.
+
+---
+
+# 1. Product Thesis
+
+Modern website personalization usually works by learning more about the visitor:
+
+- browsing history
+- cookies
+- advertising profiles
+- demographics
+- prior purchases
+- location
+- behavioral tracking
+- identity
+
+SeeItMyWay reverses that model.
+
+Instead of asking:
+
+> “Who is this visitor?”
+
+SeeItMyWay asks:
+
+> **“How does this visitor want this website to behave?”**
+
+The system uses explicit browser/OS preferences, device/interface characteristics, optional site-specific preferences, and eventually an optional user-controlled Preference Passport.
+
+No advertising history is required.
+
+No cross-site behavioral profile is required.
+
+No attempt should be made to infer demographic, medical, financial, political, or personality characteristics from preference settings.
+
+The user supplies preferences.
+
+The website listens.
+
+---
+
+# 2. Vision
+
+Create a new preference layer for the web where a person's interface and experience preferences can follow them between participating websites.
+
+A visitor might prefer:
+
+- reduced motion
+- dark interfaces
+- larger controls
+- roomy layouts
+- no autoplay
+- more explanatory text
+- simpler navigation
+- more visual examples
+- captions by default
+- fewer popups
+- higher or lower information density
+- playful or restrained presentation
+
+Today these preferences are scattered across:
+
+- operating systems
+- browser settings
+- accessibility settings
+- individual websites
+- browser extensions
+- cookies/localStorage
+
+SeeItMyWay creates an interpretation and delivery layer that lets websites actually respond to them.
+
+Long-term:
+
+> **A website should be able to understand how I prefer digital experiences without knowing who I am.**
+
+---
+
+# 3. Existing Standards Foundation
+
+SeeItMyWay should build upon existing web standards rather than replace them.
+
+Media Queries Level 5 already defines preference signals including:
+
+- `prefers-reduced-motion`
+- `prefers-reduced-transparency`
+- `prefers-contrast`
+- `prefers-color-scheme`
+- related forced-color and environmental states
+
+W3C guidance increasingly encourages websites to respect these preferences. :chatgpt-content-reference{index="0"}
+
+Global Privacy Control provides an especially interesting conceptual precedent: a person expresses a preference at the browser level and participating websites receive and respect that standardized signal through HTTP and JavaScript. GPC's September 24, 2026 W3C Working Draft defines both `Sec-GPC` and `navigator.globalPrivacyControl`. :chatgpt-content-reference{index="1"}
+
+SeeItMyWay applies a similar philosophy to **experience preferences rather than advertising/privacy preferences**.
+
+---
+
+# 4. Core Product Principle
+
+## Personalize behavior, not identity.
+
+Allowed:
+
+> Visitor prefers reduced motion.
+
+Response:
+
+> Reduce nonessential animation.
+
+Not allowed:
+
+> Visitor prefers reduced motion, therefore they may have a medical condition.
+
+---
+
+Allowed:
+
+> Visitor prefers roomy layouts.
+
+Response:
+
+> Use larger spacing and fewer columns.
+
+Not allowed:
+
+> Visitor prefers roomy layouts, therefore they are probably older.
+
+---
+
+Allowed:
+
+> Visitor prefers detailed explanations.
+
+Response:
+
+> Show expanded instructions.
+
+Not allowed:
+
+> Visitor needs detailed explanations, therefore they have lower technical ability.
+
+SeeItMyWay should intentionally avoid the inference layer that makes conventional personalization uncomfortable.
+
+---
+
+# 5. Two Connected Products
+
+SeeItMyWay consists of two components.
+
+## A. SeeItMyWay for Websites
+
+The commercial product.
+
+It helps website owners:
+
+1. scan their existing website
+2. identify safe adaptation opportunities
+3. preview alternate experiences
+4. approve suggested adaptations
+5. install the runtime
+6. continuously monitor adaptation compatibility
+
+This product provides value even if the visitor has never heard of SeeItMyWay.
+
+---
+
+## B. SeeItMyWay Passport
+
+A free optional Chrome extension initially.
+
+It lets visitors define additional preferences not currently exposed by browsers.
+
+These preferences can follow them across participating websites.
+
+The Passport should enhance SeeItMyWay but must **never be required for the website product to work**.
+
+This avoids creating a two-sided adoption trap.
+
+---
+
+# 6. Visitor Experience Hierarchy
+
+Adaptations should follow strict priority layers.
+
+## Layer 1 — Native Requirements & Preferences
+
+Signals exposed by the browser, OS, or device.
+
+Examples:
+
+- reduced motion
+- contrast
+- forced colors
+- color scheme
+- transparency preferences
+- pointer/touch capability
+- hover capability
+- viewport/device characteristics
+
+These have highest priority.
+
+---
+
+## Layer 2 — SeeItMyWay Passport
+
+Optional global visitor preferences.
+
+Examples:
+
+- interface density
+- autoplay preference
+- text spacing
+- navigation complexity
+- instruction detail
+- visual richness
+- preferred media presentation
+
+---
+
+## Layer 3 — Site-Specific Tune Settings
+
+Visitor overrides for one website.
+
+Example:
+
+A visitor generally prefers minimal interfaces but wants an art museum website to remain visually rich.
+
+Site-specific settings override Passport defaults.
+
+---
+
+## Layer 4 — Experience Seed
+
+Optional anonymous aesthetic variation.
+
+Used only for harmless delight.
+
+Examples:
+
+- illustration variation
+- background pattern
+- ambient environment
+- decorative objects
+- icon style
+- minor palette variation
+- Easter eggs
+
+The seed must never override accessibility or explicit visitor preferences.
+
+---
+
+# 7. Site Owner Onboarding
+
+The average website owner should not need to understand an SDK.
+
+The customer-facing workflow should be:
+
+### Step 1
+Enter website URL.
+
+### Step 2
+SeeItMyWay scans the site.
+
+### Step 3
+System identifies templates and reusable components.
+
+Example:
+
+**482 URLs scanned**
+
+Detected:
+
+- Homepage
+- Service page
+- Article
+- Category
+- Contact
+- Product
+- Checkout
+
+Shared components:
+
+- Header
+- Navigation
+- Hero
+- Cards
+- Carousels
+- Testimonials
+- Forms
+- Video
+- Footer
+
+### Step 4
+SeeItMyWay creates an **Adaptive Site Map**.
+
+Example:
+
+> YOUR WEBSITE CAN ALREADY BECOME 68% ADAPTIVE
+
+**Automatic**
+- Motion ✓
+- Autoplay ✓
+- Touch optimization ✓
+- Browser color scheme ✓
+
+**Review recommended**
+- Typography △
+- Layout density △
+- Contrast △
+- Dark theme △
+
+**Developer enhancement available**
+- Alternative navigation ○
+- Alternate layouts ○
+- Content-depth variants ○
+
+### Step 5
+Owner previews visitor experiences.
+
+### Step 6
+Owner approves adaptations.
+
+### Step 7
+Install SeeItMyWay.
+
+Installation options eventually include:
+
+- WordPress plugin
+- Shopify app
+- Webflow snippet
+- Squarespace/Wix snippet
+- generic JavaScript snippet
+- npm package
+- React/Next.js package
+
+---
+
+# 8. Adaptation Levels
+
+A major product requirement is that SeeItMyWay **never pretend arbitrary websites can be safely transformed without limits**.
+
+There should be three levels.
+
+---
+
+## Level 1 — Automatic / Safe
+
+High-confidence adaptations that can usually be applied to an existing website.
+
+Examples:
+
+### Motion
+- suppress nonessential CSS animation
+- disable parallax
+- remove smooth scrolling
+- pause decorative motion
+- reduce animated transitions
+
+### Media
+- suppress autoplay
+- replace moving hero backgrounds where safe
+- pause carousels
+- avoid automatic slide progression
+
+### Input
+- increase small touch targets
+- account for touch vs hover
+- remove hover-only dependence where possible
+
+### Appearance
+- respect native dark/light mode where compatible
+- respect forced colors
+- respect existing contrast preferences
+
+These should require little or no configuration.
+
+---
+
+# 9. Level 2 — AI Proposed / Owner Approved
+
+SeeItMyWay analyzes the site and proposes adaptations.
+
+Examples:
+
+### Roomy Experience
+
+Current:
+
+- four cards per row
+- 15px text
+- narrow line spacing
+- compact buttons
+
+Suggested:
+
+- two or three cards per row
+- larger type
+- increased line height
+- larger tap targets
+
+Owner sees:
+
+**Before | Proposed**
+
+Then chooses:
+
+- Approve
+- Edit
+- Reject
+
+---
+
+### Dark Experience
+
+SeeItMyWay generates a dark variant based upon:
+
+- brand palette
+- existing colors
+- images
+- logos
+- text contrast requirements
+
+Owner previews before activation.
+
+---
+
+### Reduced Visual Density
+
+System may suggest:
+
+- hiding decorative content
+- simplifying card treatments
+- reducing simultaneous calls-to-action
+- collapsing secondary information
+- widening content areas
+
+These changes require explicit approval.
+
+---
+
+# 10. Level 3 — Adaptive by Design
+
+For developers and new websites.
+
+Components may explicitly expose variants.
+
+Example conceptual API:
+
+```jsx
+<AdaptiveHero
+  variants={{
+    standard: StandardHero,
+    calm: CalmHero,
+    minimal: MinimalHero
+  }}
+/>
+```
+
+Or:
+
+```html
+<section data-simw-component="hero">
+```
+
+Design systems could expose:
+
+**Navigation**
+- standard
+- simple
+- touch-first
+- keyboard-first
+
+**Cards**
+- dense
+- normal
+- roomy
+
+**Hero**
+- animated
+- static
+- minimal
+
+**Content**
+- summary
+- standard
+- expanded
+
+A greenfield site could therefore adapt far more substantially than a retrofitted site.
+
+---
+
+# 11. Adaptive Site Scanner
+
+The scanner is a critical product component.
+
+It should identify:
+
+## Site structure
+
+- URLs
+- page types
+- templates
+- repeated components
+- layout systems
+
+## Motion
+
+- CSS animations
+- CSS transitions
+- animated SVG
+- canvas/WebGL
+- parallax
+- Lottie
+- carousels
+- scroll effects
+- autoplay media
+
+## Typography
+
+- fonts
+- sizes
+- line heights
+- reading widths
+- spacing
+
+## Visual system
+
+- palette
+- backgrounds
+- shadows
+- borders
+- gradients
+- transparency
+
+## Interaction
+
+- buttons
+- links
+- forms
+- tooltips
+- hover dependencies
+- accordions
+- modals
+- menus
+
+## Media
+
+- video
+- audio
+- animation
+- responsive images
+
+## Framework detection
+
+Examples:
+
+- WordPress
+- Shopify
+- Webflow
+- Squarespace
+- Wix
+- React
+- Next.js
+- Vue
+- Angular
+
+---
+
+# 12. Template Discovery
+
+SeeItMyWay should avoid treating every URL as a separate project.
+
+AI + DOM similarity analysis should cluster pages into template families.
+
+Example:
+
+```text
+642 URLs
+↓
+8 page templates
+↓
+17 reusable components
+```
+
+Adaptations should primarily attach to templates/components instead of individual URLs.
+
+This dramatically reduces implementation burden.
+
+---
+
+# 13. Preference Passport
+
+## Purpose
+
+Allow visitors to define useful web-experience preferences beyond today's browser standards.
+
+Chrome extensions can store settings using extension storage, including synced settings when Chrome Sync is available. Websites cannot automatically access arbitrary extension storage; communication must be deliberately implemented, which is desirable for privacy. Chrome supports explicit communication between authorized web pages and extensions. :chatgpt-content-reference{index="2"}
+
+---
+
+# 14. Passport Preference Vocabulary
+
+V1 should remain intentionally small.
+
+Too many attributes:
+
+- complicate website implementation
+- overwhelm users
+- create fingerprinting risk
+- prevent meaningful standardization
+
+Recommended initial categories:
+
+## Motion
+
+**Full / Reduced / Minimal**
+
+---
+
+## Interface Density
+
+**Compact / Standard / Roomy**
+
+---
+
+## Text Size
+
+**Standard / Larger / Largest**
+
+---
+
+## Navigation
+
+**Compact / Standard / Simplified**
+
+---
+
+## Autoplay
+
+**Allowed / Muted Only / Never**
+
+---
+
+## Content Detail
+
+**Brief / Standard / Detailed**
+
+---
+
+## Visual Richness
+
+**Minimal / Standard / Rich**
+
+---
+
+## Instructions
+
+**Concise / Standard / Step-by-Step**
+
+---
+
+## Captions
+
+**Default / Prefer / Always When Available**
+
+---
+
+## Interaction
+
+**Standard / Larger Controls**
+
+---
+
+# 15. Deliberate Coarseness
+
+SeeItMyWay should avoid values such as:
+
+```text
+fontSize = 19.372
+animationPreference = .468
+spacing = 22.7
+```
+
+Instead:
+
+```text
+fontSize = larger
+motion = reduced
+spacing = roomy
+```
+
+Large preference buckets improve:
+
+- interoperability
+- simplicity
+- site implementation
+- anonymity
+
+Thousands or millions of users should plausibly share the same profile combinations.
+
+---
+
+# 16. Preference Classes
+
+Preferences should have at least two sharing classifications.
+
+## UNIVERSAL
+
+Safe for automatic sharing with compatible websites.
+
+Examples:
+
+- theme
+- motion
+- density
+- autoplay
+- visual richness
+- large controls
+
+---
+
+## ASK FIRST
+
+Potentially sensitive or revealing preferences.
+
+Examples could eventually include:
+
+- specialized reading assistance
+- certain accessibility aids
+- cognitive simplification modes
+
+The visitor should explicitly choose whether to share these.
+
+SeeItMyWay should err heavily toward minimizing this category entirely.
+
+---
+
+# 17. Website ↔ Passport Communication
+
+The website should never be able to request arbitrary extension data.
+
+Instead:
+
+```text
+Website
+↓
+SeeItMyWay runtime
+↓
+Preference Bridge
+↓
+Passport
+↓
+Approved standardized preference packet
+```
+
+Returned data might look conceptually like:
+
+```json
+{
+  "version": "1.0",
+  "motion": "reduced",
+  "density": "roomy",
+  "autoplay": "never",
+  "visualRichness": "rich",
+  "instructions": "step-by-step"
+}
+```
+
+No browsing history.
+
+No unique advertising ID.
+
+No cross-site behavioral score.
+
+No list of previously visited participating sites.
+
+No demographic inference.
+
+The exact extension/bridge architecture should be prototyped before committing to implementation because Chrome's cross-origin and extension messaging restrictions should shape the final protocol.
+
+---
+
+# 18. Local Tune Control
+
+Every participating website should optionally expose:
+
+## ✨ See It My Way
+
+or:
+
+## ✨ Tune This Site
+
+Visitors can modify the current site's presentation.
+
+Potential UI:
+
+```text
+CALMER      ○────●────○ LIVELIER
+
+MINIMAL     ○──●──────○ RICH
+
+COMPACT     ○──────●──○ ROOMY
+
+CONCISE     ○───●─────○ DETAILED
+
+SERIOUS     ○────●────○ PLAYFUL
+```
+
+Site-specific settings are stored locally by default.
+
+No SeeItMyWay account required.
+
+---
+
+# 19. Anonymous Experience Seed
+
+Each website may optionally generate a local random seed.
+
+Example:
+
+```text
+SIMW-SEED = 4F7C2...
+```
+
+Stored only on that website.
+
+It allows consistent but anonymous aesthetic variation.
+
+Example:
+
+Visitor A receives:
+
+- observatory environment
+- brass icon set
+- slightly warmer palette
+
+Visitor B receives:
+
+- workshop environment
+- blueprint imagery
+- cooler palette
+
+The seed should contain no semantic information about the visitor.
+
+It means only:
+
+> “Use variation #37 for this browser.”
+
+---
+
+# 20. Adaptation Priority
+
+When preferences conflict:
+
+### Priority 1
+Accessibility/browser/OS requirement
+
+### Priority 2
+Explicit local visitor override
+
+### Priority 3
+Passport preference
+
+### Priority 4
+Site owner design rules
+
+### Priority 5
+Anonymous experience variation
+
+Accessibility/preferences always beat aesthetics.
+
+---
+
+# 21. Site Change Detection
+
+Retrofit personalization systems can become fragile when websites change.
+
+SeeItMyWay should therefore monitor integrations.
+
+Example:
+
+> ⚠ Homepage changed.
+
+> Hero component confidence dropped from 97% → 51%.
+
+> Three adaptive rules need review.
+
+Rules can be:
+
+- automatically remapped
+- temporarily disabled
+- flagged for owner review
+
+Unsafe adaptations should fail closed.
+
+Meaning:
+
+> **Original website wins whenever SeeItMyWay is uncertain.**
+
+---
+
+# 22. Preview Simulator
+
+Site owners should be able to experience their site through predefined visitor profiles.
+
+Examples:
+
+### Calm Touch
+
+- reduced motion
+- roomy
+- touch
+- no autoplay
+
+### High Contrast
+
+- stronger contrast
+- reduced transparency
+- enlarged controls
+
+### Information Dense
+
+- compact layout
+- standard motion
+- detailed information
+
+### Minimal Reader
+
+- low visual richness
+- no autoplay
+- simplified navigation
+- roomy typography
+
+Profiles are design-testing personas, not claims about real users.
+
+---
+
+# 23. Primary Initial Niches
+
+SeeItMyWay should not initially market itself as equally valuable for every website.
+
+Highest-value categories:
+
+## Education
+
+Strong fit because users have genuine differences in:
+
+- lesson density
+- media preference
+- pacing
+- instructions
+- visual complexity
+- transcript use
+
+Potential positioning:
+
+> **Every student gets a classroom that fits them.**
+
+---
+
+## SaaS
+
+High value because UI preferences meaningfully affect productivity.
+
+Possible adaptations:
+
+- dense vs roomy
+- tables vs cards
+- navigation complexity
+- keyboard preference
+- animation
+- explanation level
+- control size
+
+---
+
+## Documentation / Knowledge Platforms
+
+Potential:
+
+- code visibility
+- examples
+- reading width
+- explanation depth
+- TOC style
+- typography
+- density
+
+---
+
+## Publishing / News
+
+Potential:
+
+- reading layout
+- visual density
+- autoplay
+- image prominence
+- typography
+- article width
+
+---
+
+## Government / Public Services
+
+Potentially high social value:
+
+- calmer experiences
+- clearer forms
+- simpler navigation
+- larger controls
+
+Must avoid accessibility-compliance claims.
+
+---
+
+## Museums / Entertainment / Travel
+
+Strongest playground for experiential personalization.
+
+Potential:
+
+- environments
+- visual richness
+- animation
+- storytelling
+- ambient variation
+
+---
+
+# 24. Lower-Priority Niches
+
+Local service businesses may benefit from:
+
+- reduced motion
+- contrast
+- large controls
+- autoplay preferences
+- simplified forms
+
+However, dramatic experiential personalization is unlikely to provide enough ROI for this to be the initial market wedge.
+
+Plumbers do not need twelve versions of their homepage.
+
+---
+
+# 25. Explicit Non-Goals
+
+V1 should NOT:
+
+- track browsing history
+- import advertising profiles
+- infer demographics
+- infer medical conditions
+- infer disability
+- infer personality
+- create cross-site behavioral identity
+- replace accessibility engineering
+- claim WCAG compliance
+- modify arbitrary semantic content automatically
+- substantially rewrite layouts without approval
+- automatically simplify content based on assumptions about a person
+- sell preference profiles to advertisers
+
+---
+
+# 26. Accessibility Positioning
+
+SeeItMyWay must explicitly distinguish:
+
+## Accessibility remediation
+
+from:
+
+## Preference-aware adaptation
+
+The product should never claim:
+
+> “Install SeeItMyWay and your website becomes accessible.”
+
+Instead:
+
+> **“SeeItMyWay helps websites respect visitor preferences and deliver supported experience variants.”**
+
+The original website remains responsible for accessibility.
+
+---
+
+# 27. Privacy Promise
+
+Potential public manifesto:
+
+## SeeItMyWay Promise
+
+We do not need to know who you are to understand how you like websites to work.
+
+Your preferences belong to you.
+
+We do not build advertising profiles from them.
+
+We do not sell them.
+
+We do not infer personal characteristics from them.
+
+We send websites only the preferences necessary to improve your experience.
+
+And you can change or stop sharing them whenever you want.
+
+---
+
+# 28. Business Model
+
+## Free Site Tier
+
+Possible:
+
+- browser-native preference support
+- reduced motion audit
+- adaptive readiness score
+- limited pages
+- SeeItMyWay badge
+
+Purpose:
+
+Drive adoption.
+
+---
+
+## Pro Website
+
+Possible range:
+
+**$19–$49/month**
+
+Includes:
+
+- full site scanner
+- adaptation dashboard
+- AI recommendations
+- owner previews
+- site-change monitoring
+- additional visitor modes
+
+---
+
+## Business / SaaS
+
+Possible:
+
+**$99–$499+/month**
+
+Includes:
+
+- component SDK
+- custom preference mappings
+- API
+- advanced analytics
+- staging
+- team approval
+- multiple domains
+
+---
+
+## Developer
+
+Potential usage-based or project pricing.
+
+Includes:
+
+- npm packages
+- React/Next components
+- schemas
+- CI testing
+- development tools
+
+---
+
+## Preference Passport
+
+Free.
+
+It should probably remain free permanently.
+
+The user preference layer should not become the product being monetized.
+
+Revenue should primarily come from websites that want to respond better.
+
+---
+
+# 29. Analytics Philosophy
+
+Analytics should answer:
+
+> **Are adaptations useful?**
+
+Not:
+
+> “Who is this person?”
+
+Useful aggregated metrics:
+
+- percentage of sessions requesting reduced motion
+- percentage preferring dark mode
+- use of site Tune controls
+- most selected density
+- adaptation abandonment
+- adaptation performance impact
+- visitor override frequency
+
+Do not expose individual visitor profiles to site owners.
+
+Avoid reporting tiny cohorts that could become identifying.
+
+---
+
+# 30. V0 Prototype
+
+Goal:
+
+Prove adaptive website behavior can be useful without identity.
+
+Build one demonstration site with:
+
+- reduced motion
+- color scheme
+- touch/hover behavior
+- density
+- autoplay
+- visual richness
+- simple Tune panel
+- local preference storage
+- anonymous experience seed
+
+Create several dramatically different but equivalent experiences.
+
+No extension yet.
+
+---
+
+# 31. V1
+
+## Site Owner MVP
+
+Build:
+
+- URL scanner
+- template detection
+- motion/media detection
+- adaptive readiness score
+- visual preview
+- native preference runtime
+- install snippet
+- Tune This Site control
+- localStorage preferences
+- site-change warnings
+
+Focus niches:
+
+1. education
+2. documentation/content
+3. visually expressive sites
+
+---
+
+# 32. V1.5 — Passport Experiment
+
+Build Chrome extension.
+
+Features:
+
+- simple preference dashboard
+- local/synced preference storage
+- participating-site detection
+- controlled standardized preference packet
+- per-site sharing toggle
+
+Extension indicator:
+
+> ✨ This site understands SeeItMyWay.
+
+Initial users should likely come from:
+
+- IndieOps community
+- developers
+- accessibility/design communities
+- educators
+- experimental web creators
+
+Goal is learning, not mass adoption.
+
+---
+
+# 33. V2 — Developer Platform
+
+Add:
+
+- npm SDK
+- React components
+- Next.js helpers
+- Web Components
+- component variants
+- preference schemas
+- staging environment
+- CI checks
+- adaptation regression tests
+
+Example:
+
+```javascript
+const preferences = useSeeItMyWay();
+```
+
+Then:
+
+```javascript
+preferences.motion
+preferences.density
+preferences.visualRichness
+```
+
+---
+
+# 34. V3 — Open Preference Protocol
+
+If enough real-world usage establishes a stable vocabulary:
+
+Publish:
+
+## SeeItMyWay Preference Protocol
+
+Open specification containing:
+
+- preference names
+- permitted values
+- privacy rules
+- precedence
+- security requirements
+- discovery mechanism
+- communication format
+
+Allow other browser extensions and websites to implement it without using SeeItMyWay's commercial product.
+
+---
+
+# 35. Long-Term Standards Path
+
+SeeItMyWay should not begin by attempting to convince browser vendors or standards bodies.
+
+Instead:
+
+### Stage 1
+Build useful behavior.
+
+### Stage 2
+Observe which preferences people actually use.
+
+### Stage 3
+Stabilize vocabulary.
+
+### Stage 4
+Open the protocol.
+
+### Stage 5
+Encourage third-party implementations.
+
+### Stage 6
+If adoption warrants it, engage standards organizations/browser vendors.
+
+The extension effectively becomes a reference implementation.
+
+The eventual victory condition could be that some SeeItMyWay concepts become browser-native and the extension is no longer necessary.
+
+---
+
+# 36. Important Research Question
+
+The first year should attempt to answer:
+
+> **Which preferences do people actually want to carry between websites?**
+
+Not:
+
+> “How many preferences can we invent?”
+
+This may be the project's most valuable discovery.
+
+The ideal standard could contain only 8–15 universal preferences.
+
+---
+
+# 37. Competitive Position
+
+Conventional personalization:
+
+```text
+Observe visitor
+↓
+Build profile
+↓
+Infer intent
+↓
+Change website
+```
+
+SeeItMyWay:
+
+```text
+Visitor expresses preference
+↓
+Website receives preference
+↓
+Website adapts
+```
+
+Traditional model:
+
+> **Learn about me.**
+
+SeeItMyWay:
+
+> **Listen to me.**
+
+---
+
+# 38. Category Definition
+
+Possible category names:
+
+**Adaptive Web**
+
+**Preference-Aware Web**
+
+**User-Controlled Personalization**
+
+**Preference-Native Websites**
+
+Recommended:
+
+## Preference-Aware Web
+
+SeeItMyWay becomes:
+
+> **The preference layer for the web.**
+
+---
+
+# 39. Positioning
+
+Primary:
+
+> **Your website changes for me without needing to know me.**
+
+Alternative:
+
+> **Personalization without profiling.**
+
+Alternative:
+
+> **Websites that listen.**
+
+Alternative:
+
+> **The web, your way. Everywhere.**
+
+Alternative:
+
+> **Stop learning about visitors. Start listening to them.**
+
+---
+
+# 40. SeeItMyWay Philosophy
+
+The internet spent decades making websites better at recognizing people.
+
+SeeItMyWay explores the opposite direction.
+
+Websites do not necessarily need to recognize us.
+
+They need to recognize what we ask of them.
+
+A visitor should be able to say:
+
+> Give me less motion.
+
+> Give me more room.
+
+> Don't autoplay anything.
+
+> Explain things step-by-step.
+
+> Let the artwork breathe.
+
+> Give me the richer version.
+
+> Make the controls bigger.
+
+> Keep things simple.
+
+And participating websites should be capable of responding.
+
+Without first demanding an account.
+
+Without following the visitor around.
+
+Without buying data about them.
+
+Without guessing who they are.
+
+The long-term product is therefore larger than a personalization SDK.
+
+SeeItMyWay is an experiment in a different relationship between people and software:
+
+> **Instead of websites studying people so they can decide what experience to give them, people get to tell websites what kind of experience they want.**
+
+One product decision I feel especially strongly about after writing this: **don't launch the Chrome extension first.** Launch the adaptive site layer first, because it works immediately with native browser preferences and local Tune settings. Then the Passport becomes a fascinating accelerator instead of a dependency.
+
+And I’d keep **SeeItMyWay** for now. It unusually well captures both sides of the product: *“show me your site my way”* and *“I decide how the web sees me.”*
+
+------
+extra info rolled into PRD-prefix+addendum:
+
+Yes. And I think you may have found the **consumer-awareness wedge** for SeeItMyWay.
+
+The striking thing from the research isn't that these standards are unused. It's almost the opposite:
+
+> **Developers know about them. Browsers support them. A surprising number of websites already listen for them. But ordinary users were never really taught that they can express these preferences.**
+
+The 2025 Web Almanac found `prefers-reduced-motion` code on about **50% of desktop/mobile pages**, while `prefers-color-scheme` appeared on about **13%** and `prefers-contrast` around **1%**. So the receiving infrastructure is substantially more widespread than I expected. [Web Almanac](https://almanac.httparchive.org/en/2025/accessibility?utm_source=chatgpt.com)
+
+Yet Smashing Magazine explicitly points out one of the weaknesses of `prefers-reduced-motion`: **many users don't even know the system setting exists.** [Smashing Magazine](https://www.smashingmagazine.com/2021/10/respecting-users-motion-preferences/?utm_source=chatgpt.com)
+
+That is almost your campaign in one sentence.
+
+## The weird part: they're often not actually “browser settings”
+
+This is probably a major reason nobody understands them.
+
+For reduced motion, Chrome usually listens to the **operating system accessibility preference**. MDN currently documents settings across Windows, macOS, iOS, Android, Linux and Firefox. For example, current macOS has System Settings → Accessibility → Motion → Reduce motion; Windows 11 has Accessibility → Visual Effects → Animation Effects; iOS has Accessibility → Motion. [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40media/prefers-reduced-motion?utm_source=chatgpt.com)
+
+Contrast and reduced transparency work similarly: the browser generally derives them from OS-level preferences. [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40media/prefers-reduced-transparency?utm_source=chatgpt.com)
+
+Dark mode is messier. Chrome itself now has Light / Dark / Device choices under Appearance, while websites may also react to the device/system color preference through `prefers-color-scheme`. [Google Help](https://support.google.com/chrome/answer/9275525?hl=en-0\&utm_source=chatgpt.com)
+
+So users reasonably think:
+
+> “Where are my WEBSITE preferences?”
+
+And the answer today is basically:
+
+> “Well… some are in Windows Settings, some are in macOS Accessibility, some are in Chrome Appearance, some are site settings, some are browser flags…”
+
+That's terrible UX.
+
+And that's an opportunity.
+
+---
+
+# There is definitely a conversation about this
+
+But importantly, it is mostly **developer-facing**, not mainstream-consumer-facing.
+
+CSS-Tricks has covered `prefers-reduced-motion` repeatedly. Smashing Magazine has substantial articles about motion preferences, CSS accessibility and persistent color-scheme preferences. Google's web.dev has been teaching developers to honor reduced motion since 2019. [CSS-Tricks](https://css-tricks.com/revisiting-prefers-reduced-motion/?utm_source=chatgpt.com)
+
+The user discussions are even more revealing.
+
+One r/webdev thread about an animated site generated the exact question we're discussing: someone pointed out `prefers-reduced-motion`, and another commenter essentially responded, **how many motion-sensitive people can reasonably be expected to know this setting exists?** [Reddit](https://www.reddit.com/r/webdev/comments/jwzs43?utm_source=chatgpt.com)
+
+Another CSS thread has users literally asking:
+
+> “How do you even enable this?”
+
+and expressing surprise that there isn't an obvious browser switch. [Reddit](https://www.reddit.com/r/css/comments/gbllf8?utm_source=chatgpt.com)
+
+A recent accessibility discussion similarly recommends providing an explicit control because not everybody knows how to enable reduced motion. [Reddit](https://www.reddit.com/r/accessibility/comments/1ovxv7x?utm_source=chatgpt.com)
+
+And dark mode produces continual user confusion. A recent 2026 browser thread has people complaining that websites should simply follow their system theme instead of “flashbanging” them with bright pages. [Reddit](https://www.reddit.com/r/browsers/comments/1tetkhp/dark_mode_feels_mandatory_now/?utm_source=chatgpt.com)
+
+So yes:
+
+**The conversation exists.**
+
+But nobody appears to have packaged it into a simple consumer idea like:
+
+> **“Did you know your computer can tell websites how you'd like to experience them?”**
+
+That's different.
+
+---
+
+# I would absolutely build a free SeeItMyWay tool around this
+
+Not initially as an extension.
+
+A public webpage:
+
+# **What Is Your Browser Telling Websites?**
+
+Visit it and immediately see something like:
+
+```text
+YOUR CURRENT WEB PREFERENCES
+
+🌙 Color scheme
+Dark ✓
+
+🎢 Motion
+No preference
+
+◐ Contrast
+No preference
+
+🪟 Transparency
+Standard
+
+🎨 Forced colors
+Off
+
+👆 Primary input
+Touch
+
+↔ Hover
+Unavailable
+
+📶 Reduced data
+Not available in this browser
+```
+
+Then each one gets:
+
+**What this means**
+
+**What websites can do with it**
+
+**Change mine**
+
+**Show me the difference**
+
+That last one is crucial.
+
+For motion:
+
+### YOUR CURRENT EXPERIENCE
+
+Big parallax animation.
+
+Then:
+
+### REDUCED MOTION EXPERIENCE
+
+Static/fade version.
+
+Button:
+
+**I like this better → Show me how to turn it on**
+
+Then SeeItMyWay detects:
+
+> You're using iPhone.
+
+and gives the current iOS instructions.
+
+That could be an excellent standalone free product.
+
+---
+
+# And it gives you fantastic social material
+
+You could run an entire series called something like:
+
+## **THE SETTINGS THE WEB FORGOT TO TELL YOU ABOUT**
+
+Each post reveals one.
+
+For example:
+
+**Post 1**
+
+> Did you know you can tell websites to stop moving?
+>
+> Not one website.
+>
+> The web.
+>
+> There's been a standardized `prefers-reduced-motion` signal sitting in browsers for years.
+>
+> I had no idea either.
+
+Then show how to set it.
+
+**Post 2**
+
+> Your computer can tell websites:
+>
+> “Please give me more contrast.”
+>
+> The website can hear it.
+>
+> Almost nobody tells users this exists.
+
+**Post 3**
+
+> Dark Mode isn't supposed to require finding a moon icon on every website.
+>
+> Your browser can already tell websites what you prefer.
+
+**Post 4**
+
+> There is a W3C standard for telling websites you want less transparency.
+>
+> Yes.
+>
+> The web has had preferences hiding in Accessibility settings that almost nobody talks about.
+
+That's strong content because it has that wonderful:
+
+**“Wait, WHAT?”**
+
+quality.
+
+---
+
+# I wouldn't claim “only 1% of users know”
+
+At least not yet.
+
+I couldn't find credible data measuring **consumer awareness or activation** of these settings.
+
+There's plenty of anecdotal evidence that awareness is poor, and respected developer sources explicitly acknowledge the awareness problem, but I wouldn't put:
+
+> “99% of people don't know this”
+
+on a graphic without data.
+
+I'd use:
+
+> **“Most of us were never told this exists.”**
+
+or:
+
+> **“The web has preferences most people have never been introduced to.”**
+
+Those are defensible.
+
+And later SeeItMyWay could actually produce the missing research.
+
+Imagine getting 100,000 visitors to the checker and asking one optional anonymous question:
+
+> **Before today, did you know websites could detect this preference?**
+>
+> Yes / No
+
+Now *you* own the awareness data.
+
+That itself could turn into an article:
+
+> **We showed 100,000 people their hidden web preferences. Here's what we learned.**
+
+Very IndieOps-friendly research/marketing.
+
+---
+
+# Here's the most important product insight
+
+I would add this as **Phase 0 of SeeItMyWay**, before the fancy SDK.
+
+### FREE: SeeItMyWay Browser Checkup
+
+No account.
+
+No extension.
+
+No tracking necessary.
+
+Detect existing supported preference signals.
+
+Explain each one in plain English.
+
+Demonstrate its effect.
+
+Give exact instructions for the user's platform.
+
+Then say:
+
+> **Want more control than your browser currently gives you?**
+
+That's the introduction to the Passport.
+
+---
+
+## Important limitation
+
+The webpage generally **cannot flip those system preferences for the user**.
+
+That's intentional browser/OS security.
+
+So SeeItMyWay.com can't simply say:
+
+**Reduce Motion: ON**
+
+and change macOS.
+
+And even a Chrome extension shouldn't be expected to rewrite arbitrary OS accessibility settings.
+
+There is a newer experimental **User Preferences API**, which exposes preference objects such as color scheme, contrast, reduced motion, transparency and reduced data, but MDN still marks it experimental. It's more interesting for controlling preferences within web contexts than as a replacement for OS settings today. [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/API/User_Preferences_API?utm_source=chatgpt.com)
+
+So the progression becomes beautifully clean:
+
+```text
+SEE IT MY WAY
+
+1. DISCOVER
+"What preferences does my device already express?"
+        ↓
+
+2. CONFIGURE
+"Help me set the existing ones correctly."
+        ↓
+
+3. EXPAND
+"Chrome doesn't have all the preferences I want."
+        ↓
+
+4. PASSPORT
+Store additional SeeItMyWay preferences.
+        ↓
+
+5. PARTICIPATING WEBSITES
+Sites understand both native + SIMW preferences.
+```
+
+That is much more compelling to me than launching with:
+
+> “Download our extension to create a new preference protocol.”
+
+You're first showing users:
+
+> **You already have the beginning of a Preference Passport. You just didn't know it.**
+
+Then SeeItMyWay completes it.
+
+---
+
+# And there's a brilliant little homepage interaction
+
+I would make the first page say:
+
+> **Your browser already has opinions about how websites should treat you.**
+>
+> **Want to see yours?**
+
+### **Show Me**
+
+Then the browser reads the media queries locally.
+
+No login.
+
+No questionnaire.
+
+And the reveal could say something like:
+
+> **Your web currently says:**
+>
+> 🌙 Prefer dark  
+> 🎢 Motion allowed  
+> ◐ Standard contrast  
+> 🪟 Transparency allowed  
+> 👆 Touch interface
+>
+> **3 of these are choices you can change.**
+>
+> **Most websites won't respect all of them yet.**
+>
+> **We're working on that part.**
+
+That last sentence is SeeItMyWay.
+
+And I think this slightly changes the company's story again.
+
+Initially we thought SeeItMyWay was creating a new preference system.
+
+It might actually be:
+
+> **Finish the preference system the web already started building.**
+
+That is much stronger, because you're not inventing a hypothetical behavior from zero. There is already a half-built standards layer, millions of websites contain code listening to pieces of it, OSes already provide some of the controls, and developers have been discussing the user-awareness problem for years.
+
+SeeItMyWay could be the first thing that **explains that system to ordinary people, puts the controls in one comprehensible place, and then extends it beyond the handful of preferences the standards currently provide.**
