@@ -4,10 +4,11 @@
   "private": true,
   "description": "seeitmyway web app: marketing, Browser Checkup, Playground, Passport builder, adaptive demo. Deploys to Vercel.",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/copy-sdk.mjs && next dev",
+    "build": "node scripts/copy-sdk.mjs && next build",
     "start": "next start",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@simw/adapters": "workspace:*",
@@ -28,6 +29,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.3"
   }
 }

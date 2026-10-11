@@ -10,6 +10,7 @@ import {
 import { safeLocalStorage } from '@simw/sdk';
 import { useEffect, useState } from 'react';
 import { CARD_FOOTER, CARD_TITLE, cardPhrase } from '@/content/card';
+import { config } from '@/lib/config';
 import { CHECKUP_KEYS } from '@/lib/site';
 import { track } from '@/lib/telemetry';
 
@@ -98,7 +99,7 @@ export function ResultCard({ profile }: { profile: SIMWPreferences }) {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(`${text}\n${config.siteUrl}`);
       setStatus('Copied.');
       track('result_card_shared', { method: 'copy' });
     } catch {
@@ -108,7 +109,7 @@ export function ResultCard({ profile }: { profile: SIMWPreferences }) {
 
   const share = async () => {
     try {
-      await navigator.share({ title: CARD_TITLE, text });
+      await navigator.share({ title: CARD_TITLE, text, url: config.siteUrl });
       track('result_card_shared', { method: 'share' });
     } catch {
       // Cancelled; nothing to do.

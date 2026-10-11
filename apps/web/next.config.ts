@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
   ],
   reactStrictMode: true,
   poweredByHeader: false,
+  env: {
+    // Vercel's production hostname, made available to client code so the site URL
+    // (src/lib/config.ts) is the same on the server and in the browser.
+    SIMW_VERCEL_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL ?? '',
+  },
 };
 
 export default nextConfig;

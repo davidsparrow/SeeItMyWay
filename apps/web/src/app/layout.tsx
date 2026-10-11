@@ -2,10 +2,12 @@ import { bootScript } from '@simw/sdk';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { Providers } from '@/components/providers';
+import { config } from '@/lib/config';
 import { SITE_ID } from '@/lib/site';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(config.siteUrl),
   title: {
     default: 'SeeItMyWay: what does your browser tell websites?',
     template: '%s · SeeItMyWay',

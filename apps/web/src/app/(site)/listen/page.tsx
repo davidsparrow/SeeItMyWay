@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { config } from '@/lib/config';
 import { ListenForm } from './listen-form';
 
 export const metadata: Metadata = {
@@ -36,7 +37,7 @@ const CSS_SNIPPET = `/* Respect what visitors' browsers already ask for */
 }`;
 
 const SDK_SNIPPET = `<!-- In <head>, so preferences apply before first paint -->
-<script src="https://cdn.example.com/simw.global.js" data-simw-auto></script>
+<script src="${config.sdkUrl}" data-simw-auto></script>
 
 <style>
   [data-simw-motion="reduced"] .hero { animation: none; }
@@ -117,7 +118,8 @@ export default function ListenPage() {
           ))}
         </div>
         <p className="text-sm text-muted">
-          The SDK is in preview and not on a public CDN yet; the URL above is a placeholder.
+          The SDK is in preview. The script above is served from this site; it isn&rsquo;t on npm or
+          a public CDN yet.
         </p>
       </section>
 
