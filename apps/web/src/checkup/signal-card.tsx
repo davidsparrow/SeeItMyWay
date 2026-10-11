@@ -1,9 +1,9 @@
 'use client';
 
-import { useId, useState, type CSSProperties } from 'react';
-import { Badge } from '@simw/ui';
 import type { Experience } from '@simw/protocol';
 import type { NativeSignals, PlatformInfo } from '@simw/types';
+import { Badge } from '@simw/ui';
+import { type CSSProperties, useId, useState } from 'react';
 import type { Topic } from '@/content/topics';
 import { track } from '@/lib/telemetry';
 import { AwarenessQuestion } from './awareness';

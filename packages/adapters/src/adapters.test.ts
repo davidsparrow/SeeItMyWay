@@ -1,15 +1,15 @@
+import { DEFAULT_EXPERIENCE, type Experience, resolveExperience } from '@simw/protocol';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { DEFAULT_EXPERIENCE, resolveExperience, type Experience } from '@simw/protocol';
 import {
-  MOTION_CSS,
   allowsAutoAdvance,
-  autoplayMode,
   applyExperience,
+  autoplayMode,
   clearExperience,
   columnsFor,
   experienceToAttributes,
   experienceToTokens,
   installSafeAdapters,
+  MOTION_CSS,
   revealsOnHover,
   targetSize,
   transitionStyle,

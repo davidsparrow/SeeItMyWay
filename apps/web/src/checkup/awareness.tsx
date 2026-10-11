@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { safeLocalStorage } from '@simw/sdk';
 import type { NativeSignalId } from '@simw/types';
+import { useEffect, useState } from 'react';
 import { CHECKUP_KEYS } from '@/lib/site';
 import { track } from '@/lib/telemetry';
 

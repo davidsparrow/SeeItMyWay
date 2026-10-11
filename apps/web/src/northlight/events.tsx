@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { allowsAutoAdvance, transitionStyle } from '@simw/adapters';
 import type { Experience } from '@simw/protocol';
+import { useEffect, useState } from 'react';
 import { EVENTS } from './content';
 
 const INTERVAL_MS = 5000;
@@ -23,16 +23,15 @@ export function EventsCarousel({ exp }: { exp: Experience }) {
 
   useEffect(() => {
     if (!running) return;
-    const t = window.setInterval(() => setIndex((i) => (i + 1) % count), INTERVAL_MS);
+    const t = window.setInterval(() => setIndex((i) => (i + 1) % EVENTS.length), INTERVAL_MS);
     return () => window.clearInterval(t);
-  }, [running, count]);
+  }, [running]);
 
   const go = (next: number) => setIndex((next + count) % count);
 
   return (
-    <div
+    <section
       className="nl-carousel"
-      role="region"
       aria-roledescription="carousel"
       aria-label="Upcoming events"
       onMouseEnter={() => setHovering(true)}
@@ -47,6 +46,7 @@ export function EventsCarousel({ exp }: { exp: Experience }) {
           style={style === 'slide' ? { transform: `translateX(-${index * 100}%)` } : undefined}
         >
           {EVENTS.map((event, i) => (
+            // biome-ignore lint/a11y/useSemanticElements: APG carousel pattern; slides are role=group with aria-roledescription=slide, and a fieldset would imply a form.
             <div
               key={event.title}
               className="nl-car-slide"
@@ -108,6 +108,6 @@ export function EventsCarousel({ exp }: { exp: Experience }) {
           →
         </button>
       </div>
-    </div>
+    </section>
   );
 }

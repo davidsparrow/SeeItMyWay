@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { buildResultCardItems } from '@simw/privacy';
 import {
   PREFERENCE_KEYS,
-  VOCABULARY,
   type PreferenceKey,
   type SIMWPreferences,
+  VOCABULARY,
 } from '@simw/protocol';
 import { safeLocalStorage } from '@simw/sdk';
+import { useEffect, useState } from 'react';
 import { CARD_FOOTER, CARD_TITLE, cardPhrase } from '@/content/card';
 import { CHECKUP_KEYS } from '@/lib/site';
 import { track } from '@/lib/telemetry';
@@ -20,7 +20,8 @@ function drawCard(lines: string[]): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas;
   ctx.fillStyle = '#14131c';
   ctx.fillRect(0, 0, W, H);
   const glow = (x: number, y: number, r: number, color: string) => {
@@ -40,7 +41,9 @@ function drawCard(lines: string[]): HTMLCanvasElement {
   ctx.font = '600 58px ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif';
   const top = 400;
   const gap = Math.min(110, (H - top - 220) / Math.max(lines.length, 1));
-  lines.forEach((line, i) => ctx.fillText(line, 96, top + i * gap));
+  lines.forEach((line, i) => {
+    ctx.fillText(line, 96, top + i * gap);
+  });
 
   ctx.fillStyle = '#b8adff';
   ctx.font = '600 40px ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif';

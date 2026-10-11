@@ -1,6 +1,6 @@
+import { bootScript } from '@simw/sdk';
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { bootScript } from '@simw/sdk';
 import { Providers } from '@/components/providers';
 import { SITE_ID } from '@/lib/site';
 import './globals.css';
@@ -26,6 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Applies the visitor's last-known preferences before first paint: no dark-mode flashbang. */}
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: our own static boot script (packages/sdk/src/boot.ts); it must run inline before first paint. */}
         <script dangerouslySetInnerHTML={{ __html: bootScript(SITE_ID) }} />
       </head>
       <body>

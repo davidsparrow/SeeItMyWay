@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState, type FormEvent } from 'react';
 import { WISHLIST_CANDIDATES, type WishlistCandidateId } from '@simw/protocol';
 import { safeLocalStorage } from '@simw/sdk';
+import { type FormEvent, useEffect, useState } from 'react';
 import { CHECKUP_KEYS } from '@/lib/site';
 import { track } from '@/lib/telemetry';
 
@@ -70,7 +70,8 @@ export function Wishlist() {
         Pick as many as you like. The preferences people actually want should decide what goes into
         the standard, not us.
       </p>
-      <div className="mt-6 flex flex-wrap gap-2" role="group" aria-label="Preferences you want">
+      <fieldset className="mt-6 flex min-w-0 flex-wrap gap-2">
+        <legend className="sr-only">Preferences you want</legend>
         {WISHLIST_CANDIDATES.map((c) => {
           const on = votes.includes(c.id);
           return (
@@ -90,7 +91,7 @@ export function Wishlist() {
             </button>
           );
         })}
-      </div>
+      </fieldset>
       <form onSubmit={submit} className="mt-5 flex max-w-xl flex-wrap gap-2">
         <label htmlFor="wish-suggest" className="sr-only">
           Suggest another preference

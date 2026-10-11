@@ -1,13 +1,13 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { DetectorEnvironment } from '@simw/detector';
 import { clearExperience } from '@simw/adapters';
+import type { DetectorEnvironment } from '@simw/detector';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   bootScript,
   createLocalPassport,
   createSeeItMyWay,
   memoryStore,
-  siteKeys,
   type SeeItMyWayOptions,
+  siteKeys,
 } from './index';
 
 function fakeDetector(settings: Record<string, string>) {
@@ -29,7 +29,7 @@ function fakeDetector(settings: Record<string, string>) {
     detector,
     change(feature: string, value: string) {
       settings[feature] = value;
-      [...listeners].forEach((cb) => cb());
+      for (const cb of [...listeners]) cb();
     },
   };
 }

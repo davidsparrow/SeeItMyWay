@@ -1,27 +1,26 @@
+// Re-exported so a site needs only one import.
+export * from '@simw/adapters';
+export {
+  detectNativeSignals,
+  detectPlatform,
+  type SignalChange,
+  watchNativeSignals,
+} from '@simw/detector';
+export * from '@simw/protocol';
+export type * from '@simw/types';
+export { type BootSnapshot, bootScript } from './boot';
+export {
+  createLocalPassport,
+  PASSPORT_CHANGE_EVENT,
+  type PassportSource,
+  readPreferences,
+  type WritablePassport,
+  writePreferences,
+} from './passport';
 export {
   createSeeItMyWay,
   type SeeItMyWay,
   type SeeItMyWayOptions,
   type SeeItMyWayState,
 } from './runtime';
-export { bootScript, type BootSnapshot } from './boot';
-export {
-  PASSPORT_CHANGE_EVENT,
-  createLocalPassport,
-  readPreferences,
-  writePreferences,
-  type PassportSource,
-  type WritablePassport,
-} from './passport';
-export { memoryStore, safeLocalStorage, siteKeys, PASSPORT_KEY } from './storage';
-
-// Re-exported so a site needs only one import.
-export * from '@simw/adapters';
-export {
-  detectNativeSignals,
-  detectPlatform,
-  watchNativeSignals,
-  type SignalChange,
-} from '@simw/detector';
-export * from '@simw/protocol';
-export type * from '@simw/types';
+export { memoryStore, PASSPORT_KEY, safeLocalStorage, siteKeys } from './storage';

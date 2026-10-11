@@ -1,2 +1,2 @@
-export * from './signals';
 export * from './platform';
+export * from './signals';

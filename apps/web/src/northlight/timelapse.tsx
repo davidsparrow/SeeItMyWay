@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { autoplayMode, loadsHeavyMediaAutomatically, showCaptions } from '@simw/adapters';
 import type { Experience } from '@simw/protocol';
+import { useEffect, useRef, useState } from 'react';
 import { TIMELAPSE_CAPTIONS } from './content';
 
 interface TrailStar {

@@ -54,8 +54,9 @@ Requires Node 22.12+ and pnpm 10 (`corepack enable`).
 pnpm install
 pnpm dev                              # web app on http://localhost:3000
 pnpm --filter @simw/demo-sites dev    # retrofit fixtures on http://localhost:5174
-pnpm check                            # typecheck + unit tests, every package
+pnpm check                            # Biome format/lint + typecheck + unit tests, every package
 pnpm build                            # build everything (SDK bundles, Next app, fixtures)
+pnpm lint:fix                         # apply Biome's safe fixes and formatting
 ```
 
 ## The core idea in code

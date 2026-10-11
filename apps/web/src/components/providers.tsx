@@ -1,7 +1,7 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import { SeeItMyWayProvider } from '@simw/sdk/react';
+import type { ReactNode } from 'react';
 import { SITE_ID } from '@/lib/site';
 
 /**

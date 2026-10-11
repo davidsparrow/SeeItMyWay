@@ -1,7 +1,7 @@
 'use client';
 
+import { createSeeItMyWay, type SeeItMyWay, safeLocalStorage } from '@simw/sdk';
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { createSeeItMyWay, safeLocalStorage, type SeeItMyWay } from '@simw/sdk';
 import { CHECKUP_KEYS, NORTHLIGHT_SITE_ID } from '@/lib/site';
 import type { Tone } from './content';
 

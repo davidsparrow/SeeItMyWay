@@ -1,4 +1,4 @@
-import { VOCABULARY, type PreferenceKey, type PreferenceValue } from '@simw/protocol';
+import { type PreferenceKey, type PreferenceValue, VOCABULARY } from '@simw/protocol';
 import { SegmentedControl } from './controls';
 
 export interface PreferenceControlProps<K extends PreferenceKey> {

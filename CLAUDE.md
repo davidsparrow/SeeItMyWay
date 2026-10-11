@@ -15,11 +15,16 @@ Next.js app is just one consumer of them.
 
 ```bash
 pnpm install
-pnpm check                         # typecheck + tests, all packages (run before every commit)
+pnpm check                         # Biome (format + lint) + typecheck + tests (run before every commit)
 pnpm build                         # everything
+pnpm lint:fix                      # apply Biome's safe fixes and formatting
+pnpm format                        # format only
 pnpm dev                           # apps/web on :3000
 pnpm --filter @simw/<name> test    # one package
 ```
+
+Biome is the only formatter and linter (`biome.json`). Fix findings rather than disabling rules; where a
+rule fights an intentional pattern, use a targeted `biome-ignore <rule>: <reason>` comment.
 
 ## Boundaries (don't break these)
 

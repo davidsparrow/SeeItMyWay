@@ -1,5 +1,5 @@
 import type { Experience } from '@simw/protocol';
-import { autoplayMode, type AutoplayMode } from './policies';
+import { type AutoplayMode, autoplayMode } from './policies';
 
 /**
  * Level 1 "automatic / safe" adaptations (PRD §8) for existing websites.
@@ -91,7 +91,7 @@ function applyAutoplay(media: HTMLMediaElement, mode: AutoplayMode): void {
 const autoplayAdapter: AdapterFactory = (doc, initial) => {
   let mode = autoplayMode(initial);
   const applyAll = (root: ParentNode) => {
-    root.querySelectorAll<HTMLMediaElement>('video, audio').forEach((m) => applyAutoplay(m, mode));
+    for (const m of root.querySelectorAll<HTMLMediaElement>('video, audio')) applyAutoplay(m, mode);
   };
   applyAll(doc);
 

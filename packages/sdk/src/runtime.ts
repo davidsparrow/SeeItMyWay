@@ -1,6 +1,6 @@
 import {
-  DEFAULT_SAFE_ADAPTERS,
   applyExperience,
+  DEFAULT_SAFE_ADAPTERS,
   experienceToAttributes,
   experienceToTokens,
   installSafeAdapters,
@@ -8,33 +8,33 @@ import {
   type SafeAdapters,
 } from '@simw/adapters';
 import {
+  type DetectorEnvironment,
   detectNativeSignals,
   diffSnapshots,
+  type SignalChange,
   toSnapshot,
   watchNativeSignals,
-  type DetectorEnvironment,
-  type SignalChange,
 } from '@simw/detector';
 import { filterForSharing } from '@simw/privacy';
 import {
   createSeed,
-  isPreferenceValue,
-  isSeed,
-  resolveExperience,
   type Experience,
   type ExperienceSources,
+  isPreferenceValue,
+  isSeed,
   type PartialPreferences,
   type PreferenceKey,
   type PreferencePacket,
   type PreferenceValue,
+  resolveExperience,
 } from '@simw/protocol';
 import type { KeyValueStore, NativeSignals, NativeSnapshot, Unsubscribe } from '@simw/types';
 import type { BootSnapshot } from './boot';
 import {
   createLocalPassport,
+  type PassportSource,
   readPreferences,
   writePreferences,
-  type PassportSource,
 } from './passport';
 import { safeLocalStorage, siteKeys } from './storage';
 
@@ -160,7 +160,7 @@ export function createSeeItMyWay(options: SeeItMyWayOptions = {}): SeeItMyWay {
         storage.set(keys().applied, JSON.stringify(snapshot));
       }
     }
-    listeners.forEach((l) => l());
+    for (const l of listeners) l();
   }
 
   function detect(): { signals: NativeSignals; detected: NativeSnapshot } {
@@ -221,7 +221,7 @@ export function createSeeItMyWay(options: SeeItMyWayOptions = {}): SeeItMyWay {
           const changes = diffSnapshots(state.detected, detected);
           if (changes.length === 0) return;
           update({ signals: nextSignals, detected });
-          nativeListeners.forEach((l) => l(changes));
+          for (const l of nativeListeners) l(changes);
         }, options.detector),
       );
       if (passport?.subscribe) {
@@ -256,7 +256,7 @@ export function createSeeItMyWay(options: SeeItMyWayOptions = {}): SeeItMyWay {
       const changes = diffSnapshots(state.detected, detected);
       if (changes.length > 0) {
         update({ signals, detected });
-        nativeListeners.forEach((l) => l(changes));
+        for (const l of nativeListeners) l(changes);
       }
       return changes;
     },

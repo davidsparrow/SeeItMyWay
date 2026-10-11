@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import type { AnonymousEvent } from '@simw/privacy';
-import { TELEMETRY_MODE, clearLocalLog, readLocalLog } from '@/lib/telemetry';
+import { useEffect, useState } from 'react';
+import { clearLocalLog, readLocalLog, TELEMETRY_MODE } from '@/lib/telemetry';
 
 function simwKeys(): string[] {
   try {

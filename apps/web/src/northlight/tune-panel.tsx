@@ -1,19 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { Disclosure, PreferenceControl, ScaleControl } from '@simw/ui';
-import type { SeeItMyWay, SeeItMyWayState } from '@simw/sdk';
+import type { AnonymousEventProps } from '@simw/privacy';
 import {
-  PRECEDENCE,
-  VOCABULARY,
   type ExperienceKey,
   type Layer,
+  PRECEDENCE,
   type PreferenceKey,
   type PreferenceValue,
+  VOCABULARY,
 } from '@simw/protocol';
-import type { AnonymousEventProps } from '@simw/privacy';
+import type { SeeItMyWay, SeeItMyWayState } from '@simw/sdk';
+import { Disclosure, PreferenceControl, ScaleControl } from '@simw/ui';
+import { useState } from 'react';
 import { track } from '@/lib/telemetry';
-import { ENVIRONMENTS, ENVIRONMENT_LABELS, type Tone } from './content';
+import { ENVIRONMENT_LABELS, ENVIRONMENTS, type Tone } from './content';
 
 const LAYER_LABEL: Record<Layer, string> = {
   ...(Object.fromEntries(PRECEDENCE.map((p) => [p.layer, p.label])) as Record<Layer, string>),
@@ -73,7 +73,7 @@ export function TunePanel({
     if (key === 'variant')
       return v === null
         ? 'Off'
-        : ENVIRONMENT_LABELS[ENVIRONMENTS[(v as number) % ENVIRONMENTS.length]!];
+        : ENVIRONMENT_LABELS[ENVIRONMENTS[(v as number) % ENVIRONMENTS.length] ?? 'observatory'];
     if (typeof v === 'boolean') return v ? 'Yes' : 'No';
     if (key in VOCABULARY)
       return (
@@ -150,7 +150,8 @@ export function TunePanel({
               value={exp.detail}
               options={DETAIL_STOPS.map((s) => ({ value: s.value, label: s.label }))}
               onChange={(v) => {
-                const stop = DETAIL_STOPS.find((s) => s.value === v)!;
+                const stop = DETAIL_STOPS.find((s) => s.value === v);
+                if (!stop) return;
                 sdk.setOverrides({
                   ...state.overrides,
                   detail: stop.detail,

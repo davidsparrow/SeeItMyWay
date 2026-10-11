@@ -1,21 +1,21 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
 import { filterForSharing } from '@simw/privacy';
 import {
   DEFAULT_PREFERENCES,
   PREFERENCE_KEYS,
-  VOCABULARY,
-  resolveExperience,
   type PreferenceKey,
   type PreferenceValue,
+  resolveExperience,
   type SIMWPreferences,
+  VOCABULARY,
 } from '@simw/protocol';
 import { createLocalPassport } from '@simw/sdk';
 import { useSeeItMyWay } from '@simw/sdk/react';
 import { PreferenceControl } from '@simw/ui';
-import { NorthlightSite } from '@/northlight/northlight-site';
+import { useEffect, useMemo, useState } from 'react';
 import { track } from '@/lib/telemetry';
+import { NorthlightSite } from '@/northlight/northlight-site';
 import { ExtensionUpsell } from './extension-upsell';
 import { ResultCard } from './result-card';
 

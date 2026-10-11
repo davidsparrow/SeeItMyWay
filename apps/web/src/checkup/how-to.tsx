@@ -1,14 +1,15 @@
 'use client';
 
-import { Fragment, useState } from 'react';
 import type { PlatformInfo } from '@simw/types';
-import { PLATFORM_LABELS, instructionsFor, type InstructionSet } from '@/content/instructions';
+import { Fragment, useState } from 'react';
+import { type InstructionSet, instructionsFor, PLATFORM_LABELS } from '@/content/instructions';
 import type { Topic } from '@/content/topics';
 
 function Path({ steps }: { steps: string[] }) {
   return (
     <ol className="flex flex-wrap items-center gap-1.5" aria-label="Menu path">
       {steps.map((step, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: a static menu path whose labels can repeat.
         <Fragment key={`${step}-${i}`}>
           {i > 0 ? (
             <li aria-hidden className="text-muted">
@@ -65,7 +66,8 @@ export function HowToChange({
       ) : (
         <>
           {all.length > 1 ? (
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Choose a device">
+            <fieldset className="flex min-w-0 flex-wrap gap-1.5">
+              <legend className="sr-only">Choose a device</legend>
               {all.map((set) => (
                 <button
                   key={set.platform}
@@ -82,7 +84,7 @@ export function HowToChange({
                   {recommended.includes(set) && recommended[0] === set ? ' · yours' : ''}
                 </button>
               ))}
-            </div>
+            </fieldset>
           ) : null}
           {selected ? <Steps set={selected} /> : null}
           {topic.searchHint ? (

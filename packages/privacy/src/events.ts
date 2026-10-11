@@ -1,5 +1,5 @@
-import { NATIVE_SIGNAL_IDS, NATIVE_VALUES } from '@simw/types';
 import { PREFERENCE_KEYS, WISHLIST_CANDIDATE_IDS } from '@simw/protocol';
+import { NATIVE_SIGNAL_IDS, NATIVE_VALUES } from '@simw/types';
 
 /**
  * Anonymous event allowlist (PRD Addendum H, §29).
@@ -71,6 +71,9 @@ export interface AnonymousEventSink {
   record(event: AnonymousEvent): void;
 }
 
+// A Set rather than `Object.hasOwn`: this package is bundled into the ES2017 script-tag SDK.
+const EVENT_NAMES: ReadonlySet<string> = new Set(Object.keys(ANONYMOUS_EVENTS));
+
 function isIntRange(spec: PropSpec): spec is IntRange {
   return !Array.isArray(spec);
 }
@@ -84,15 +87,14 @@ export function sanitizeEvent(
   name: string,
   props: Record<string, unknown> = {},
 ): AnonymousEvent | null {
-  if (!Object.prototype.hasOwnProperty.call(ANONYMOUS_EVENTS, name)) return null;
+  if (!EVENT_NAMES.has(name)) return null;
   const spec = ANONYMOUS_EVENTS[name as AnonymousEventName] as Record<string, PropSpec>;
   const specKeys = Object.keys(spec);
   const givenKeys = Object.keys(props);
   if (givenKeys.length !== specKeys.length) return null;
 
   const clean: Record<string, string | number> = {};
-  for (const key of specKeys) {
-    const rule = spec[key]!;
+  for (const [key, rule] of Object.entries(spec)) {
     const value = props[key];
     if (isIntRange(rule)) {
       const [min, max] = rule.int;

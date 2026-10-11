@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, type CSSProperties, type ReactNode } from 'react';
-import { SegmentedControl } from '@simw/ui';
 import type { Experience } from '@simw/protocol';
+import { SegmentedControl } from '@simw/ui';
+import { type CSSProperties, type ReactNode, useState } from 'react';
 import type { DemoKind } from '@/content/topics';
 import { NorthlightSite } from '@/northlight/northlight-site';
 

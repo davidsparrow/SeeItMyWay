@@ -1,5 +1,5 @@
-import { useId, type CSSProperties } from 'react';
 import type { Experience } from '@simw/protocol';
+import { type CSSProperties, useId } from 'react';
 import type { Environment } from './content';
 
 /** Deterministic PRNG so server and client draw the same sky. */
@@ -108,6 +108,7 @@ export function Sky({ exp, env }: { exp: Experience; env: Environment }) {
       <g className="nl-layer" style={layer(0.6)}>
         {STARS.slice(0, starCount).map((s, i) => (
           <circle
+            // biome-ignore lint/suspicious/noArrayIndexKey: a fixed, generated star field that never reorders.
             key={i}
             className={s.twinkle ? 'nl-star nl-star-tw' : 'nl-star'}
             cx={s.x}

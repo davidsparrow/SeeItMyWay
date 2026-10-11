@@ -1,12 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
 import { detectPlatform, diffSnapshots, type SignalChange } from '@simw/detector';
 import type { AnonymousEventProps } from '@simw/privacy';
 import { safeLocalStorage } from '@simw/sdk';
 import { useSeeItMyWay, useSeeItMyWayInstance } from '@simw/sdk/react';
 import type { NativeSignalId, NativeSignals, NativeSnapshot, PlatformInfo } from '@simw/types';
-import { TOPICS, topicForSignal, type Topic } from '@/content/topics';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { TOPICS, type Topic, topicForSignal } from '@/content/topics';
 import { CHECKUP_KEYS } from '@/lib/site';
 import { track } from '@/lib/telemetry';
 import { AhaTransition } from './aha';
@@ -57,7 +57,7 @@ function SignalOrb({ listening, compact }: { listening: boolean; compact: boolea
         <span key={i} className="signal-ring" style={{ ['--i' as string]: i }} />
       ))}
       <div className="signal-orb-core">
-        <svg viewBox="0 0 64 64" className="w-3/5">
+        <svg viewBox="0 0 64 64" className="w-3/5" aria-hidden>
           <rect
             x="6"
             y="10"
@@ -122,7 +122,7 @@ export function BrowserCheckup() {
       if (!signals) return;
       for (const change of changes) {
         const topic = topicForSignal(change.id);
-        if (!topic || topic.nature !== 'preference') continue;
+        if (topic?.nature !== 'preference') continue;
         const text = topic.state(signals)?.celebrate;
         if (change.to) {
           track('preference_changed', {
@@ -169,17 +169,14 @@ export function BrowserCheckup() {
     const delay = motion === 'full' ? 1100 : motion === 'reduced' ? 450 : 0;
     window.setTimeout(() => {
       const current = sdk.getState();
-      if (current.signals) {
-        track(
-          'signals_detected',
-          { count: visibleTopics(current.signals).length },
-          { oncePerPage: true },
-        );
-        const now = preferenceSnapshot(current.signals);
+      const signals = current.signals;
+      if (signals) {
+        track('signals_detected', { count: visibleTopics(signals).length }, { oncePerPage: true });
+        const now = preferenceSnapshot(signals);
         const before = readLastSnapshot();
         if (before) {
           const messages = diffSnapshots(before, now)
-            .map((c) => topicForSignal(c.id)?.state(current.signals!)?.celebrate)
+            .map((c) => topicForSignal(c.id)?.state(signals)?.celebrate)
             .filter((m): m is string => Boolean(m));
           setSinceLastVisit(messages);
         }

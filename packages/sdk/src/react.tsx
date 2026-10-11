@@ -1,14 +1,14 @@
 'use client';
 
+import type { Experience } from '@simw/protocol';
 import {
   createContext,
+  type ReactNode,
   useContext,
   useEffect,
   useState,
   useSyncExternalStore,
-  type ReactNode,
 } from 'react';
-import type { Experience } from '@simw/protocol';
 import {
   createSeeItMyWay,
   type SeeItMyWay,

@@ -1,14 +1,6 @@
 'use client';
 
 import {
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-  type RefObject,
-} from 'react';
-import {
   allowsAutoAdvance,
   allowsParallax,
   allowsTranslucency,
@@ -19,20 +11,28 @@ import {
   showCaptions,
 } from '@simw/adapters';
 import {
-  VOCABULARY,
   type Experience,
   type ExperienceKey,
   type ExperienceSources,
   type Layer,
+  VOCABULARY,
 } from '@simw/protocol';
+import {
+  type CSSProperties,
+  type ReactNode,
+  type RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   ARTICLE,
   ENVIRONMENTS,
+  type Environment,
   HERO,
   HOWTO,
   NAV_ITEMS,
   TONIGHT,
-  type Environment,
   type Tone,
 } from './content';
 import { EventsCarousel } from './events';
@@ -41,7 +41,14 @@ import { Timelapse } from './timelapse';
 import './northlight.css';
 
 export type NorthlightSection =
-  'nav' | 'hero' | 'tonight' | 'timelapse' | 'howto' | 'article' | 'events' | 'footer';
+  | 'nav'
+  | 'hero'
+  | 'tonight'
+  | 'timelapse'
+  | 'howto'
+  | 'article'
+  | 'events'
+  | 'footer';
 
 const ALL_SECTIONS: NorthlightSection[] = [
   'nav',
@@ -78,11 +85,11 @@ const SOURCE_WORDS: Record<Layer, string> = {
   'protocol-default': 'default',
 };
 
-function useNotes(exp: Experience, sources: ExperienceSources | undefined, enabled: boolean) {
+function useNotes(sources: ExperienceSources | undefined, enabled: boolean) {
   return (items: Array<[string, ExperienceKey | null]>): ReactNode => {
     if (!enabled) return null;
     return (
-      <div className="nl-notes" aria-label="What adapted on this section">
+      <div className="nl-notes" role="note" aria-label="What adapted on this section">
         {items.map(([text, key]) => {
           const from = key && sources ? SOURCE_WORDS[sources[key]] : null;
           return (
@@ -115,33 +122,23 @@ function Nav({ exp, notes }: { exp: Experience; notes: ReturnType<typeof useNote
     <header className="nl-nav">
       <div className="nl-wrap">
         <div className="nl-nav-inner">
-          <a href="#nl-top" className="nl-brand" onClick={(e) => e.preventDefault()}>
+          <a href="#nl-top" className="nl-brand">
             <BrandMark />
             Northlight Observatory
           </a>
           <ul className="nl-links">
             {items.map((item) => (
               <li key={item}>
-                <a href="#" onClick={(e) => e.preventDefault()}>
-                  {item}
-                </a>
+                <a href={`#nl-${slug(item)}`}>{item}</a>
               </li>
             ))}
           </ul>
           {exp.navigation === 'compact' ? (
-            <a
-              href="#"
-              className="nl-btn nl-btn-primary nl-nav-cta"
-              onClick={(e) => e.preventDefault()}
-            >
+            <a href="#nl-tickets" className="nl-btn nl-btn-primary nl-nav-cta">
               Tickets
             </a>
           ) : exp.navigation === 'standard' ? (
-            <a
-              href="#"
-              className="nl-btn nl-btn-primary nl-nav-cta"
-              onClick={(e) => e.preventDefault()}
-            >
+            <a href="#nl-visit" className="nl-btn nl-btn-primary nl-nav-cta">
               Plan a visit
             </a>
           ) : null}
@@ -156,7 +153,7 @@ function Nav({ exp, notes }: { exp: Experience; notes: ReturnType<typeof useNote
         </div>
         <nav className="nl-menu-panel" data-open={open} aria-label="Northlight menu">
           {items.map((item) => (
-            <a key={item} href="#" onClick={(e) => e.preventDefault()}>
+            <a key={item} href={`#nl-${slug(item)}`}>
               {item}
             </a>
           ))}
@@ -205,14 +202,10 @@ function Hero({
           </h1>
           <p className="nl-lede">{HERO.lede[exp.detail]}</p>
           <div className="nl-hero-ctas">
-            <a href="#" className="nl-btn nl-btn-primary" onClick={(e) => e.preventDefault()}>
+            <a href="#nl-visit" className="nl-btn nl-btn-primary">
               Plan a visit
             </a>
-            <a
-              href="#nl-tonight"
-              className="nl-btn nl-btn-ghost"
-              onClick={(e) => e.preventDefault()}
-            >
+            <a href="#nl-tonight" className="nl-btn nl-btn-ghost">
               Tonight&rsquo;s sky
             </a>
           </div>
@@ -430,6 +423,26 @@ function Footer() {
 }
 
 /** Parallax: track the nearest scroll position into --nl-scroll (full motion only). */
+const slug = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+/**
+ * Northlight is a demo rendered inside our own pages, so its links lead nowhere.
+ * One listener keeps them inert instead of an onClick on every anchor.
+ */
+function useInertLinks(rootRef: RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const block = (event: MouseEvent) => {
+      if (event.target instanceof Element && event.target.closest('a[href^="#"]')) {
+        event.preventDefault();
+      }
+    };
+    root.addEventListener('click', block);
+    return () => root.removeEventListener('click', block);
+  }, [rootRef]);
+}
+
 function useParallax(
   rootRef: RefObject<HTMLDivElement | null>,
   /** The scrolling element, or null to follow the window. */
@@ -478,7 +491,8 @@ export function NorthlightSite({
     exp.variant === null
       ? 'observatory'
       : (ENVIRONMENTS[exp.variant % ENVIRONMENTS.length] ?? 'observatory');
-  const notes = useNotes(exp, sources, annotate);
+  const notes = useNotes(sources, annotate);
+  useInertLinks(rootRef);
   useParallax(rootRef, framed ? scrollRef : null, allowsParallax(exp) && sections.includes('hero'));
 
   const { style, ...attrs } = experienceToProps(exp);
@@ -512,11 +526,7 @@ export function NorthlightSite({
 
   if (!framed) return site;
   return (
-    <div
-      className="nl-frame"
-      role="region"
-      aria-label="Preview of Northlight Observatory, a demo website"
-    >
+    <section className="nl-frame" aria-label="Preview of Northlight Observatory, a demo website">
       <div className="nl-frame-bar" aria-hidden>
         <span className="nl-frame-dots">
           <span />
@@ -528,6 +538,6 @@ export function NorthlightSite({
       <div className="nl-frame-scroll" ref={scrollRef} style={{ height: framed.height }}>
         {site}
       </div>
-    </div>
+    </section>
   );
 }

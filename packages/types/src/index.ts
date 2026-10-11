@@ -68,10 +68,24 @@ export type NativeSignals = { [K in NativeSignalId]: NativeSignal<K> };
 export type NativeSnapshot = { [K in NativeSignalId]?: NativeValueMap[K] };
 
 export type OperatingSystem =
-  'ios' | 'ipados' | 'macos' | 'windows' | 'android' | 'chromeos' | 'linux' | 'unknown';
+  | 'ios'
+  | 'ipados'
+  | 'macos'
+  | 'windows'
+  | 'android'
+  | 'chromeos'
+  | 'linux'
+  | 'unknown';
 
 export type BrowserFamily =
-  'chrome' | 'edge' | 'firefox' | 'safari' | 'samsung' | 'opera' | 'brave' | 'other';
+  | 'chrome'
+  | 'edge'
+  | 'firefox'
+  | 'safari'
+  | 'samsung'
+  | 'opera'
+  | 'brave'
+  | 'other';
 
 export interface PlatformInfo {
   os: OperatingSystem;

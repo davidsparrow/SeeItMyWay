@@ -1,11 +1,11 @@
 'use client';
 
 import {
-  sanitizeEvent,
   type AnonymousEvent,
   type AnonymousEventName,
   type AnonymousEventProps,
   type AnonymousEventSink,
+  sanitizeEvent,
 } from '@simw/privacy';
 import { safeLocalStorage } from '@simw/sdk';
 

@@ -1,5 +1,5 @@
+import { ANONYMOUS_EVENTS, type AnonymousEventName, MINIMUM_COHORT } from '@simw/privacy';
 import type { Metadata } from 'next';
-import { ANONYMOUS_EVENTS, MINIMUM_COHORT, type AnonymousEventName } from '@simw/privacy';
 import { LocalData } from './local-data';
 
 export const metadata: Metadata = {

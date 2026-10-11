@@ -158,8 +158,11 @@ export const DEFAULT_PREFERENCES: SIMWPreferences = Object.fromEntries(
   PREFERENCE_KEYS.map((key) => [key, VOCABULARY[key].default]),
 ) as SIMWPreferences;
 
+// A Set rather than `Object.hasOwn`: the SDK's script-tag build targets ES2017.
+const KEY_SET: ReadonlySet<string> = new Set(PREFERENCE_KEYS);
+
 export function isPreferenceKey(key: unknown): key is PreferenceKey {
-  return typeof key === 'string' && Object.prototype.hasOwnProperty.call(VOCABULARY, key);
+  return typeof key === 'string' && KEY_SET.has(key);
 }
 
 export function isPreferenceValue<K extends PreferenceKey>(

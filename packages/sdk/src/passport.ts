@@ -1,4 +1,4 @@
-import { createPacket, parsePacket, type PartialPreferences } from '@simw/protocol';
+import { createPacket, type PartialPreferences, parsePacket } from '@simw/protocol';
 import type { KeyValueStore, Unsubscribe } from '@simw/types';
 import { PASSPORT_KEY, safeLocalStorage } from './storage';
 

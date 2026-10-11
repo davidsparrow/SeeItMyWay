@@ -1,19 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useSeeItMyWay } from '@simw/sdk/react';
+import type { AnonymousEventProps } from '@simw/privacy';
 import {
-  PREFERENCE_KEYS,
-  resolveExperience,
   type PartialPreferences,
+  PREFERENCE_KEYS,
   type PreferenceKey,
   type PreferenceValue,
+  resolveExperience,
 } from '@simw/protocol';
-import type { AnonymousEventProps } from '@simw/privacy';
+import { useSeeItMyWay } from '@simw/sdk/react';
+import type { NativeSnapshot } from '@simw/types';
 import { Badge, PreferenceControl, SegmentedControl, Switch } from '@simw/ui';
-import { ENVIRONMENTS, ENVIRONMENT_SHORT, type Tone } from '@/northlight/content';
-import { NorthlightSite } from '@/northlight/northlight-site';
+import { useEffect, useState } from 'react';
 import { track } from '@/lib/telemetry';
+import { ENVIRONMENT_SHORT, ENVIRONMENTS, type Tone } from '@/northlight/content';
+import { NorthlightSite } from '@/northlight/northlight-site';
 
 interface NativeSim {
   motion: 'full' | 'reduced' | 'minimal';
@@ -25,6 +26,16 @@ interface NativeSim {
 
 const EXTENDED_KEYS = PREFERENCE_KEYS.filter((k) => k !== 'colorScheme' && k !== 'motion');
 
+function simFrom(detected: NativeSnapshot): NativeSim {
+  return {
+    motion: detected['prefers-reduced-motion'] === 'reduce' ? 'reduced' : 'full',
+    theme: detected['prefers-color-scheme'] === 'dark' ? 'dark' : 'light',
+    contrast: detected['prefers-contrast'] === 'more' ? 'more' : 'standard',
+    transparency: detected['prefers-reduced-transparency'] === 'reduce' ? 'reduced' : 'standard',
+    input: detected.pointer === 'coarse' ? 'touch' : 'mouse',
+  };
+}
+
 export function Playground() {
   const real = useSeeItMyWay();
   const [sim, setSim] = useState<NativeSim | null>(null);
@@ -33,21 +44,12 @@ export function Playground() {
   const [tone, setTone] = useState<Tone>('balanced');
   const [variant, setVariant] = useState(0);
 
-  const fromReal = (): NativeSim => ({
-    motion: real.detected['prefers-reduced-motion'] === 'reduce' ? 'reduced' : 'full',
-    theme: real.detected['prefers-color-scheme'] === 'dark' ? 'dark' : 'light',
-    contrast: real.detected['prefers-contrast'] === 'more' ? 'more' : 'standard',
-    transparency:
-      real.detected['prefers-reduced-transparency'] === 'reduce' ? 'reduced' : 'standard',
-    input: real.detected.pointer === 'coarse' ? 'touch' : 'mouse',
-  });
-
-  // Start from what this browser says right now.
+  // Start from what this browser says right now (once; later edits are the visitor's).
   useEffect(() => {
-    if (real.ready && sim === null) setSim(fromReal());
-  }, [real.ready]);
+    if (real.ready) setSim((s) => s ?? simFrom(real.detected));
+  }, [real.ready, real.detected]);
 
-  const current = sim ?? fromReal();
+  const current = sim ?? simFrom(real.detected);
   const { experience, sources } = resolveExperience({
     native: {
       ...real.detected,
@@ -232,7 +234,7 @@ export function Playground() {
           type="button"
           className="btn btn-secondary w-full"
           onClick={() => {
-            setSim(fromReal());
+            setSim(simFrom(real.detected));
             setExtended({});
           }}
         >

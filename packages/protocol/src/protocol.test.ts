@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
-  DEFAULT_EXPERIENCE,
-  DEFAULT_PREFERENCES,
-  PREFERENCE_KEYS,
-  VOCABULARY,
   createPacket,
   createSeed,
+  DEFAULT_EXPERIENCE,
+  DEFAULT_PREFERENCES,
   isSeed,
+  PREFERENCE_KEYS,
   parsePacket,
   preferencePacketSchema,
   resolveExperience,
   seedToVariant,
+  VOCABULARY,
 } from './index';
 
 describe('vocabulary', () => {

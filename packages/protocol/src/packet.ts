@@ -1,10 +1,10 @@
 import {
-  PREFERENCE_KEYS,
-  VOCABULARY,
   isPreferenceKey,
   isPreferenceValue,
   type PartialPreferences,
+  PREFERENCE_KEYS,
   type PreferenceKey,
+  VOCABULARY,
 } from './vocabulary';
 
 export const PROTOCOL_VERSION = '0.1';
@@ -18,7 +18,8 @@ export const PROTOCOL_VERSION = '0.1';
 export type PreferencePacket = { version: typeof PROTOCOL_VERSION } & PartialPreferences;
 
 export type PacketParseResult =
-  { ok: true; packet: PreferencePacket; dropped: string[] } | { ok: false; error: string };
+  | { ok: true; packet: PreferencePacket; dropped: string[] }
+  | { ok: false; error: string };
 
 export function createPacket(prefs: PartialPreferences): PreferencePacket {
   const packet: PreferencePacket = { version: PROTOCOL_VERSION };

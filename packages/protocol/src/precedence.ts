@@ -1,14 +1,14 @@
 import type { NativeSnapshot } from '@simw/types';
+import { seedToVariant } from './seed';
 import {
-  DEFAULT_PREFERENCES,
-  PREFERENCE_KEYS,
   atLeast,
+  DEFAULT_PREFERENCES,
   isPreferenceValue,
   type PartialPreferences,
+  PREFERENCE_KEYS,
   type PreferenceKey,
   type SIMWPreferences,
 } from './vocabulary';
-import { seedToVariant } from './seed';
 
 /**
  * Where a resolved value came from, highest priority first (PRD §20):
@@ -22,7 +22,12 @@ import { seedToVariant } from './seed';
  * `protocol-default` means nobody said anything.
  */
 export type Layer =
-  'native' | 'site-override' | 'passport' | 'site-default' | 'seed' | 'protocol-default';
+  | 'native'
+  | 'site-override'
+  | 'passport'
+  | 'site-default'
+  | 'seed'
+  | 'protocol-default';
 
 export const PRECEDENCE: ReadonlyArray<{ layer: Layer; label: string; description: string }> = [
   {

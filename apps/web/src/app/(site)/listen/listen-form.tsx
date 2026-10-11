@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { type FormEvent, useState } from 'react';
 import { track } from '@/lib/telemetry';
 
 const WILL_CHECK = [

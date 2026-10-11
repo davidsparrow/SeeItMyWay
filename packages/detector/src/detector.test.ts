@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   bucketFontSize,
+  type DetectorEnvironment,
   detectNativeSignals,
   detectPlatform,
   diffSnapshots,
   toSnapshot,
   watchNativeSignals,
-  type DetectorEnvironment,
 } from './index';
 
 const GAMUT = ['srgb', 'p3', 'rec2020'];

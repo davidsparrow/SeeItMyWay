@@ -1,11 +1,11 @@
 import {
-  PREFERENCE_KEYS,
-  VOCABULARY,
   createPacket,
   isPreferenceValue,
   type PartialPreferences,
+  PREFERENCE_KEYS,
   type PreferenceKey,
   type PreferencePacket,
+  VOCABULARY,
 } from '@simw/protocol';
 
 export interface SharingOptions {
