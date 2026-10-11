@@ -1,0 +1,1075 @@
+# SeeItMyWay
+## PRD Prefix + Browser Checkup Addendum
+
+**Working name:** SeeItMyWay  
+**Category:** Preference-Aware Web / User-Controlled Personalization  
+**Core promise:** Your website changes for me without needing to know me.
+
+---
+
+# PRD PREFIX
+
+## 0. The Discovery
+
+The web already contains the beginnings of a visitor preference system.
+
+Browsers and operating systems can currently communicate preferences including:
+
+- reduced motion
+- light/dark color scheme
+- contrast preferences
+- forced colors
+- reduced transparency
+- input capabilities such as touch, mouse and hover
+- certain device/environment characteristics
+
+Website developers can listen for these signals and alter the experience accordingly.
+
+Yet there is a fundamental disconnect:
+
+### Websites have been taught to listen.
+
+### Users were never taught how to speak.
+
+Millions of websites contain code capable of reacting to preferences that many ordinary people do not know they have, do not know where to configure, and may not even realize websites can detect.
+
+The controls are fragmented among:
+
+- browser settings
+- operating-system settings
+- accessibility settings
+- device settings
+- individual website controls
+
+SeeItMyWay starts by making this invisible layer visible.
+
+Before asking users to install anything, create an account, or adopt a new preference standard, SeeItMyWay should answer one extremely simple question:
+
+> **What is my browser already telling websites about how I prefer the web?**
+
+That becomes the front door to the product.
+
+---
+
+# 0.1 The SeeItMyWay Flywheel
+
+SeeItMyWay should not begin by asking people to understand a new protocol.
+
+It should progressively reveal that a partial protocol already exists.
+
+```text
+DISCOVER
+↓
+See what your browser already tells websites.
+
+UNDERSTAND
+↓
+See what each preference actually changes.
+
+CONFIGURE
+↓
+Learn where to change existing preferences.
+
+EXPERIENCE
+↓
+Compare different versions of the same website.
+
+EXPAND
+↓
+Add preferences browsers don't currently support.
+
+CARRY
+↓
+Use the optional Preference Passport across sites.
+
+ADAPT
+↓
+Participating websites respond to those preferences.
+```
+
+The consumer journey teaches the product while simultaneously demonstrating its value.
+
+---
+
+# 0.2 Revised Product Thesis
+
+Traditional web personalization attempts to understand the visitor.
+
+SeeItMyWay attempts to understand the visitor's **instructions**.
+
+Traditional personalization:
+
+```text
+Observe me
+↓
+Track me
+↓
+Profile me
+↓
+Guess what I want
+```
+
+SeeItMyWay:
+
+```text
+Ask me
+↓
+Listen
+↓
+Respond
+```
+
+The system should use explicit preferences whenever possible instead of behavioral inference.
+
+The visitor does not need to explain *why* they want an experience a certain way.
+
+They simply express:
+
+> Less motion.
+
+> Larger controls.
+
+> No autoplay.
+
+> More room.
+
+> More detail.
+
+> Dark interface.
+
+> Simpler navigation.
+
+The website responds.
+
+---
+
+# 0.3 The Missing Consumer Layer
+
+Existing preference standards are primarily documented for developers.
+
+SeeItMyWay should introduce them to ordinary internet users.
+
+The company therefore operates across three layers:
+
+## Layer A — Existing Web Preferences
+
+Preferences browsers and operating systems already communicate.
+
+SeeItMyWay discovers, explains and demonstrates them.
+
+---
+
+## Layer B — SeeItMyWay Preferences
+
+Additional preferences not currently standardized by browsers.
+
+Examples:
+
+- interface density
+- content detail
+- instruction style
+- visual richness
+- autoplay behavior
+- navigation complexity
+
+These can initially be stored locally and eventually carried through the optional Preference Passport.
+
+---
+
+## Layer C — Adaptive Websites
+
+Participating sites interpret the available preference layer and provide appropriate experience variants.
+
+SeeItMyWay therefore connects:
+
+> **Human preference → machine-readable signal → website behavior**
+
+---
+
+# ADDENDUM A
+# SeeItMyWay Browser Checkup
+
+## A.1 Product
+
+Create a completely free, account-free public experience at or near the SeeItMyWay homepage.
+
+Working feature names:
+
+**Browser Checkup**
+
+**What Does My Browser Say?**
+
+**See What Websites See**
+
+**My Web Preferences**
+
+Recommended consumer-facing CTA:
+
+# What Does Your Browser Tell Websites?
+
+Subhead:
+
+> Your browser may already be telling websites how you'd like them to behave. Most of us were never shown where these preferences live.
+
+CTA:
+
+> **Show Me Mine**
+
+---
+
+# A.2 Core Requirement
+
+The checkup should execute locally in the visitor's browser wherever possible.
+
+It should immediately inspect supported preference/environment signals and display them in understandable language.
+
+Example:
+
+# Your Web Preferences
+
+### 🌙 Appearance
+**Dark mode preferred**
+
+Websites can detect that you prefer a dark interface.
+
+---
+
+### 🎢 Motion
+**Full motion currently allowed**
+
+Compatible websites may show animations, parallax effects and animated transitions.
+
+---
+
+### ◐ Contrast
+**Standard**
+
+You have not requested increased contrast.
+
+---
+
+### 🪟 Transparency
+**Standard**
+
+Your device is not currently requesting reduced transparency.
+
+---
+
+### 👆 Interaction
+**Touch-first**
+
+This device primarily uses touch.
+
+---
+
+The exact available signals will differ by browser, operating system and device.
+
+The interface must clearly distinguish:
+
+**Explicit user preference**
+
+from:
+
+**Device/environment characteristic**
+
+Touch capability, for example, must not be described as a preference if it is merely a detected input capability.
+
+---
+
+# A.3 The Reveal
+
+The checkup should feel slightly magical.
+
+The visitor clicks:
+
+> **Show Me Mine**
+
+Instead of receiving a technical diagnostic table, the page transforms into:
+
+# Here's How the Web Sees Your Preferences
+
+Then reveal each detected signal progressively.
+
+The intent is:
+
+> “Wait — websites already know this?”
+
+rather than:
+
+> “Here is your CSS media-query output.”
+
+Technical details can be available under:
+
+**For nerds → Show raw signals**
+
+---
+
+# A.4 Experience Demonstrations
+
+Each preference should include an interactive demonstration.
+
+Example:
+
+## Motion
+
+### Current Experience
+
+A card slides, rotates or parallax-scrolls into position.
+
+Button:
+
+**Show Reduced Motion**
+
+The same component transitions to a static/fade presentation.
+
+Explanation:
+
+> Websites that support your motion preference can automatically choose something closer to this.
+
+---
+
+## Color Scheme
+
+Toggle:
+
+**Light | Dark**
+
+Show exactly how the same mini-site responds.
+
+---
+
+## Contrast
+
+Toggle between standard and stronger contrast examples.
+
+---
+
+## Transparency
+
+Show glass/translucent navigation versus opaque navigation.
+
+The demonstrations turn abstract standards into understandable experiences.
+
+---
+
+# A.5 Change This Preference
+
+For configurable signals, show:
+
+> **Want websites to see this differently?**
+
+CTA:
+
+**Show Me How**
+
+SeeItMyWay should detect the visitor's current platform sufficiently to give relevant instructions.
+
+Examples:
+
+- iPhone/iPad
+- macOS
+- Windows
+- Android
+- ChromeOS
+- Firefox-specific settings where appropriate
+
+Instructions should be short and visual.
+
+Example:
+
+### Reduce Motion on iPhone
+
+```text
+Settings
+→ Accessibility
+→ Motion
+→ Reduce Motion
+```
+
+Then:
+
+> Come back when you're done and we'll check again.
+
+Button:
+
+**Check Again**
+
+This is an important emotional moment.
+
+The user changes a setting somewhere else, returns, and sees:
+
+> 🎉 Your browser now asks websites for reduced motion.
+
+They have just learned that they can communicate with websites.
+
+---
+
+# A.6 Preference Playground
+
+Add a standalone playground:
+
+# See The Difference
+
+Allow users to temporarily preview preferences without changing their OS.
+
+Controls:
+
+```text
+MOTION
+Full | Reduced | Minimal
+
+THEME
+Light | Dark
+
+CONTRAST
+Standard | Higher
+
+TRANSPARENCY
+Standard | Reduced
+```
+
+The surrounding demonstration site changes live.
+
+Clarify:
+
+> Preview only — this does not change your device settings.
+
+This becomes both education and product demonstration.
+
+---
+
+# A.7 The “Aha” Transition
+
+After showing existing browser preferences:
+
+> **That's what your browser can tell websites today.**
+
+Then:
+
+> **But what if you could tell websites more?**
+
+Reveal additional SeeItMyWay concepts:
+
+```text
+Interface density
+Compact ←→ Roomy
+
+Content detail
+Concise ←→ Detailed
+
+Instructions
+Quick ←→ Step-by-Step
+
+Visual richness
+Minimal ←→ Rich
+
+Autoplay
+Allowed ←→ Never
+
+Navigation
+Compact ←→ Simple
+```
+
+Copy:
+
+> Browsers don't currently carry most of these preferences between websites.
+
+> **We think they should.**
+
+This is the natural transition into the broader SeeItMyWay vision.
+
+---
+
+# A.8 “Build My Preference Passport”
+
+The Browser Checkup can eventually end with:
+
+# Build Your SeeItMyWay Passport
+
+No extension should be required initially.
+
+The user can configure an experimental preference profile locally.
+
+Example:
+
+```text
+YOUR SEEITMYWAY PROFILE
+
+Motion .............. Reduced
+Density ............. Roomy
+Theme ............... Dark
+Visual richness ..... Rich
+Instructions ........ Step-by-step
+Autoplay ............ Never
+Navigation .......... Standard
+```
+
+Store this locally on SeeItMyWay.
+
+Then immediately demonstrate:
+
+> **Here's what a compatible website could do with that.**
+
+Show the same sample site in their configuration.
+
+This creates demand for the Passport before asking for installation.
+
+---
+
+# A.9 Passport Extension Upsell
+
+Only after the user understands the value:
+
+> Your SeeItMyWay preferences currently work here.
+
+> Want them to follow you to participating websites?
+
+CTA:
+
+**Get the SeeItMyWay Passport**
+
+Extension benefits:
+
+- stores expanded preferences
+- optionally syncs them
+- detects compatible sites
+- shares only standardized approved preferences
+- allows per-site overrides
+
+This reverses typical extension onboarding.
+
+Instead of:
+
+> “Install this extension and trust us.”
+
+the experience becomes:
+
+> “You just created something useful. Would you like to carry it with you?”
+
+---
+
+# ADDENDUM B
+# Free Site-Owner Offering
+
+The consumer Browser Checkup creates a parallel free acquisition product for website owners.
+
+## B.1 Test My Website
+
+CTA:
+
+# Does Your Website Listen?
+
+Site owner enters a URL.
+
+SeeItMyWay scans for support such as:
+
+- reduced motion
+- color scheme
+- contrast
+- forced colors
+- autoplay behavior
+- obvious motion patterns
+- potentially problematic hover dependencies
+
+Output:
+
+# Your Preference Awareness Score
+
+Example:
+
+```text
+42 / 100
+
+✓ Dark mode respected
+✓ Touch layout responsive
+
+△ Reduced motion partially supported
+✕ Hero video ignores motion preference
+✕ Carousel automatically advances
+✕ Contrast preference not supported
+```
+
+Then:
+
+> **See your site through different visitor preferences.**
+
+---
+
+# B.2 Dual Acquisition Loop
+
+This creates two free entry points.
+
+## Visitor
+
+> What does my browser tell websites?
+
+and:
+
+## Website owner
+
+> Does my website listen?
+
+Those two questions define the marketplace beautifully.
+
+```text
+VISITOR
+"What am I asking for?"
+        ↓
+      SIMW
+        ↑
+WEBSITE
+"Am I listening?"
+```
+
+SeeItMyWay connects them.
+
+---
+
+# ADDENDUM C
+# Social / Educational Campaign
+
+## C.1 Campaign Thesis
+
+Working umbrella:
+
+# The Web Settings Nobody Told You About
+
+Alternative:
+
+# Hidden Settings of the Web
+
+Alternative:
+
+# Your Browser Has Opinions
+
+Alternative:
+
+# The Web Can Already Listen to You
+
+Recommended:
+
+## **The Web Settings Nobody Told You About**
+
+Every piece of content reveals one overlooked browser/OS preference or adaptive-web concept.
+
+---
+
+# C.2 Content Formula
+
+Each post follows approximately:
+
+### Hook
+
+> Did you know you can tell websites to stop moving?
+
+### Reveal
+
+Explain the relevant preference in plain language.
+
+### Demo
+
+Show the same webpage both ways.
+
+### Instruction
+
+Show where the setting lives.
+
+### Challenge
+
+> Change it and visit SeeItMyWay to see whether your browser heard you.
+
+This makes every social post interactive.
+
+---
+
+# C.3 Initial Campaign
+
+## Post 1 — Motion
+
+> You can tell websites you don't want things flying around.
+
+Introduce `prefers-reduced-motion`.
+
+---
+
+## Post 2 — Dark
+
+> Websites shouldn't need you to find the tiny moon icon every time.
+
+Explain system/browser color preference.
+
+---
+
+## Post 3 — Contrast
+
+> Your device can ask compatible websites for stronger contrast.
+
+---
+
+## Post 4 — Transparency
+
+> Even all that glassy translucent UI can be a preference.
+
+---
+
+## Post 5 — Touch
+
+> Websites can already know whether hover interactions make sense.
+
+Explain environment adaptation rather than identity.
+
+---
+
+## Post 6 — The Bigger Question
+
+> If websites can already hear these five things, why can't I tell them I hate autoplay?
+
+Introduce SeeItMyWay.
+
+---
+
+## Post 7 — Personalization Without Profiling
+
+> Websites spent 20 years learning about us.
+
+> Maybe the next 20 should be spent learning to listen to us.
+
+---
+
+# C.4 Research Campaign
+
+SeeItMyWay should eventually collect genuinely useful anonymous awareness research.
+
+After showing a preference:
+
+> **Before today, did you know websites could detect this?**
+
+Yes / No
+
+Optional second question:
+
+> **Did you know where to change it?**
+
+Yes / No
+
+Avoid asking identity questions unless there is a compelling research need.
+
+With sufficient participation, SeeItMyWay could publish:
+
+# The State of Web Preference Awareness
+
+Potential findings:
+
+- awareness of reduced motion
+- awareness of dark preference signaling
+- percentage of visitors who changed a preference
+- preferences users most want browsers to add
+- most requested future global settings
+
+This turns marketing into original research.
+
+---
+
+# ADDENDUM D
+# Preference Wish List
+
+After Browser Checkup:
+
+# What Should Your Browser Let You Tell Websites?
+
+Let visitors vote.
+
+Potential choices:
+
+- Never autoplay video
+- Never autoplay audio
+- Prefer larger controls
+- Prefer roomy layouts
+- Prefer compact layouts
+- Prefer step-by-step instructions
+- Prefer concise explanations
+- Prefer more visual explanations
+- Prefer fewer popups
+- Prefer simplified navigation
+- Prefer captions
+- Prefer low-data experiences
+
+Allow:
+
+**Suggest another**
+
+This serves three purposes:
+
+1. engagement
+2. product discovery
+3. future protocol design
+
+The SeeItMyWay preference vocabulary should be derived from demonstrated demand rather than invented entirely by the company.
+
+---
+
+# ADDENDUM E
+# Viral Result Card
+
+After the Checkup, generate a shareable non-identifying card.
+
+Example:
+
+# My Web Wants
+
+🌙 Dark  
+🎢 Less motion  
+↔ Roomy  
+🔇 No autoplay  
+📖 More detail
+
+Footer:
+
+**What does yours say? — SeeItMyWay**
+
+Important:
+
+Only include preferences the visitor explicitly chooses to place on the card.
+
+Do not automatically publish device/browser characteristics.
+
+This could provide organic distribution for the Checkup.
+
+---
+
+# ADDENDUM F
+# Landing Page Draft Structure
+
+## HERO
+
+# Your browser already tells websites how you like the web.
+
+### Most people were never shown what it's saying.
+
+**[ Show Me Mine ]**
+
+No login. No questionnaire.
+
+---
+
+## LIVE REVEAL
+
+# Here's what websites can hear from you today.
+
+Display detected supported preferences.
+
+---
+
+## DEMONSTRATION
+
+# This setting can actually change a website.
+
+Interactive before/after.
+
+---
+
+## EDUCATION
+
+# Want to change it?
+
+Provide platform instructions.
+
+---
+
+## BIGGER REVEAL
+
+# But your browser barely scratches the surface.
+
+Show proposed extended preferences.
+
+---
+
+## PRODUCT VISION
+
+> We think websites should adapt to your preferences without tracking who you are.
+
+---
+
+## USER CTA
+
+# Tell the web how you like the web.
+
+**Build My Preference Profile**
+
+---
+
+## SITE-OWNER CTA
+
+# Own a website?
+
+**See Whether Your Site Listens**
+
+---
+
+# ADDENDUM G
+# Updated V0
+
+The previous PRD's V0 should be expanded.
+
+## V0A — Browser Checkup
+
+Build first.
+
+Requirements:
+
+- no account
+- no extension
+- no server-side identity requirement
+- detect supported existing preference signals
+- plain-English explanations
+- interactive demonstrations
+- platform-specific setup instructions
+- refresh/recheck function
+- Preference Playground
+- future-preference wish list
+
+Goal:
+
+**Prove consumers find web preferences understandable and interesting.**
+
+---
+
+## V0B — Adaptive Demo Website
+
+Build a beautiful sample site that substantially reacts to:
+
+- motion
+- theme
+- contrast
+- input capability
+- local SeeItMyWay density
+- local content-detail preference
+- local visual-richness preference
+- autoplay preference
+
+Goal:
+
+**Show what preference-aware web design could feel like.**
+
+---
+
+## V0C — Site Listener Test
+
+Allow owners to enter a URL.
+
+Initially perform a limited preference-support audit.
+
+Goal:
+
+**Prove website owners understand the value proposition.**
+
+---
+
+# ADDENDUM H
+# Critical Metrics
+
+Early metrics should focus less on revenue and more on whether the idea resonates.
+
+Measure:
+
+- percentage clicking **Show Me Mine**
+- completion rate
+- number of preferences successfully detected
+- percentage opening **What does this mean?**
+- percentage viewing demonstrations
+- percentage clicking **Show me how to change this**
+- percentage returning after changing a setting
+- percentage building experimental SIMW preferences
+- most selected future preferences
+- extension-interest rate
+- website-owner audit starts
+- owner installation interest
+
+Especially valuable:
+
+## Preference Changed
+
+How many visitors actually change an OS/browser preference after learning it exists?
+
+That would be a powerful indicator that SeeItMyWay provides immediate value before the core commercial platform even exists.
+
+---
+
+# ADDENDUM I
+# Updated Strategic Sequence
+
+Recommended launch sequence:
+
+```text
+1. SOCIAL CONTENT
+"The web settings nobody told you about."
+        ↓
+2. FREE BROWSER CHECKUP
+"What is your browser saying?"
+        ↓
+3. PREFERENCE PLAYGROUND
+"Here's what those signals actually do."
+        ↓
+4. FUTURE-PREFERENCE VOTING
+"What else should websites know?"
+        ↓
+5. ADAPTIVE DEMO
+"Here's the web we're proposing."
+        ↓
+6. WEBSITE LISTENER TEST
+"Does your site listen?"
+        ↓
+7. WEBSITE SDK
+Make existing sites adaptive.
+        ↓
+8. PREFERENCE PASSPORT
+Carry expanded preferences between sites.
+        ↓
+9. OPEN PROTOCOL
+Other developers implement it.
+```
+
+This sequence lets SeeItMyWay build an audience and validate the philosophy before attempting the technically harder platform.
+
+---
+
+# ADDENDUM J
+# Updated Company Story
+
+SeeItMyWay did not begin with the assumption that browsers had failed completely.
+
+They haven't.
+
+The foundations already exist.
+
+Browser vendors, operating systems, standards organizations and web developers have created pieces of a preference-aware web.
+
+The problem is that those pieces remain fragmented and largely invisible to ordinary people.
+
+SeeItMyWay's job is initially to:
+
+**Reveal it.**
+
+Then:
+
+**Explain it.**
+
+Then:
+
+**Make it easier to use.**
+
+Then:
+
+**Extend it.**
+
+Then:
+
+**Help websites respond to it.**
+
+The long-term mission can therefore be stated simply:
+
+# Finish the preference layer of the web.
+
+The web already learned how to listen.
+
+Now let's give people more ways to speak.
