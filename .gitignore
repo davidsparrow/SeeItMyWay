@@ -1,0 +1,16 @@
+node_modules/
+.pnpm-store/
+dist/
+.next/
+out/
+.turbo/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+.vercel/
+.wrangler/
+.output/
+.wxt/
+.env
+.env*.local
+.DS_Store

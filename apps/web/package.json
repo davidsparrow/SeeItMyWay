@@ -1,0 +1,33 @@
+{
+  "name": "@simw/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "seeitmyway web app: marketing, Browser Checkup, Playground, Passport builder, adaptive demo. Deploys to Vercel.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@simw/adapters": "workspace:*",
+    "@simw/detector": "workspace:*",
+    "@simw/privacy": "workspace:*",
+    "@simw/protocol": "workspace:*",
+    "@simw/sdk": "workspace:*",
+    "@simw/types": "workspace:*",
+    "@simw/ui": "workspace:*",
+    "next": "^16.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@simw/tsconfig": "workspace:*",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~5.9.3"
+  }
+}

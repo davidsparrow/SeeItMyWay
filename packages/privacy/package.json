@@ -1,0 +1,24 @@
+{
+  "name": "@simw/privacy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sharing and filtering rules: what may leave the browser, what may go on a result card, what may be counted.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@simw/protocol": "workspace:*",
+    "@simw/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@simw/tsconfig": "workspace:*",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.3"
+  }
+}

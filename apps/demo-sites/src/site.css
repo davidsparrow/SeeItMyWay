@@ -1,0 +1,104 @@
+/*
+ * An ordinary small-business stylesheet, retrofitted: a handful of rules
+ * keyed off SeeItMyWay's data attributes. The SDK's Level 1 safe adapters
+ * handle motion and autoplay without any of these.
+ */
+:root {
+  --bg: #fffaf3;
+  --ink: #2b2118;
+  --muted: #6f6253;
+  --card: #ffffff;
+  --accent: #c2410c;
+  --gap: calc(1.25rem * var(--simw-spacing-scale, 1));
+  font:
+    calc(100% * var(--simw-font-scale, 1)) / 1.55 system-ui,
+    sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+:root[data-simw-color-scheme='dark'] {
+  --bg: #17120e;
+  --ink: #f5ede4;
+  --muted: #bfae9c;
+  --card: #231b15;
+  --accent: #fb923c;
+}
+:root[data-simw-contrast='more'] {
+  --muted: var(--ink);
+}
+body {
+  margin: 0;
+}
+header,
+main,
+footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--gap);
+}
+.ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+.ticker span {
+  display: inline-block;
+  padding: 0.5rem 0;
+  animation: ticker 12s linear infinite;
+}
+@keyframes ticker {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+.badge {
+  display: inline-grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 800;
+  animation: spin 6s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--gap);
+}
+:root[data-simw-density='roomy'] .grid {
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+.card {
+  background: var(--card);
+  border-radius: 1rem;
+  padding: var(--gap);
+  border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+}
+:root[data-simw-visual-richness='minimal'] .decorative {
+  display: none;
+}
+video {
+  width: 100%;
+  aspect-ratio: 16 / 6;
+  border-radius: 1rem;
+  background: linear-gradient(120deg, #7c2d12, #f97316);
+}
+pre {
+  background: var(--card);
+  padding: var(--gap);
+  border-radius: 1rem;
+  overflow-x: auto;
+  font-size: 0.8rem;
+}
