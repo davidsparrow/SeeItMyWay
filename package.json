@@ -14,7 +14,7 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "test:e2e": "NEXT_PUBLIC_EVENTS_URL=http://127.0.0.1:8799 turbo run test:e2e",
+    "test:e2e": "turbo run test:e2e",
     "check": "biome ci . && turbo run typecheck test"
   },
   "devDependencies": {

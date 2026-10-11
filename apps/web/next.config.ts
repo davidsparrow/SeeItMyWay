@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
     '@simw/ui',
   ],
   reactStrictMode: true,
+  // The browser tests build into .next-e2e (scripts/build-e2e.mjs) so they never mix with .next.
+  distDir: process.env.SIMW_NEXT_DIST_DIR || '.next',
   poweredByHeader: false,
   env: {
     // Vercel's production hostname, made available to client code so the site URL

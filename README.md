@@ -77,7 +77,9 @@ Nothing hard-codes a hostname; protocol identity stays `urn:simw:protocol:0.1`.
 ### Quality gates
 
 CI (`.github/workflows/ci.yml`) runs, in order: `pnpm install --frozen-lockfile`, `biome ci .`,
-typecheck, unit tests, build, then the browser-test invariants. A broken invariant fails CI by name:
+typecheck, unit tests, build, then the browser-test invariants. The browser tests run against their own
+production build (`pnpm --filter @simw/web build:e2e`, in `apps/web/.next-e2e`), which has a test events
+URL baked in so the GPC specs can prove that nothing is sent. A broken invariant fails CI by name:
 
 | ID    | Promise                                                                                           | Spec                              |
 | ----- | ------------------------------------------------------------------------------------------------- | --------------------------------- |

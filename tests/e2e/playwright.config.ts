@@ -27,8 +27,10 @@ export default defineConfig({
       ? []
       : [
           {
+            // Serves the build from `pnpm --filter @simw/web build:e2e` (it has a test events URL).
             command: `pnpm exec next start --port ${WEB_PORT}`,
             cwd: '../../apps/web',
+            env: { SIMW_NEXT_DIST_DIR: '.next-e2e' },
             url: WEB_URL,
             reuseExistingServer: !process.env.CI,
             timeout: 60_000,

@@ -12,6 +12,7 @@
       "!Seeitmyway-PRD*",
       "!**/dist",
       "!**/.next",
+      "!**/.next-e2e",
       "!**/.turbo",
       "!**/.wrangler",
       "!**/node_modules",

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/copy-sdk.mjs && next dev",
     "build": "node scripts/copy-sdk.mjs && next build",
+    "build:e2e": "node scripts/build-e2e.mjs",
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run"

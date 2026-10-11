@@ -21,3 +21,4 @@ apps/web/public/sdk/
 # Playwright
 test-results/
 playwright-report/
+.next-e2e/
