@@ -17,10 +17,17 @@ to know who they are. Personalization without profiling.
 | `/passport`   | **Passport builder**: a local profile, live preview, exact shared packet, "My Web Wants" card, extension upsell        | A.8, A.9, E   |
 | `/demo`       | **Northlight**, an adaptive demo site with a "Tune this site" panel and anonymous experience seed                      | V0B, §18–20   |
 | `/listen`     | Site-owner entry point ("Does your website listen?"). The scanner itself is V0C, not built yet                         | B.1           |
-| `/privacy`    | The SeeItMyWay Promise, the exact list of anonymous events, and everything stored on this device                       | §27, §29      |
+| `/privacy`    | The SeeItMyWay Promise, the exact list of anonymous events, where counts go, the GPC policy, and what's on this device | §27, §29      |
 
 The site runs the SDK on itself: theme, motion, contrast, transparency, density and text size all come
 from the visitor's device and saved Passport.
+
+**Anonymous counting** goes to `apps/events`, a Cloudflare Worker that stores per-day aggregates of the
+allowlisted events in D1 (no IPs, user agents, referrers or IDs). It's switched on by
+`NEXT_PUBLIC_EVENTS_URL`; without it, events stay in a log on the visitor's device. **Global Privacy
+Control means nothing is sent**: with GPC on, the browser sends no research events at all, the Checkup
+says so ("Global Privacy Control detected — SeeItMyWay heard you…"), and the Worker discards any request
+carrying `Sec-GPC: 1`. That's an intentional policy, stronger than GPC requires.
 
 ## Repository layout
 
@@ -28,6 +35,7 @@ from the visitor's device and saved Passport.
 apps/
   web/          Next.js 16 app (marketing, Checkup, Playground, Passport, demo) → Vercel
   demo-sites/   Plain-HTML fixtures retrofitted with the SDK (npm and <script> tag) → proves framework independence
+  events/       Anonymous research counts: Cloudflare Worker + D1, aggregates only → Cloudflare
   scanner/      Planned: Site Listener Test on Cloudflare Workers + Browser Run (V0C)
   extension/    Planned: Passport browser extension, WXT + React (V1.5)
 packages/
@@ -40,6 +48,8 @@ packages/
   ui/           Shared React controls (web now, extension later)
 tooling/
   tsconfig/     Shared TypeScript configs
+tests/
+  e2e/          Playwright browser-test invariants (INV-1…INV-3, GPC) against built output
 ```
 
 Dependency direction is strictly downward: `types ← protocol ← privacy / adapters`, `types ← detector`,
@@ -105,12 +115,16 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
   session). Steps, env vars and the CLI path are in [`docs/deploy/vercel.md`](./docs/deploy/vercel.md):
   Root Directory `apps/web`, Node 22, and `apps/web/vercel.json` builds through Turborepo so the SDK is
   bundled first. Production will be a standard `seeitmyway.vercel.app`-style URL.
+- **Events (Cloudflare Worker + D1): deploy-ready, not deployed yet.** See
+  [`apps/events/README.md`](./apps/events/README.md): `wrangler d1 create`, migrations, `wrangler deploy`
+  with `ALLOWED_ORIGINS`, then `NEXT_PUBLIC_EVENTS_URL` in Vercel.
 - **Scanner (Cloudflare):** planned, see [`apps/scanner/README.md`](./apps/scanner/README.md).
 
 ## Status and known gaps
 
-- **Anonymous counting is stubbed.** Events go through the allowlist in `@simw/privacy` but stay in the
-  browser (`/privacy` shows them). Connect a backend by calling `setEventSink()` in `apps/web/src/lib/telemetry.ts`.
+- **The events Worker is deploy-ready, not deployed** (no Cloudflare credentials were available to the
+  build session). Until it's deployed and `NEXT_PUBLIC_EVENTS_URL` is set, counting stays on the
+  visitor's device, and `/privacy` says so. Deploy steps: [`apps/events/README.md`](./apps/events/README.md).
 - **Some "Show me how" steps need vendor review before launch.** See
   [`docs/instructions-review.md`](./docs/instructions-review.md).
 - The SDK isn't published to npm or a CDN yet. The `/listen` snippet loads the script-tag build that

@@ -11,7 +11,7 @@ const SEED_BYTES = 8;
 
 export function createSeed(): string {
   const bytes = new Uint8Array(SEED_BYTES);
-  globalThis.crypto.getRandomValues(bytes);
+  crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
 }
 

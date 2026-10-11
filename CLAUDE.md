@@ -63,7 +63,12 @@ rule fights an intentional pattern, use a targeted `biome-ignore <rule>: <reason
 - **Fail closed** (PRD §21): safe adapters uninstall themselves on error. The original site wins.
 - **Counting** goes only through `track()` → `sanitizeEvent()`. Every property is a closed enum or a
   small bounded integer. No free text, URLs, IDs or timestamps. Add new events to `ANONYMOUS_EVENTS` in
-  `packages/privacy/src/events.ts` and describe them on `/privacy`.
+  `packages/privacy/src/events.ts`, describe them on `/privacy`, and note the privacy implications in the
+  commit message. The events Worker (`apps/events`) stores per-day aggregates only.
+- **Global Privacy Control means nothing is sent.** Under GPC the remote sink drops every event for the
+  visit (local, on-device state is fine) and the Worker discards requests with `Sec-GPC: 1`. Copy that
+  mentions counting must be true in all three states (`remote`, `local-only`, `gpc`): branch on
+  `useCounting()` from `apps/web/src/lib/use-counting.ts`.
 - **Never claim accessibility compliance** (PRD §26). SeeItMyWay helps sites respect preferences; it
   doesn't make them accessible.
 

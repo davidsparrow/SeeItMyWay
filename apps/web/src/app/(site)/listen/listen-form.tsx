@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from 'react';
 import { track } from '@/lib/telemetry';
+import { useCounting } from '@/lib/use-counting';
 
 const WILL_CHECK = [
   'Reduced motion: do animations, parallax and carousels calm down?',
@@ -18,6 +19,7 @@ const WILL_CHECK = [
  */
 export function ListenForm() {
   const [submitted, setSubmitted] = useState(false);
+  const counting = useCounting();
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -48,8 +50,13 @@ export function ListenForm() {
             The Site Listener Test is nearly here.
           </p>
           <p className="text-muted">
-            We haven&rsquo;t scanned anything, and your address wasn&rsquo;t sent anywhere. When the
-            test launches, it will check:
+            We haven&rsquo;t scanned anything, and your address wasn&rsquo;t sent anywhere.
+            {counting === 'gpc'
+              ? ' Global Privacy Control is on, so we didn’t count that you asked, either.'
+              : counting === 'remote'
+                ? ' We only counted, anonymously, that a site owner asked.'
+                : ''}{' '}
+            When the test launches, it will check:
           </p>
           <ul className="list-disc space-y-1 pl-5">
             {WILL_CHECK.map((c) => (

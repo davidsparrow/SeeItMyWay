@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { track } from '@/lib/telemetry';
+import { useGpc } from '@/lib/use-counting';
 
 const BENEFITS = [
   'Stores your expanded preferences',
@@ -18,6 +19,7 @@ const BENEFITS = [
 export function ExtensionUpsell({ hasProfile }: { hasProfile: boolean }) {
   const [open, setOpen] = useState(false);
   const [interested, setInterested] = useState(false);
+  const gpc = useGpc();
 
   return (
     <section aria-labelledby="carry-title" className="card overflow-hidden p-7 sm:p-10">
@@ -47,7 +49,9 @@ export function ExtensionUpsell({ hasProfile }: { hasProfile: boolean }) {
               </p>
               {interested ? (
                 <p className="font-semibold text-good" role="status">
-                  Thanks, noted. No email needed: we&rsquo;ll announce it right here.
+                  {gpc
+                    ? 'Thanks. Global Privacy Control is on, so this wasn’t counted: nothing left your device. We’ll announce the extension right here.'
+                    : 'Thanks, noted. No email needed: we’ll announce it right here.'}
                 </p>
               ) : (
                 <button

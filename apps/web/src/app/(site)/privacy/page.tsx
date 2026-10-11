@@ -1,5 +1,7 @@
 import { ANONYMOUS_EVENTS, type AnonymousEventName, MINIMUM_COHORT } from '@simw/privacy';
 import type { Metadata } from 'next';
+import { config } from '@/lib/config';
+import { GpcStatus } from './gpc-status';
 import { LocalData } from './local-data';
 
 export const metadata: Metadata = {
@@ -91,6 +93,58 @@ export default function PrivacyPage() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section aria-labelledby="where-title" className="space-y-4">
+        <h2 id="where-title" className="font-display text-3xl font-semibold tracking-tight">
+          Where the counts go
+        </h2>
+        <p className="max-w-3xl">
+          {config.eventsUrl
+            ? 'Counting is switched on for this site.'
+            : 'Counting is switched off for this site right now: events stay in the log on your device, below, and are never sent.'}
+        </p>
+        <ul className="max-w-3xl list-disc space-y-2 pl-5 text-muted">
+          <li>
+            When counting is on, events are sent to our own counter, a small program running on
+            Cloudflare. It adds each event to a daily tally (the date, the event name, its allowed
+            values and a number) and keeps nothing else: no IP address, no browser or device
+            details, no referrer, no country, no cookie, no request ID. Individual events are never
+            stored.
+          </li>
+          <li>
+            To stop floods, the counter uses your network address as a short-lived key in
+            Cloudflare&rsquo;s rate limiter: a one-minute window that Cloudflare holds in memory.
+            It&rsquo;s never written to our database or to any log.
+          </li>
+          <li>
+            We&rsquo;ve switched off the counter&rsquo;s logs, traces and log exports, so we keep no
+            record of requests. Like any web host, Cloudflare processes each request&rsquo;s network
+            details to deliver it and to protect against attacks, under its own privacy policy.
+          </li>
+          <li>
+            The published totals hide every group smaller than {MINIMUM_COHORT}, and leave those
+            groups out of any total, so a small group can&rsquo;t be worked out by subtraction.
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="gpc-title" className="card space-y-3 p-7">
+        <h2 id="gpc-title" className="font-display text-2xl font-semibold">
+          Global Privacy Control means nothing is sent
+        </h2>
+        <p>
+          If your browser sends Global Privacy Control (GPC), SeeItMyWay sends no research events at
+          all, not even anonymous counts. Only local, on-device state remains: your Passport, Tune
+          settings, Checkup history and the event log below, none of which leaves your device.
+        </p>
+        <p className="text-muted">
+          This is our choice, and it goes further than GPC requires. GPC asks sites not to sell or
+          share your personal data, and anonymous counts aren&rsquo;t personal data. We stop anyway,
+          because you asked not to be counted. Our counter also throws away, unread, any request
+          that carries the GPC signal.
+        </p>
+        <GpcStatus />
       </section>
 
       <section aria-labelledby="local-title" className="space-y-5">

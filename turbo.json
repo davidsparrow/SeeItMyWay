@@ -16,7 +16,7 @@
     "test:e2e": {
       "dependsOn": ["@simw/web#build", "@simw/demo-sites#build"],
       "cache": false,
-      "passThroughEnv": ["BASE_URL", "CI", "PLAYWRIGHT_BROWSERS_PATH"]
+      "passThroughEnv": ["BASE_URL", "CI", "NEXT_PUBLIC_EVENTS_URL", "PLAYWRIGHT_BROWSERS_PATH"]
     }
   }
 }

@@ -8,16 +8,30 @@ import {
   sanitizeEvent,
 } from '@simw/privacy';
 import { safeLocalStorage } from '@simw/sdk';
+import { config } from './config';
+import { createRemoteSink, flushOnPageHide, type RemoteSink } from './remote-sink';
 
 /**
- * Anonymous counting (Addendum H). V0 ships with storage stubbed: events are
- * validated against the allowlist in @simw/privacy and kept in this browser
- * only, so the /privacy page can show exactly what would be counted.
+ * Anonymous counting (Addendum H).
  *
- * To connect a real backend later, call `setEventSink()` with a sink that
- * POSTs to an aggregate counter. Nothing else in the app needs to change.
+ * Every event is validated against the allowlist in @simw/privacy and kept
+ * in a local log on this device, so /privacy can show exactly what was
+ * recorded. When `NEXT_PUBLIC_EVENTS_URL` is set, events are also batched to
+ * the events Worker, which stores per-day aggregates only.
+ *
+ * Global Privacy Control means nothing is sent: when the browser sends GPC,
+ * the remote sink drops everything for the visit (checked at send time).
+ * That's SeeItMyWay's policy, deliberately stronger than GPC requires.
  */
-export const TELEMETRY_MODE: 'local-only' | 'remote' = 'local-only';
+export const TELEMETRY_MODE: 'local-only' | 'remote' = config.eventsUrl ? 'remote' : 'local-only';
+
+/** Global Privacy Control, read straight from the browser (`navigator.globalPrivacyControl`). */
+export function gpcEnabled(): boolean {
+  return (
+    typeof navigator !== 'undefined' &&
+    (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true
+  );
+}
 
 const LOG_KEY = 'simw:local-event-log';
 const LOG_LIMIT = 200;
@@ -43,10 +57,15 @@ const localSink: AnonymousEventSink = {
   },
 };
 
-let sink: AnonymousEventSink = localSink;
+let remote: RemoteSink | null = null;
 
-export function setEventSink(next: AnonymousEventSink): void {
-  sink = next;
+function remoteSink(): RemoteSink | null {
+  if (!config.eventsUrl || typeof window === 'undefined') return null;
+  if (!remote) {
+    remote = createRemoteSink({ baseUrl: config.eventsUrl, gpc: gpcEnabled });
+    flushOnPageHide(remote);
+  }
+  return remote;
 }
 
 const onceKeys = new Set<string>();
@@ -74,7 +93,8 @@ export function track<N extends AnonymousEventName>(
     return;
   }
   try {
-    sink.record(event);
+    localSink.record(event);
+    remoteSink()?.record(event);
   } catch {
     // Counting must never break the experience.
   }

@@ -9,7 +9,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { TOPICS, type Topic, topicForSignal } from '@/content/topics';
 import { CHECKUP_KEYS } from '@/lib/site';
 import { track } from '@/lib/telemetry';
+import { useCounting } from '@/lib/use-counting';
 import { AhaTransition } from './aha';
+import { GpcNotice } from './gpc-notice';
 import { RawSignals } from './raw-signals';
 import { SignalCard } from './signal-card';
 import { Wishlist } from './wishlist';
@@ -113,6 +115,7 @@ export function BrowserCheckup() {
   const resultsRef = useRef<HTMLHeadingElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const toastId = useRef(0);
+  const counting = useCounting();
 
   useEffect(() => setPlatform(detectPlatform()), []);
 
@@ -220,7 +223,9 @@ export function BrowserCheckup() {
           )}
           <p className="mt-5 max-w-xl text-xl text-muted">
             {revealed
-              ? 'Everything below was read just now, inside your browser. Nothing left your device.'
+              ? counting === 'remote'
+                ? 'Everything below was read just now, inside your browser. We only count a few anonymous events, never who you are.'
+                : 'Everything below was read just now, inside your browser. Nothing left your device.'
               : 'Most people were never shown what it’s saying. Your browser may already be telling websites how you’d like them to behave.'}
           </p>
           {!revealed ? (
@@ -235,7 +240,9 @@ export function BrowserCheckup() {
                 {phase === 'listening' ? 'Listening…' : 'Show me mine'}
               </button>
               <p className="text-sm text-muted">
-                No login. No questionnaire. Nothing is sent anywhere.
+                {counting === 'remote'
+                  ? 'No login. No questionnaire. Only anonymous counts, never who you are.'
+                  : 'No login. No questionnaire. Nothing is sent anywhere.'}
               </p>
             </div>
           ) : null}
@@ -284,6 +291,8 @@ export function BrowserCheckup() {
                 </p>
               </div>
             </div>
+
+            {counting === 'gpc' ? <GpcNotice /> : null}
 
             <div className="grid gap-5 lg:grid-cols-2">
               {topics.map((topic, i) => (

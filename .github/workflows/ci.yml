@@ -41,10 +41,9 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Build
-        run: pnpm build
       - name: Install Chromium
         run: pnpm --filter @simw/e2e exec playwright install --with-deps chromium
+      # Builds the web app (with a test events URL for the GPC specs) and the fixtures, then runs the specs.
       - name: Browser invariants
         run: pnpm test:e2e
       - name: Upload Playwright traces

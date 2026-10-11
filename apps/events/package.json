@@ -1,0 +1,24 @@
+{
+  "name": "@simw/events",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Anonymous research counts: a Cloudflare Worker that stores allowlisted event aggregates in D1. No individual events, IPs or identifiers.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@simw/privacy": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.22.0",
+    "@cloudflare/workers-types": "5.20260929.1",
+    "@simw/tsconfig": "workspace:*",
+    "typescript": "~5.9.3",
+    "vitest": "4.1.11",
+    "wrangler": "4.124.0"
+  }
+}

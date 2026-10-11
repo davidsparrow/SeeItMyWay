@@ -5,6 +5,7 @@ import { safeLocalStorage } from '@simw/sdk';
 import { type FormEvent, useEffect, useState } from 'react';
 import { CHECKUP_KEYS } from '@/lib/site';
 import { track } from '@/lib/telemetry';
+import { useCounting } from '@/lib/use-counting';
 
 function readVotes(): WishlistCandidateId[] {
   try {
@@ -26,6 +27,7 @@ export function Wishlist() {
   const [votes, setVotes] = useState<WishlistCandidateId[]>([]);
   const [suggestion, setSuggestion] = useState('');
   const [suggested, setSuggested] = useState(false);
+  const counting = useCounting();
 
   useEffect(() => setVotes(readVotes()), []);
 
@@ -111,9 +113,11 @@ export function Wishlist() {
       <p className="mt-3 text-sm text-muted" role="status">
         {suggested
           ? 'Thanks. For now your suggestion stays on this device: free text is never sent automatically.'
-          : votes.length > 0
-            ? `${votes.length} picked. Votes are anonymous, and results appear once enough people have voted.`
-            : 'Votes are anonymous. No account, no ID.'}
+          : counting === 'gpc'
+            ? `${votes.length > 0 ? `${votes.length} picked. ` : ''}Global Privacy Control is on, so your votes stay on this device and aren’t counted this visit.`
+            : votes.length > 0
+              ? `${votes.length} picked. Votes are anonymous, and results appear once enough people have voted.`
+              : 'Votes are anonymous. No account, no ID.'}
       </p>
     </section>
   );

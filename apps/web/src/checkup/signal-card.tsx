@@ -6,8 +6,10 @@ import { Badge } from '@simw/ui';
 import { type CSSProperties, useId, useState } from 'react';
 import type { Topic } from '@/content/topics';
 import { track } from '@/lib/telemetry';
+import { useGpc } from '@/lib/use-counting';
 import { AwarenessQuestion } from './awareness';
 import { SignalDemo } from './demos';
+import { GpcNotice } from './gpc-notice';
 import { HowToChange } from './how-to';
 
 type Panel = 'meaning' | 'demo' | 'howto';
@@ -31,6 +33,7 @@ export function SignalCard({
 }) {
   const [panel, setPanel] = useState<Panel | null>(null);
   const panelId = useId();
+  const gpc = useGpc();
   const state = topic.state(signals);
   if (!state) return null;
 
@@ -128,7 +131,10 @@ export function SignalCard({
         </div>
       ) : null}
 
-      {topic.nature === 'preference' ? (
+      {gpc && topic.signal === 'global-privacy-control' ? <GpcNotice /> : null}
+
+      {/* Research questions only make sense when answers can be counted. */}
+      {topic.nature === 'preference' && !gpc ? (
         <div className="mt-auto border-t border-line pt-3">
           <AwarenessQuestion signal={topic.signal} changeable={topic.changeable} />
         </div>
