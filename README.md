@@ -90,4 +90,7 @@ because they all resolve to one `Experience` first, in this order (PRD §20):
 - **Some "Show me how" steps need vendor review before launch.** See
   [`docs/instructions-review.md`](./docs/instructions-review.md).
 - The SDK isn't published to npm or a CDN yet; the snippet on `/listen` uses a placeholder URL.
-- V0C (Site Listener Test), the Passport extension and the open protocol spec are next.
+- **TypeScript is pinned to 5.9 for V0** (TS 7 drops the compiler API Next.js uses). See
+  [`docs/tech-debt.md`](./docs/tech-debt.md) TD-1.
+- V0C (Site Listener Test) and the open protocol spec are next; the Passport extension comes later.
+  The plan for the next session is in [`docs/handoff/session-02.md`](./docs/handoff/session-02.md).

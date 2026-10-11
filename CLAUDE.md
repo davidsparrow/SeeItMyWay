@@ -30,6 +30,8 @@ pnpm --filter @simw/<name> test    # one package
   `transpilePackages`. Only `@simw/sdk` has a build step (tsup → ESM + IIFE).
 - New preference values go in `packages/protocol/src/vocabulary.ts` and nowhere else. Keep it coarse:
   named buckets, never numbers (PRD §15). The PRD wants 8–15 universal preferences, not more.
+- TypeScript stays at `~5.9.3` for V0. Don't upgrade to TS 7 or add a second compiler; see
+  `docs/tech-debt.md` TD-1. Log any new deliberate deferral there too.
 
 ## Product rules encoded in code
 
