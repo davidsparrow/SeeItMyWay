@@ -62,7 +62,7 @@ Needs three secrets in the environment (in a Claude Code cloud session: the envi
 environment variables): `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. `VERCEL_ORG_ID` is the
 team ID (`team_…`, Team Settings → General); `VERCEL_PROJECT_ID` is in the project's Settings → General.
 Both are also in `.vercel/project.json` after `vercel link`. [`.env.example`](../../.env.example) lists
-the deploy credentials and where to find them.
+every environment variable and where it goes.
 
 From the repo root:
 

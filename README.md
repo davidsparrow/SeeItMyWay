@@ -72,7 +72,7 @@ pnpm test:e2e                         # browser-test invariants against the buil
 pnpm lint:fix                         # apply Biome's safe fixes and formatting
 ```
 
-Configuration is optional and env-driven (`apps/web/.env.example`, `apps/web/src/lib/config.ts`):
+Configuration is optional and env-driven ([`.env.example`](./.env.example), `apps/web/src/lib/config.ts`):
 `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SDK_URL`, `NEXT_PUBLIC_EVENTS_URL`, `NEXT_PUBLIC_SCANNER_URL`.
 Nothing hard-codes a hostname; protocol identity stays `urn:simw:protocol:0.1`.
 
@@ -118,7 +118,7 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 - **Web (Vercel): deployed.** Production deploys from `main` through Vercel's Git integration. Setup,
   env vars and the CLI path are in [`docs/deploy/vercel.md`](./docs/deploy/vercel.md): Root Directory
   `apps/web`, Node 22, and `apps/web/vercel.json` builds through Turborepo so the SDK is bundled first.
-  [`.env.example`](./.env.example) lists the deploy credentials and where to find them.
+  [`.env.example`](./.env.example) lists every environment variable and where it goes.
 - **Events (Cloudflare Worker + D1): deploy-ready, not deployed yet.** See
   [`apps/events/README.md`](./apps/events/README.md): `wrangler d1 create`, migrations, `wrangler deploy`
   with `ALLOWED_ORIGINS`, then `NEXT_PUBLIC_EVENTS_URL` in Vercel.
