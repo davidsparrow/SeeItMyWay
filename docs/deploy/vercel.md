@@ -45,9 +45,12 @@ depends on changed.
 
 ## Things to know
 
-- **Preview deployments are separate origins** (`see-it-my-way-<hash>-<team>.vercel.app`), each with its
-  own `localStorage`. The Workers' CORS allowlists must include the preview pattern, e.g.
-  `ALLOWED_ORIGINS=https://see-it-my-way-navy.vercel.app,https://see-it-my-way-*-<team>.vercel.app`.
+- **Preview deployments are separate origins**, each with its own `localStorage`. Vercel shortens the
+  project name in them: deployments are `see-it-my-<hash>-davids-projects-e32e946e.vercel.app` and
+  branch aliases `see-it-my-way-git-<branch>-davids-projects-e32e946e.vercel.app`
+  (`davids-projects-e32e946e` is the team slug). One pattern covers both, so the Workers' CORS
+  allowlists are
+  `ALLOWED_ORIGINS=https://see-it-my-way-navy.vercel.app,https://see-it-my-*-davids-projects-e32e946e.vercel.app`.
 - On previews, `NEXT_PUBLIC_SITE_URL` still resolves to the production URL (that's what
   `VERCEL_PROJECT_PRODUCTION_URL` holds), so `metadataBase`, share text and the `/listen` snippet point
   at production. That's intended: they're for sharing.

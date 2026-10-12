@@ -62,9 +62,10 @@ pnpm exec wrangler d1 create simw-events
 # 2. Create the table.
 pnpm exec wrangler d1 migrations apply simw-events --remote
 
-# 3. Deploy with the production and preview origins of apps/web (`*` = one DNS label).
+# 3. Deploy with the production and preview origins of apps/web (`*` = part of one DNS label;
+#    Vercel shortens preview hostnames to `see-it-my-…`, see docs/deploy/vercel.md).
 pnpm exec wrangler deploy \
-  --var "ALLOWED_ORIGINS:https://see-it-my-way-navy.vercel.app,https://see-it-my-way-*-<team>.vercel.app"
+  --var "ALLOWED_ORIGINS:https://see-it-my-way-navy.vercel.app,https://see-it-my-*-davids-projects-e32e946e.vercel.app"
 ```
 
 `wrangler deploy` prints the URL, e.g. `https://simw-events.<account>.workers.dev`. Then:
