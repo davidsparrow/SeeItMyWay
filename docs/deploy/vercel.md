@@ -14,9 +14,10 @@ config change (`NEXT_PUBLIC_SITE_URL`), not a code change.
    applications detected"** because it finds `apps/web` (Next.js) and `apps/demo-sites` (Vite). Choose
    **import as a standalone project** and import only `apps/web`; don't group them with Services.
    `apps/demo-sites` is a fixture the browser tests run locally (INV-3) and is never deployed.
-2. **Project name:** `seeitmyway`. The production URL becomes `https://seeitmyway.vercel.app` if the
-   name is free. Pick the name carefully and keep it: Passport, Tune settings, seeds and Checkup history
-   live in `localStorage`, which is per origin, so a new URL starts every visitor fresh.
+2. **Project name:** `see-it-my-way`. That `vercel.app` name was taken, so production is
+   `https://see-it-my-way-navy.vercel.app` until a custom domain replaces it. Passport, Tune settings,
+   seeds and Checkup history live in `localStorage`, which is per origin, so moving to the domain starts
+   every visitor fresh: switch before sharing the site widely.
 3. **Framework preset:** Next.js (detected).
 4. **Root Directory:** `apps/web`. Leave **"Include files outside of the Root Directory in the Build
    Step"** enabled (Settings → Build and Deployment → Root Directory); the build needs the workspace
@@ -44,9 +45,9 @@ depends on changed.
 
 ## Things to know
 
-- **Preview deployments are separate origins** (`seeitmyway-<hash>-<team>.vercel.app`), each with its own
-  `localStorage`. The Workers' CORS allowlists must include the preview pattern, e.g.
-  `ALLOWED_ORIGINS=https://seeitmyway.vercel.app,https://seeitmyway-*-<team>.vercel.app`.
+- **Preview deployments are separate origins** (`see-it-my-way-<hash>-<team>.vercel.app`), each with its
+  own `localStorage`. The Workers' CORS allowlists must include the preview pattern, e.g.
+  `ALLOWED_ORIGINS=https://see-it-my-way-navy.vercel.app,https://see-it-my-way-*-<team>.vercel.app`.
 - On previews, `NEXT_PUBLIC_SITE_URL` still resolves to the production URL (that's what
   `VERCEL_PROJECT_PRODUCTION_URL` holds), so `metadataBase`, share text and the `/listen` snippet point
   at production. That's intended: they're for sharing.
@@ -61,7 +62,7 @@ Needs three secrets in the environment (in a Claude Code cloud session: the envi
 environment variables): `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. `VERCEL_ORG_ID` is the
 team ID (`team_…`, Team Settings → General); `VERCEL_PROJECT_ID` is in the project's Settings → General.
 Both are also in `.vercel/project.json` after `vercel link`. [`.env.example`](../../.env.example) lists
-every variable and where to find it.
+the deploy credentials and where to find them.
 
 From the repo root:
 
@@ -78,5 +79,5 @@ always uses the local demo-sites fixture.
 
 ```bash
 pnpm build
-BASE_URL=https://seeitmyway.vercel.app pnpm test:e2e
+BASE_URL=https://see-it-my-way-navy.vercel.app pnpm test:e2e
 ```

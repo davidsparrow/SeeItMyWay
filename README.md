@@ -118,7 +118,7 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 - **Web (Vercel): deployed.** Production deploys from `main` through Vercel's Git integration. Setup,
   env vars and the CLI path are in [`docs/deploy/vercel.md`](./docs/deploy/vercel.md): Root Directory
   `apps/web`, Node 22, and `apps/web/vercel.json` builds through Turborepo so the SDK is bundled first.
-  [`.env.example`](./.env.example) lists every environment variable and where to find it.
+  [`.env.example`](./.env.example) lists the deploy credentials and where to find them.
 - **Events (Cloudflare Worker + D1): deploy-ready, not deployed yet.** See
   [`apps/events/README.md`](./apps/events/README.md): `wrangler d1 create`, migrations, `wrangler deploy`
   with `ALLOWED_ORIGINS`, then `NEXT_PUBLIC_EVENTS_URL` in Vercel.

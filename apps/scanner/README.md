@@ -79,8 +79,8 @@ pnpm exec wrangler d1 migrations apply simw-scanner --remote
 
 # 3. Deploy, with the web app's origins and public URL.
 pnpm exec wrangler deploy \
-  --var "ALLOWED_ORIGINS:https://seeitmyway.vercel.app,https://seeitmyway-*-<team>.vercel.app" \
-  --var "PUBLIC_SITE_URL:https://seeitmyway.vercel.app"
+  --var "ALLOWED_ORIGINS:https://see-it-my-way-navy.vercel.app,https://see-it-my-way-*-<team>.vercel.app" \
+  --var "PUBLIC_SITE_URL:https://see-it-my-way-navy.vercel.app"
 ```
 
 Then set `NEXT_PUBLIC_SCANNER_URL` in Vercel (Production and Preview) to the printed
