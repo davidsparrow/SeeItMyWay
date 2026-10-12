@@ -115,10 +115,10 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 
 ## Deployment
 
-- **Web (Vercel): deploy-ready, not deployed yet** (no Vercel credentials were available to the build
-  session). Steps, env vars and the CLI path are in [`docs/deploy/vercel.md`](./docs/deploy/vercel.md):
-  Root Directory `apps/web`, Node 22, and `apps/web/vercel.json` builds through Turborepo so the SDK is
-  bundled first. Production will be a standard `seeitmyway.vercel.app`-style URL.
+- **Web (Vercel): deployed.** Production deploys from `main` through Vercel's Git integration. Setup,
+  env vars and the CLI path are in [`docs/deploy/vercel.md`](./docs/deploy/vercel.md): Root Directory
+  `apps/web`, Node 22, and `apps/web/vercel.json` builds through Turborepo so the SDK is bundled first.
+  [`.env.example`](./.env.example) lists every environment variable and where to find it.
 - **Events (Cloudflare Worker + D1): deploy-ready, not deployed yet.** See
   [`apps/events/README.md`](./apps/events/README.md): `wrangler d1 create`, migrations, `wrangler deploy`
   with `ALLOWED_ORIGINS`, then `NEXT_PUBLIC_EVENTS_URL` in Vercel.
@@ -127,10 +127,9 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 
 ## Status and known gaps
 
-- **Nothing is deployed yet; everything is deploy-ready.** No Vercel or Cloudflare credentials were
-  available to the build session. Order: the two Workers first ([events](./apps/events/README.md),
-  [scanner](./apps/scanner/README.md)), then `apps/web` on Vercel with their URLs
-  ([`docs/deploy/vercel.md`](./docs/deploy/vercel.md)), then the `BASE_URL` smoke test.
+- **Only the web app is deployed; the Workers are deploy-ready.** Next: deploy the two Workers
+  ([events](./apps/events/README.md), [scanner](./apps/scanner/README.md)), set their URLs in Vercel and
+  redeploy ([`docs/deploy/vercel.md`](./docs/deploy/vercel.md)), then run the `BASE_URL` smoke test.
 - **The events Worker is deploy-ready, not deployed** (no Cloudflare credentials were available to the
   build session). Until it's deployed and `NEXT_PUBLIC_EVENTS_URL` is set, counting stays on the
   visitor's device, and `/privacy` says so. Deploy steps: [`apps/events/README.md`](./apps/events/README.md).
