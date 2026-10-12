@@ -145,5 +145,6 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
   the demo fixtures. A live Browser Run scan needs the deployment.
 - The Worker packages pin Vitest 4 for the Workers test pool (TD-2). Other deliberate deferrals are in
   [`docs/tech-debt.md`](./docs/tech-debt.md).
-- The open protocol spec is next; the Passport extension comes later. Session 2's brief, now delivered,
-  is [`docs/handoff/session-02.md`](./docs/handoff/session-02.md).
+- Next: go live, scanner follow-through and a Tune widget for any website. The brief for session 3 is
+  [`docs/handoff/session-03.md`](./docs/handoff/session-03.md); its proposals need product-owner
+  confirmation. The open protocol spec and the Passport extension come later.
