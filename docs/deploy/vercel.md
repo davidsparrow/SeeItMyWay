@@ -1,18 +1,23 @@
 # Deploying `apps/web` to Vercel
 
-Status: **deploy-ready, not deployed.** No Vercel credentials were available to the build session
-(see "Deploy from the CLI" for what's needed). Everything below has been checked locally: the exact
-build command, the env-driven config and the browser-test invariants.
+Status: **deployed.** The project was set up in the Vercel dashboard as below, and production deploys
+from `main` through Vercel's Git integration. The Workers aren't deployed yet, so counting stays on the
+device and `/listen` shows "coming soon" until `NEXT_PUBLIC_EVENTS_URL` and `NEXT_PUBLIC_SCANNER_URL` are
+set.
 
 Production is a standard `<project>.vercel.app` URL. No custom domain yet; adding one later is a
 config change (`NEXT_PUBLIC_SITE_URL`), not a code change.
 
 ## One-time project setup (dashboard)
 
-1. **Add New → Project → Import Git Repository** → `davidsparrow/SeeItMyWay`.
-2. **Project name:** `seeitmyway`. The production URL becomes `https://seeitmyway.vercel.app` if the
-   name is free. Pick the name carefully and keep it: Passport, Tune settings, seeds and Checkup history
-   live in `localStorage`, which is per origin, so a new URL starts every visitor fresh.
+1. **Add New → Project → Import Git Repository** → `davidsparrow/SeeItMyWay`. Vercel says **"Multiple
+   applications detected"** because it finds `apps/web` (Next.js) and `apps/demo-sites` (Vite). Choose
+   **import as a standalone project** and import only `apps/web`; don't group them with Services.
+   `apps/demo-sites` is a fixture the browser tests run locally (INV-3) and is never deployed.
+2. **Project name:** `see-it-my-way`. That `vercel.app` name was taken, so production is
+   `https://see-it-my-way-navy.vercel.app` until a custom domain replaces it. Passport, Tune settings,
+   seeds and Checkup history live in `localStorage`, which is per origin, so moving to the domain starts
+   every visitor fresh: switch before sharing the site widely.
 3. **Framework preset:** Next.js (detected).
 4. **Root Directory:** `apps/web`. Leave **"Include files outside of the Root Directory in the Build
    Step"** enabled (Settings → Build and Deployment → Root Directory); the build needs the workspace
@@ -40,9 +45,9 @@ depends on changed.
 
 ## Things to know
 
-- **Preview deployments are separate origins** (`seeitmyway-<hash>-<team>.vercel.app`), each with its own
-  `localStorage`. The Workers' CORS allowlists must include the preview pattern, e.g.
-  `ALLOWED_ORIGINS=https://seeitmyway.vercel.app,https://seeitmyway-*-<team>.vercel.app`.
+- **Preview deployments are separate origins** (`see-it-my-way-<hash>-<team>.vercel.app`), each with its
+  own `localStorage`. The Workers' CORS allowlists must include the preview pattern, e.g.
+  `ALLOWED_ORIGINS=https://see-it-my-way-navy.vercel.app,https://see-it-my-way-*-<team>.vercel.app`.
 - On previews, `NEXT_PUBLIC_SITE_URL` still resolves to the production URL (that's what
   `VERCEL_PROJECT_PRODUCTION_URL` holds), so `metadataBase`, share text and the `/listen` snippet point
   at production. That's intended: they're for sharing.
@@ -54,8 +59,10 @@ depends on changed.
 ## Deploy from the CLI (when a token is available)
 
 Needs three secrets in the environment (in a Claude Code cloud session: the environment's settings, as
-environment variables): `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` (the last two are in
-the project's Settings → General, or in `.vercel/project.json` after `vercel link`).
+environment variables): `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. `VERCEL_ORG_ID` is the
+team ID (`team_…`, Team Settings → General); `VERCEL_PROJECT_ID` is in the project's Settings → General.
+Both are also in `.vercel/project.json` after `vercel link`. [`.env.example`](../../.env.example) lists
+every environment variable and where it goes.
 
 From the repo root:
 
@@ -72,5 +79,5 @@ always uses the local demo-sites fixture.
 
 ```bash
 pnpm build
-BASE_URL=https://seeitmyway.vercel.app pnpm test:e2e
+BASE_URL=https://see-it-my-way-navy.vercel.app pnpm test:e2e
 ```
