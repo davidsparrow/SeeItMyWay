@@ -1,0 +1,41 @@
+{
+  "name": "@simw/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The SeeItMyWay website runtime. Framework-independent: works from a <script> tag, npm, or React.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./react": "./src/react.tsx"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@simw/adapters": "workspace:*",
+    "@simw/detector": "workspace:*",
+    "@simw/privacy": "workspace:*",
+    "@simw/protocol": "workspace:*",
+    "@simw/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@simw/tsconfig": "workspace:*",
+    "@types/react": "^19.3.0",
+    "jsdom": "^30.1.2",
+    "react": "^19.3.0",
+    "tsup": "^8.5.1",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.3"
+  }
+}

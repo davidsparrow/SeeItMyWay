@@ -1,0 +1,9 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "env": ["VERCEL_PROJECT_PRODUCTION_URL"]
+    }
+  }
+}

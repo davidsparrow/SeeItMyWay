@@ -1,0 +1,54 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "simw-scanner",
+  "main": "src/index.ts",
+  // @cloudflare/playwright needs nodejs_compat and a compatibility date on or after 2025-09-15.
+  "compatibility_date": "2026-08-15",
+  "compatibility_flags": ["nodejs_compat"],
+  // The in-page collector is serialized with fn.toString(); esbuild's keepNames
+  // would inject a helper call the page doesn't have.
+  "keep_names": false,
+  "send_metrics": false,
+  "workers_dev": true,
+  "preview_urls": false,
+  // No Workers Logs, traces or Logpush: requester metadata is never retained by us.
+  "observability": { "enabled": false, "logs": { "enabled": false, "invocation_logs": false } },
+  "logpush": false,
+  "browser": { "binding": "BROWSER" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "simw-scanner",
+      // Replace with the id printed by `wrangler d1 create simw-scanner` (see README.md).
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Ephemeral counters held by Cloudflare's rate limiter; nothing is written to D1.
+  // Browser Run's free plan allows one new browser every 20 seconds, hence the global limit.
+  "ratelimits": [
+    {
+      "name": "SCAN_CLIENT_LIMITER",
+      "namespace_id": "1711",
+      "simple": { "limit": 3, "period": 60 }
+    },
+    {
+      "name": "SCAN_TARGET_LIMITER",
+      "namespace_id": "1712",
+      "simple": { "limit": 2, "period": 60 }
+    },
+    {
+      "name": "SCAN_GLOBAL_LIMITER",
+      "namespace_id": "1713",
+      "simple": { "limit": 3, "period": 60 }
+    }
+  ],
+  // Daily retention: delete expired reports and screenshots.
+  "triggers": { "crons": ["23 4 * * *"] },
+  "vars": {
+    "ALLOWED_ORIGINS": "http://localhost:3000,http://localhost:3100",
+    "PUBLIC_SITE_URL": "http://localhost:3000",
+    "REPORT_TTL_DAYS": "30",
+    "VIEWS_TTL_HOURS": "24"
+  }
+}

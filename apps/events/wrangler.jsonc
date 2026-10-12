@@ -1,0 +1,29 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "simw-events",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-15",
+  "send_metrics": false,
+  "workers_dev": true,
+  "preview_urls": false,
+  // No Workers Logs, traces or Logpush: request metadata (IPs included) is never retained by us.
+  "observability": { "enabled": false, "logs": { "enabled": false, "invocation_logs": false } },
+  "logpush": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "simw-events",
+      // Replace with the id printed by `wrangler d1 create simw-events` (see README.md).
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Ephemeral per-address counters, held by Cloudflare's rate limiter for the period only.
+  "ratelimits": [
+    { "name": "RATE_LIMITER", "namespace_id": "1701", "simple": { "limit": 30, "period": 60 } }
+  ],
+  "vars": {
+    // Production and preview origins of apps/web. `*` matches one DNS label.
+    "ALLOWED_ORIGINS": "http://localhost:3000,http://localhost:3100"
+  }
+}

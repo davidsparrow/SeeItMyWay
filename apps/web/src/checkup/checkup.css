@@ -1,0 +1,188 @@
+/* ---------- Motion demo (A.4): the same component, full vs reduced ---------- */
+.motion-stage {
+  position: relative;
+  height: 15rem;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(
+      60% 80% at 20% 0%,
+      color-mix(in srgb, var(--accent) 18%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      50% 70% at 100% 100%,
+      color-mix(in srgb, var(--glow) 20%, transparent),
+      transparent 70%
+    ),
+    var(--surface-2);
+}
+.motion-stage-bg {
+  position: absolute;
+  inset: -20%;
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--ink) 18%, transparent) 1.5px,
+    transparent 1.6px
+  );
+  background-size: 22px 22px;
+}
+.motion-stage[data-mode='full'] .motion-stage-bg {
+  animation: md-parallax 6s ease-in-out infinite alternate;
+}
+.motion-cards {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+}
+.motion-card {
+  width: min(7.5rem, 27%);
+  height: 9rem;
+  border-radius: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--card-shadow);
+  padding: 0.75rem;
+  display: grid;
+  align-content: end;
+  gap: 0.3rem;
+}
+.motion-card::before {
+  content: '';
+  display: block;
+  height: 3.2rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(135deg, var(--accent), var(--glow));
+  opacity: 0.85;
+}
+.motion-card span {
+  display: block;
+  height: 0.45rem;
+  border-radius: 99px;
+  background: var(--line);
+}
+.motion-card span + span {
+  width: 60%;
+}
+.motion-stage[data-mode='full'] .motion-card {
+  animation: md-fly 900ms cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+  animation-delay: calc(var(--i) * 140ms);
+}
+.motion-stage[data-mode='full'] .motion-card:nth-child(1) {
+  --from: translate(-160%, 40%) rotate(-28deg) scale(0.7);
+}
+.motion-stage[data-mode='full'] .motion-card:nth-child(2) {
+  --from: translate(0, 120%) rotate(16deg) scale(0.6);
+}
+.motion-stage[data-mode='full'] .motion-card:nth-child(3) {
+  --from: translate(160%, -40%) rotate(32deg) scale(0.7);
+}
+.motion-stage[data-mode='reduced'] .motion-card {
+  animation: md-fade 500ms ease both;
+  animation-delay: calc(var(--i) * 60ms);
+}
+@keyframes md-fly {
+  from {
+    opacity: 0;
+    transform: var(--from);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes md-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes md-parallax {
+  from {
+    transform: translate3d(-3%, -2%, 0);
+  }
+  to {
+    transform: translate3d(3%, 2%, 0);
+  }
+}
+
+/* Transparency demo: let content scroll under the menu so the glass is visible. */
+.nl.nl-overlay-nav .nl-nav {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+}
+.nl.nl-overlay-nav .nl-hero-content {
+  padding-top: calc(var(--nl-s) * 6);
+}
+
+/* ---------- Hero signal illustration ---------- */
+.signal-orb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  width: min(22rem, 70vw);
+}
+.signal-orb .signal-ring {
+  position: absolute;
+  inset: 18%;
+  border-radius: 999px;
+  border: 2px solid var(--accent);
+}
+.signal-orb-core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 38%;
+  aspect-ratio: 1;
+  border-radius: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--card-shadow);
+}
+
+/* ---------- Celebration toast ---------- */
+.toast-region {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 1.25rem;
+  z-index: 60;
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+  padding-inline: 1rem;
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 34rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 1.25rem;
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.6);
+  font-weight: 600;
+}
+
+/* Recently changed card */
+.card[data-changed='true'] {
+  border-color: var(--good);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--good) 25%, transparent),
+    var(--card-shadow);
+}
+
+/* After the reveal, entrance animations are done for good. */
+[data-settled='true'] .reveal {
+  animation: none;
+}

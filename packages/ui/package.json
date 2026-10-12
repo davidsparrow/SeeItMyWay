@@ -1,0 +1,26 @@
+{
+  "name": "@simw/ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared React controls for SeeItMyWay surfaces (web app, extension). Styled with Tailwind against semantic tokens.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@simw/protocol": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=19"
+  },
+  "devDependencies": {
+    "@simw/tsconfig": "workspace:*",
+    "@types/react": "^19.3.0",
+    "react": "^19.3.0",
+    "typescript": "~5.9.3"
+  }
+}

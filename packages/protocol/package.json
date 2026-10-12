@@ -1,0 +1,23 @@
+{
+  "name": "@simw/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The SeeItMyWay Preference Protocol: vocabulary, coarse values, sharing classes, packet format and precedence.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@simw/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@simw/tsconfig": "workspace:*",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.3"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "extends": "@simw/tsconfig/library.json",
+  "include": ["src"]
+}

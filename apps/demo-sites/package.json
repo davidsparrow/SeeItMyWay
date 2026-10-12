@@ -1,0 +1,21 @@
+{
+  "name": "@simw/demo-sites",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Framework-free test fixtures: an ordinary website retrofitted with the SeeItMyWay SDK, via npm and via a script tag.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5174",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@simw/sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@simw/tsconfig": "workspace:*",
+    "@types/node": "^24.0.0",
+    "typescript": "~5.9.3",
+    "vite": "^8.3.4"
+  }
+}
