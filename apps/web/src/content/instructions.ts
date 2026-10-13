@@ -5,10 +5,11 @@ import type { TopicId } from './topics';
  * "Show Me How" instructions (PRD A.5): short, visual, platform-specific.
  *
  * Each set records how it was verified. `mdn` sets were checked against the
- * MDN source (github.com/mdn/content) in October 2026. `needs-review` sets
- * come from product knowledge and must be checked against the vendor's own
- * help pages before launch; vendors move these menus between versions.
- * See docs/instructions-review.md.
+ * MDN source (github.com/mdn/content) and `vendor` sets against the vendor's
+ * own help pages (or, where those are silent, its source code), both in
+ * October 2026; `source` names the page. `needs-review` sets come from
+ * product knowledge and must be checked before launch; vendors move these
+ * menus between versions. See docs/instructions-review.md.
  */
 
 export type InstructionPlatform =
@@ -33,7 +34,8 @@ export interface InstructionSet {
   action?: string;
   note?: string;
   alternatives?: Array<{ label: string; steps: string[]; action?: string }>;
-  verified: 'mdn' | 'needs-review';
+  verified: 'mdn' | 'vendor' | 'needs-review';
+  /** Where the steps were checked. Required unless `needs-review`. */
   source?: string;
 }
 
@@ -42,6 +44,37 @@ const MDN = {
     'https://github.com/mdn/content/blob/main/files/en-us/web/css/reference/at-rules/@media/prefers-reduced-motion/index.md',
   transparency:
     'https://github.com/mdn/content/blob/main/files/en-us/web/css/reference/at-rules/@media/prefers-reduced-transparency/index.md',
+};
+
+const VENDOR = {
+  appleDarkMode: 'https://support.apple.com/en-us/108350',
+  appleMacAppearance:
+    'https://support.apple.com/guide/mac-help/use-a-light-or-dark-appearance-mchl52e1c2d2/mac',
+  appleMacDisplay:
+    'https://support.apple.com/guide/mac-help/change-display-settings-for-accessibility-unac089/mac',
+  appleMacColors:
+    'https://support.apple.com/guide/mac-help/adjust-the-display-colors-mchl11ddd4b3/mac',
+  appleIphoneColors: 'https://support.apple.com/guide/iphone/change-display-colors-iph3e2e1fb0/ios',
+  appleDisplayTextSize: 'https://support.apple.com/en-us/111773',
+  safariZoom: 'https://support.apple.com/guide/safari/zoom-in-on-webpages-ibrw1068/mac',
+  windowsColors:
+    'https://support.microsoft.com/en-us/windows/experience/personalization/personalize-your-colors-in-windows',
+  windowsContrast:
+    'https://support.microsoft.com/en-us/accessibility/windows/change-color-contrast-in-windows',
+  edgeTextSize:
+    'https://support.microsoft.com/en-us/edge/increase-default-text-size-in-microsoft-edge',
+  androidDarkTheme: 'https://support.google.com/android/answer/9730472',
+  pixelDataSaver: 'https://support.google.com/pixelphone/answer/7055392',
+  chromeTextSize: 'https://support.google.com/chrome/answer/96810',
+  // Chrome Help documents only the New Tab route; the Settings labels come from Chromium's strings.
+  chromeMode:
+    'https://chromium.googlesource.com/chromium/src/+/main/chrome/app/settings_strings.grdp',
+  gnomeAppearance: 'https://help.gnome.org/gnome-help/look-background.html',
+  // Firefox 152 redesigned Settings; these pages give both the 152+ and the older paths.
+  firefoxAppearance: 'https://support.mozilla.org/kb/change-website-appearance-settings-firefox',
+  firefoxContrast: 'https://support.mozilla.org/kb/firefox-contrast-control',
+  firefoxFontSize: 'https://support.mozilla.org/kb/font-size-and-zoom-increase-size-of-web-pages',
+  firefoxGpc: 'https://support.mozilla.org/kb/global-privacy-control',
 };
 
 export const PLATFORM_LABELS: Record<InstructionPlatform, string> = {
@@ -183,58 +216,99 @@ export const INSTRUCTIONS: Partial<Record<TopicId, InstructionSet[]>> = {
     {
       platform: 'ios',
       label: 'Dark mode on iPhone',
-      steps: ['Settings', 'Display & Brightness'],
-      action: 'Choose Dark, or Automatic to switch at sunset.',
-      verified: 'needs-review',
+      steps: ['Settings', 'Appearance'],
+      action: 'Choose Dark, or Automatic to switch on a schedule.',
+      note: 'This is for iOS 27 and later.',
+      alternatives: [
+        {
+          label: 'iOS 26 and earlier',
+          steps: ['Settings', 'Display & Brightness'],
+          action: 'Choose Dark, or Automatic to switch on a schedule.',
+        },
+      ],
+      verified: 'vendor',
+      source: VENDOR.appleDarkMode,
     },
     {
       platform: 'ipados',
       label: 'Dark mode on iPad',
-      steps: ['Settings', 'Display & Brightness'],
-      action: 'Choose Dark, or Automatic to switch at sunset.',
-      verified: 'needs-review',
+      steps: ['Settings', 'Appearance'],
+      action: 'Choose Dark, or Automatic to switch on a schedule.',
+      note: 'This is for iPadOS 27 and later.',
+      alternatives: [
+        {
+          label: 'iPadOS 26 and earlier',
+          steps: ['Settings', 'Display & Brightness'],
+          action: 'Choose Dark, or Automatic to switch on a schedule.',
+        },
+      ],
+      verified: 'vendor',
+      source: VENDOR.appleDarkMode,
     },
     {
       platform: 'macos',
       label: 'Dark mode on a Mac',
       steps: ['System Settings', 'Appearance'],
       action: 'Choose Dark, or Auto.',
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.appleMacAppearance,
     },
     {
       platform: 'windows',
-      label: 'Dark mode on Windows 11',
+      label: 'Dark mode on Windows',
       steps: ['Settings', 'Personalization', 'Colors', 'Choose your mode'],
       action: 'Choose Dark.',
-      verified: 'needs-review',
+      note: 'The same on Windows 11 and Windows 10.',
+      verified: 'vendor',
+      source: VENDOR.windowsColors,
     },
     {
       platform: 'android',
       label: 'Dark theme on Android',
       steps: ['Settings', 'Display', 'Dark theme'],
       action: 'Turn it on.',
-      verified: 'needs-review',
+      alternatives: [
+        {
+          label: 'Pixel',
+          steps: ['Settings', 'Display & touch', 'Dark theme'],
+          action: 'Turn it on.',
+        },
+      ],
+      verified: 'vendor',
+      source: VENDOR.androidDarkTheme,
     },
     {
       platform: 'linux',
       label: 'Dark style on Linux (GNOME)',
       steps: ['Settings', 'Appearance'],
       action: 'Choose Dark.',
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.gnomeAppearance,
     },
     {
       platform: 'firefox',
       label: 'Website appearance in Firefox',
-      steps: ['Settings', 'General', 'Website appearance'],
-      action: 'Choose Automatic to follow your device, or pick Light or Dark.',
-      verified: 'needs-review',
+      steps: ['Settings', 'Appearance', 'Website appearance'],
+      action: 'Choose System to follow your device and Firefox theme, or pick Light or Dark.',
+      note: 'This is for Firefox 152 and later.',
+      alternatives: [
+        {
+          label: 'Firefox 151 and earlier',
+          steps: ['Settings', 'General', 'Language and Appearance', 'Website appearance'],
+          action: 'Choose Automatic, or pick Light or Dark.',
+        },
+      ],
+      verified: 'vendor',
+      source: VENDOR.firefoxAppearance,
     },
     {
       platform: 'chrome',
       label: 'Chrome’s own mode setting',
       steps: ['Settings', 'Appearance', 'Mode'],
       action: 'Choose "Device" to follow your system, or pick Light or Dark.',
-      verified: 'needs-review',
+      note: 'Since Chrome 136 websites see this choice too, except in Incognito windows.',
+      verified: 'vendor',
+      source: VENDOR.chromeMode,
     },
   ],
   contrast: [
@@ -243,29 +317,33 @@ export const INSTRUCTIONS: Partial<Record<TopicId, InstructionSet[]>> = {
       label: 'Increase contrast on a Mac',
       steps: ['System Settings', 'Accessibility', 'Display', 'Increase contrast'],
       action: 'Turn it on.',
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.appleMacDisplay,
     },
     {
       platform: 'ios',
       label: 'Increase contrast on iPhone',
       steps: ['Settings', 'Accessibility', 'Display & Text Size', 'Increase Contrast'],
       action: 'Turn it on.',
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.appleDisplayTextSize,
     },
     {
       platform: 'ipados',
       label: 'Increase contrast on iPad',
       steps: ['Settings', 'Accessibility', 'Display & Text Size', 'Increase Contrast'],
       action: 'Turn it on.',
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.appleDisplayTextSize,
     },
     {
       platform: 'windows',
       label: 'Contrast themes on Windows 11',
       steps: ['Settings', 'Accessibility', 'Contrast themes'],
       action: 'Pick a theme and apply it.',
-      note: 'This also turns on forced colors, which replaces website colors with your theme’s.',
-      verified: 'needs-review',
+      note: 'This also turns on forced colors, which replaces most website colors with your theme’s.',
+      verified: 'vendor',
+      source: VENDOR.windowsContrast,
     },
   ],
   'forced-colors': [
@@ -275,32 +353,49 @@ export const INSTRUCTIONS: Partial<Record<TopicId, InstructionSet[]>> = {
       steps: ['Settings', 'Accessibility', 'Contrast themes'],
       action: 'Pick a theme and apply it.',
       alternatives: [
-        { label: 'Windows 10', steps: ['Settings', 'Ease of Access', 'High contrast'] },
+        {
+          label: 'Windows 10',
+          steps: ['Settings', 'Ease of Access', 'High contrast'],
+          action: 'Turn on "Turn on high contrast", then pick a theme under "Choose a theme".',
+        },
       ],
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.windowsContrast,
     },
     {
       platform: 'firefox',
       label: 'Override colors in Firefox',
-      steps: ['Settings', 'General', 'Colors', 'Manage Colors…'],
-      action: 'Set "Override the colors specified by the page" to Always.',
-      verified: 'needs-review',
+      steps: ['Settings', 'Accessibility', 'Website contrast'],
+      action: 'Set "Override colors" to Custom. "Manage colors" picks the colors.',
+      note: 'This is for Firefox 152 and later.',
+      alternatives: [
+        {
+          label: 'Firefox 138 to 151',
+          steps: ['Settings', 'General', 'Language and Appearance', 'Contrast Control'],
+          action: 'Choose Custom. Firefox 148 to 151 call it "Website contrast".',
+        },
+      ],
+      verified: 'vendor',
+      source: VENDOR.firefoxContrast,
     },
   ],
   'inverted-colors': [
     {
       platform: 'ios',
       label: 'Invert colors on iPhone',
-      steps: ['Settings', 'Accessibility', 'Display & Text Size', 'Smart Invert'],
+      steps: ['Settings', 'Accessibility', 'Display & Text Size', 'Classic Invert'],
       action: 'Turn it on.',
-      verified: 'needs-review',
+      note: 'Websites can only tell when Classic Invert is on: iPhone browsers don’t pass on Smart Invert.',
+      verified: 'vendor',
+      source: VENDOR.appleIphoneColors,
     },
     {
       platform: 'macos',
       label: 'Invert colors on a Mac',
       steps: ['System Settings', 'Accessibility', 'Display', 'Invert colors'],
       action: 'Turn it on.',
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.appleMacColors,
     },
   ],
   'text-size': [
@@ -309,29 +404,41 @@ export const INSTRUCTIONS: Partial<Record<TopicId, InstructionSet[]>> = {
       label: 'Default text size in Chrome',
       steps: ['Settings', 'Appearance', 'Font size'],
       action: 'Pick Large or Very large.',
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.chromeTextSize,
     },
     {
       platform: 'edge',
       label: 'Default text size in Edge',
       steps: ['Settings', 'Appearance', 'Fonts', 'Font size'],
       action: 'Pick a larger size.',
-      verified: 'needs-review',
+      verified: 'vendor',
+      source: VENDOR.edgeTextSize,
     },
     {
       platform: 'firefox',
       label: 'Default text size in Firefox',
-      steps: ['Settings', 'General', 'Fonts', 'Size'],
+      steps: ['Settings', 'Accessibility', 'Fonts', 'Font size'],
       action: 'Pick a larger size.',
-      verified: 'needs-review',
+      note: 'This is for Firefox 152 and later.',
+      alternatives: [
+        {
+          label: 'Firefox 151 and earlier',
+          steps: ['Settings', 'General', 'Language and Appearance', 'Fonts', 'Size'],
+          action: 'Pick a larger size.',
+        },
+      ],
+      verified: 'vendor',
+      source: VENDOR.firefoxFontSize,
     },
     {
       platform: 'safari',
       label: 'Safari',
-      steps: ['Safari', 'Settings', 'Websites', 'Page Zoom'],
+      steps: ['Safari', 'Settings', 'Websites', 'Page Zoom', 'When visiting other websites'],
       action: 'Safari has no default text size setting; page zoom enlarges everything instead.',
-      note: 'Zoom works well, but websites can’t tell it apart from a bigger screen.',
-      verified: 'needs-review',
+      note: 'Zoom works well, but websites see a smaller window rather than a text size preference.',
+      verified: 'vendor',
+      source: VENDOR.safariZoom,
     },
   ],
   data: [
@@ -340,17 +447,27 @@ export const INSTRUCTIONS: Partial<Record<TopicId, InstructionSet[]>> = {
       label: 'Data Saver on Android',
       steps: ['Settings', 'Network & internet', 'Data Saver'],
       action: 'Turn it on.',
-      note: 'Whether your browser passes this on to websites depends on the browser.',
-      verified: 'needs-review',
+      note: 'Chrome passes this on to websites while you’re on mobile data or another metered connection, except in Incognito. Other browsers vary.',
+      verified: 'vendor',
+      source: VENDOR.pixelDataSaver,
     },
   ],
   privacy: [
     {
       platform: 'firefox',
       label: 'Global Privacy Control in Firefox',
-      steps: ['Settings', 'Privacy & Security', 'Website Privacy Preferences'],
+      steps: ['Settings', 'Privacy and security', 'Additional protections'],
       action: 'Tick "Tell websites not to sell or share my data".',
-      verified: 'needs-review',
+      note: 'This is for Firefox 152 and later.',
+      alternatives: [
+        {
+          label: 'Firefox 120 to 151',
+          steps: ['Settings', 'Privacy & Security', 'Website Privacy Preferences'],
+          action: 'Tick "Tell websites not to sell or share my data".',
+        },
+      ],
+      verified: 'vendor',
+      source: VENDOR.firefoxGpc,
     },
   ],
 };
