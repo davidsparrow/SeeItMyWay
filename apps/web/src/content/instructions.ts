@@ -70,6 +70,8 @@ const VENDOR = {
   chromeMode:
     'https://chromium.googlesource.com/chromium/src/+/main/chrome/app/settings_strings.grdp',
   gnomeAppearance: 'https://help.gnome.org/gnome-help/look-background.html',
+  chromebookAccessibility: 'https://support.google.com/chromebook/answer/177893',
+  chromebookDarkTheme: 'https://support.google.com/chromebook/answer/9145848',
   // Firefox 152 redesigned Settings; these pages give both the 152+ and the older paths.
   firefoxAppearance: 'https://support.mozilla.org/kb/change-website-appearance-settings-firefox',
   firefoxContrast: 'https://support.mozilla.org/kb/firefox-contrast-control',
@@ -148,6 +150,14 @@ export const INSTRUCTIONS: Partial<Record<TopicId, InstructionSet[]>> = {
       note: 'Android 9 and later. Some phones put it one level deeper, under "Color and motion" or "Visibility enhancements".',
       verified: 'mdn',
       source: MDN.motion,
+    },
+    {
+      platform: 'chromeos',
+      label: 'Reduced animations on a Chromebook',
+      steps: ['Settings', 'Accessibility', 'Display and magnification', 'Reduced animations'],
+      action: 'Turn it on.',
+      verified: 'vendor',
+      source: VENDOR.chromebookAccessibility,
     },
     {
       platform: 'linux',
@@ -276,6 +286,15 @@ export const INSTRUCTIONS: Partial<Record<TopicId, InstructionSet[]>> = {
       ],
       verified: 'vendor',
       source: VENDOR.androidDarkTheme,
+    },
+    {
+      platform: 'chromeos',
+      label: 'Dark theme on a Chromebook',
+      steps: ['Right-click the desktop', 'Set wallpaper & style', 'Theme'],
+      action: 'Choose Dark, or Auto to switch on a schedule.',
+      note: 'If Chrome’s own Appearance is set to Light or Dark, websites follow that instead.',
+      verified: 'vendor',
+      source: VENDOR.chromebookDarkTheme,
     },
     {
       platform: 'linux',
@@ -414,6 +433,21 @@ export const INSTRUCTIONS: Partial<Record<TopicId, InstructionSet[]>> = {
       action: 'Pick a larger size.',
       verified: 'vendor',
       source: VENDOR.edgeTextSize,
+    },
+    {
+      platform: 'chromeos',
+      label: 'Website text size on a Chromebook',
+      steps: [
+        'Settings',
+        'Accessibility',
+        'Display and magnification',
+        'Website text size and font',
+        'Font size',
+      ],
+      action: 'Pick Large or Very large.',
+      note: 'Some websites fix their text size. For those, zoom in with Ctrl and +.',
+      verified: 'vendor',
+      source: VENDOR.chromebookAccessibility,
     },
     {
       platform: 'firefox',

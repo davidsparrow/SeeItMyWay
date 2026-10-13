@@ -134,8 +134,8 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
   build session). Until it's deployed and `NEXT_PUBLIC_EVENTS_URL` is set, counting stays on the
   visitor's device, and `/privacy` says so. Deploy steps: [`apps/events/README.md`](./apps/events/README.md).
 - **Every "Show me how" step is verified** against MDN or the vendor's own help pages (October 2026),
-  with its source recorded. Gaps: no ChromeOS steps yet, and Android Data Saver is checked against
-  Pixel only. See [`docs/instructions-review.md`](./docs/instructions-review.md).
+  with its source recorded. Gaps: ChromeOS has no contrast setting that websites can see, and Android
+  Data Saver is checked against Pixel only. See [`docs/instructions-review.md`](./docs/instructions-review.md).
 - The SDK isn't published to npm or a CDN yet. The `/listen` snippet loads the script-tag build that
   the web app serves itself (`/sdk/simw.global.js`); `NEXT_PUBLIC_SDK_URL` can point it at a CDN later.
 - **TypeScript is pinned to 5.9 for V0** (TS 7 drops the compiler API Next.js uses). See

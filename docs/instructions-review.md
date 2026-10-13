@@ -32,6 +32,7 @@ on the `release` branch).
 | Text size       | Chrome, Edge, Safari                                         | Safari path ends at "When visiting other websites". Its note no longer says zoom looks like "a bigger screen": a zoomed page sees a smaller window |
 | Data saver      | Android (Pixel's help page)                                  | Note says when Chrome passes it on: mobile data or another metered connection, never in Incognito (Chrome 102+) |
 | Firefox (all four) | Website appearance, contrast/forced colors, text size, Global Privacy Control | All moved in **Firefox 152's Settings redesign**; the older paths are kept as alternatives (ESR 140 still uses them). "Automatic" is now "System". The ≤137 "Override the colors specified by the page" dropdown is gone: Custom in Website contrast forces colors now |
+| ChromeOS (new)  | Motion, appearance, text size                                | Reduced animations, Dark theme (with a note that Chrome's own Appearance setting wins) and website font size. Chromium source confirms each reaches websites. **No contrast or forced-colors steps:** Color inversion and Color correction only change the screen image, so websites see neither (`ui/native_theme/os_settings_provider_ash.cc`) |
 
 Sources for the browser-behavior notes:
 
@@ -52,7 +53,6 @@ Sources for the browser-behavior notes:
 
 ## Still open
 
-- **Gaps:** no ChromeOS steps for any topic yet.
 - **Android Data Saver** is verified against Pixel's help page only (Google's generic Android page is
   gone). Other manufacturers may label it differently.
 - **Mac inverted colors:** macOS has an Invert colors mode (Smart or Classic). WebKit on Mac reads
