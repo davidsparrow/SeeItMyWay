@@ -68,9 +68,38 @@ entry whenever a decision trades long-term cleanliness for V0 speed.
   - dark mode: background luminance
 
   The Browser Run path has not run live: the build sandbox couldn't reach Cloudflare or public sites.
-- **Revisit:** right after the first deploy, scan the deployed `/demo` and a few known sites and compare
-  with calibration. Before publishing scores widely, build a small labeled corpus and tune `THRESHOLDS`
-  under a new `RUBRIC_VERSION`.
+- **Live check, 2026-10-12 (session 3).** The scanner Worker ran under `wrangler dev --local`, with
+  wrangler's local Browser Run stand-in (Chrome 126), against real public pages. Rubric v1 results:
+
+  | Page                               | Score | What stood out                                                                                   |
+  | ---------------------------------- | ----: | ------------------------------------------------------------------------------------------------ |
+  | Production `/demo` (Northlight)    |   100 | Matches calibration                                                                              |
+  | Production `/`                     |   100 |                                                                                                  |
+  | example.com                        |    70 | Loses 10 for not listening for reduced motion, though nothing on it moves; 15 for contrast       |
+  | github.com                         |    70 | Dark by design: "Dark by default" (partial). 25 hover rules flagged "possible"                   |
+  | apple.com                          |    67 | No dark mode; queries contrast but little changes                                                |
+  | stripe.com                         |    60 | No dark mode or contrast; motion handled well (carousel waits)                                   |
+  | developer.mozilla.org              |    80 | No contrast support                                                                              |
+  | bbc.com                            |    50 | First attempt failed with the generic error; the retry succeeded and matched local Chromium     |
+
+  Each score was cross-checked by running the same driver and rubric in local Chromium 141. Findings:
+  - **Rubric v2 (done, product-owner decision):** a page with no motion at all failed
+    `reduced-motion-listens`, and an already high-contrast page failed `contrast` when nothing
+    changed. Both now pass as "not applicable" on positive evidence (`docs/scanner-rubric.md`);
+    example.com goes from 70 to 95 and the other pages keep their scores.
+  - **Single loads can flip a check.** MDN's contrast check came back "supported" in 1 of 4 runs: that
+    load was collected mid-render, so ≥ 2 % of its colors differed with no contrast rule anywhere.
+    The rubric is deterministic given the facts, but the facts aren't, between loads of a live page.
+    Mitigation: load the baseline twice and require the dark and contrast changes to beat the
+    baseline-against-baseline noise (one more browser load per scan, against Browser Run's limits).
+  - **Screenshots:** under wrangler's local harness every GitHub view came back solid black, though
+    the collected facts were right. The same page renders correctly in Playwright with both Chrome 126
+    and Chromium 141 (with our init script and collector), so it's specific to the local harness.
+    Check GitHub's views on real Browser Run; if they're black there too, drop near-uniform screenshots
+    rather than show them.
+- **Revisit:** right after the first deploy, scan the deployed `/demo` and the pages above on real
+  Browser Run and compare. Before publishing scores widely, build a small labeled corpus and tune
+  `THRESHOLDS` under a new `RUBRIC_VERSION`.
 
 ## TD-6: Report pages render client-side
 

@@ -11,8 +11,10 @@ export async function scanWithBrowserRun(
   const browser = await launch(env.BROWSER);
   try {
     // An honest user agent: the real Chrome string plus who we are and where to read about it.
-    const site = (env.PUBLIC_SITE_URL || 'https://seeitmyway.vercel.app').replace(/\/+$/, '');
-    const userAgent = `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${browser.version()} Safari/537.36 SeeItMyWaySiteListener/0.1 (+${site}/listen)`;
+    // No PUBLIC_SITE_URL, no link: never point site owners at a hostname we don't control.
+    const site = (env.PUBLIC_SITE_URL ?? '').replace(/\/+$/, '');
+    const about = site ? ` (+${site}/listen)` : '';
+    const userAgent = `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${browser.version()} Safari/537.36 SeeItMyWaySiteListener/0.1${about}`;
     return await runScan(browser as unknown as BrowserLike, url, {
       userAgent,
       screenshots: true,

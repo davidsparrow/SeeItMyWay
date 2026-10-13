@@ -12,12 +12,15 @@ import {
 } from './types';
 
 /**
- * The Preference Awareness Score, rubric version 1.
+ * The Preference Awareness Score, rubric version 2.
  *
  * Deterministic: the same facts always give the same checks and score. Each
  * check is worth a fixed number of points (100 in total). A pass earns all of
- * them, a partial half (rounded down), a fail none. Thresholds are listed in
- * docs/scanner-rubric.md; change them only together with RUBRIC_VERSION.
+ * them, a partial half (rounded down), a fail none. A check with nothing to
+ * adapt (no motion at all; text already at enhanced contrast) passes as not
+ * applicable, but only on positive evidence: any doubt keeps the stricter
+ * result. Thresholds are listed in docs/scanner-rubric.md; change them only
+ * together with RUBRIC_VERSION.
  */
 export const RUBRIC: Readonly<Record<CheckId, number>> = {
   'color-scheme': 20,
@@ -48,6 +51,10 @@ export const THRESHOLDS = {
   contrastRatioGain: 0.5,
   /** Share of the viewport a first-screen video must cover to be called a hero video. */
   heroArea: 0.15,
+  /** WCAG enhanced (AAA) contrast ratio: text at or above it has little left to strengthen. */
+  enhancedContrast: 7,
+  /** Text samples needed before a page can count as already high-contrast. */
+  minTextSamples: 5,
 } as const;
 
 /** WCAG relative luminance of an sRGB color, 0 (black) to 1 (white). */
@@ -97,6 +104,31 @@ function signals(facts: ScanFacts, base: PageFacts, feature: MediaFeature): numb
 
 function cssRules(facts: ScanFacts, base: PageFacts, feature: MediaFeature): number {
   return base.css.features[feature] + facts.externalCss[feature];
+}
+
+/** Video that's visible and set to play, or playing, on its own. */
+const movingVideo = (p: PageFacts) =>
+  p.media.filter((m) => m.kind === 'video' && m.area > 0 && (m.autoplay || m.playing));
+
+/**
+ * Nothing on the page can move: no animation running, no `@keyframes` or smooth scrolling in any
+ * stylesheet, no video playing on its own and no carousel advancing. Needs every stylesheet read.
+ */
+function hasNoMotion(facts: ScanFacts, base: PageFacts): boolean {
+  return (
+    facts.unreadableSheets === 0 &&
+    base.css.motionRules + facts.externalMotionRules === 0 &&
+    base.animations.running === 0 &&
+    base.animations.infinite === 0 &&
+    movingVideo(base).length === 0 &&
+    base.carousel.advances === 0
+  );
+}
+
+/** Every sampled text element already meets enhanced contrast against what's behind it. */
+function isAlreadyHighContrast(base: PageFacts): boolean {
+  const { samples, belowEnhanced } = base.colors.textContrast;
+  return samples >= THRESHOLDS.minTextSamples && belowEnhanced === 0;
 }
 
 export function analyze(facts: ScanFacts): { checks: Check[]; score: number } {
@@ -170,6 +202,15 @@ export function analyze(facts: ScanFacts): { checks: Check[]; score: number } {
           'Colors strengthen when the device asks for more contrast.',
         ),
       );
+    } else if (isAlreadyHighContrast(base)) {
+      checks.push(
+        check(
+          'contrast',
+          'pass',
+          'Already high contrast',
+          `All the text we sampled already meets ${THRESHOLDS.enhancedContrast}:1 contrast, so there was little for a contrast request to strengthen.`,
+        ),
+      );
     } else if (evidence > 0) {
       checks.push(
         check(
@@ -205,6 +246,15 @@ export function analyze(facts: ScanFacts): { checks: Check[]; score: number } {
           'pass',
           'Listens for reduced motion',
           `The page checks for a reduced-motion preference (${how}).`,
+        ),
+      );
+    } else if (hasNoMotion(facts, base)) {
+      checks.push(
+        check(
+          'reduced-motion-listens',
+          'pass',
+          'No motion to reduce',
+          'Nothing on the page animated, played or slid on its own, so a reduced-motion request had nothing to calm.',
         ),
       );
     } else {
@@ -265,9 +315,7 @@ export function analyze(facts: ScanFacts): { checks: Check[]; score: number } {
   // Reduced motion: video ------------------------------------------------------------------
   {
     const viewportArea = base.viewport.width * base.viewport.height;
-    const moving = (p: PageFacts) =>
-      p.media.filter((m) => m.kind === 'video' && m.area > 0 && (m.autoplay || m.playing));
-    const stillMoving = moving(reduced);
+    const stillMoving = movingVideo(reduced);
     if (stillMoving.length > 0) {
       const hero = stillMoving.some(
         (m) => m.inFirstViewport && m.area >= THRESHOLDS.heroArea * viewportArea,
@@ -280,7 +328,7 @@ export function analyze(facts: ScanFacts): { checks: Check[]; score: number } {
           `${plural(stillMoving.length, 'video')} still set to play on its own with reduced motion requested.`,
         ),
       );
-    } else if (moving(base).length > 0) {
+    } else if (movingVideo(base).length > 0) {
       checks.push(
         check(
           'reduced-motion-media',

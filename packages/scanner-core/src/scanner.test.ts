@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { analyze, buildReport, RUBRIC, zeroCounts } from './analyze';
+import { analyze, buildReport, RUBRIC, THRESHOLDS, zeroCounts } from './analyze';
+import { countMotionRules } from './driver';
 import { pageFacts, scanFacts } from './fixtures';
-import type { Check, CheckId, PageFacts } from './types';
+import type { Check, CheckId, PageFacts, ScanFacts } from './types';
 import { hostRejection, isPrivateAddress, normalizeScanUrl, requestRejection } from './url';
 
 const byId = (checks: Check[]) =>
@@ -115,6 +116,7 @@ describe('analyze', () => {
       readableSheets: 2,
       unreadableHrefs: [],
       hoverRevealRules: 0,
+      motionRules: 2,
     },
   };
 
@@ -151,7 +153,12 @@ describe('analyze', () => {
         carousel: { candidates: 1, advances: 0 },
       }),
       dark: pageFacts({
-        colors: { background: [13, 14, 19], text: [240, 240, 240], signature: ['dark'] },
+        colors: {
+          ...base.colors,
+          background: [13, 14, 19],
+          text: [240, 240, 240],
+          signature: ['dark'],
+        },
       }),
       'more-contrast': pageFacts({
         colors: {
@@ -274,11 +281,54 @@ describe('analyze', () => {
 
   it('calls an always-dark page "dark by default"', () => {
     const dark = pageFacts({
-      colors: { background: [10, 10, 10], text: [230, 230, 230], signature: [] },
+      colors: {
+        ...pageFacts().colors,
+        background: [10, 10, 10],
+        text: [230, 230, 230],
+        signature: [],
+      },
     });
     expect(byId(analyze(scanFacts({ baseline: dark })).checks)['color-scheme'].title).toBe(
       'Dark by default',
     );
+  });
+
+  it('passes reduced-motion listening as not applicable only when nothing can move', () => {
+    const still = byId(analyze(scanFacts({})).checks)['reduced-motion-listens'];
+    expect(still).toMatchObject({ status: 'pass', title: 'No motion to reduce' });
+
+    const fails = (facts: ScanFacts) =>
+      expect(byId(analyze(facts).checks)['reduced-motion-listens'].status).toBe('fail');
+    fails(scanFacts({ baseline: pageFacts({ css: { ...pageFacts().css, motionRules: 1 } }) }));
+    fails(scanFacts({ baseline: pageFacts({ animations: { running: 1, infinite: 0 } }) }));
+    fails(scanFacts({ baseline: pageFacts({ carousel: { candidates: 1, advances: 1 } }) }));
+    fails({ ...scanFacts({}), externalMotionRules: 2 });
+    // An unread stylesheet could hold the motion, so there's no "not applicable" without it.
+    fails({ ...scanFacts({}), unreadableSheets: 1 });
+  });
+
+  it('passes contrast as not applicable only when every text sample is already 7:1', () => {
+    const page = (samples: number, belowEnhanced: number) =>
+      scanFacts({
+        baseline: pageFacts({
+          colors: { ...pageFacts().colors, textContrast: { samples, belowEnhanced } },
+        }),
+      });
+    expect(byId(analyze(page(40, 0)).checks).contrast).toMatchObject({
+      status: 'pass',
+      title: 'Already high contrast',
+    });
+    expect(byId(analyze(page(40, 1)).checks).contrast.status).toBe('fail');
+    expect(byId(analyze(page(THRESHOLDS.minTextSamples - 1, 0)).checks).contrast.status).toBe(
+      'fail',
+    );
+  });
+
+  it('counts @keyframes and smooth scrolling in stylesheet text as motion', () => {
+    expect(
+      countMotionRules('@keyframes a{} @-webkit-keyframes b{} html{scroll-behavior: smooth}'),
+    ).toBe(3);
+    expect(countMotionRules('.a{transition:color .2s} html{scroll-behavior:auto}')).toBe(0);
   });
 
   it('is deterministic and the rubric adds up to 100', () => {
@@ -300,7 +350,7 @@ describe('buildReport', () => {
       stripped: { query: true, fragment: false },
     });
     expect(report.url).toBe('https://example.com/');
-    expect(report.rubricVersion).toBe('1');
+    expect(report.rubricVersion).toBe('2');
     expect(report.notes.join(' ')).toMatch(/removed the query string/);
     expect(report.notes.join(' ')).toMatch(/2 stylesheets couldn’t be read/);
     expect(report.notes[0]).toMatch(/not an accessibility audit/);
