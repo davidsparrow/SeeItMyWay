@@ -65,6 +65,7 @@ export async function collectPageFacts(options: CollectOptions): Promise<PageFac
   // --- Stylesheets: media features, light-dark(), hover-only reveals ---------
   const features = emptyCounts();
   let lightDark = 0;
+  let motionRules = 0;
   let readableSheets = 0;
   const unreadableHrefs: string[] = [];
   const hoverRules: Array<{ selector: string }> = [];
@@ -89,8 +90,11 @@ export async function collectPageFacts(options: CollectOptions): Promise<PageFac
         } catch {
           // Cross-origin import: counted by the driver from the response text.
         }
+      } else if (rule instanceof CSSKeyframesRule) {
+        motionRules += 1;
       } else if (rule instanceof CSSStyleRule) {
         if (rule.cssText.includes('light-dark(')) lightDark += 1;
+        if (rule.style.scrollBehavior === 'smooth') motionRules += 1;
         const selectors = rule.selectorText.split(',').map((s) => s.trim());
         for (const selector of selectors) {
           if (/:focus(-within|-visible)?\b/.test(selector)) {
@@ -163,13 +167,52 @@ export async function collectPageFacts(options: CollectOptions): Promise<PageFac
   const bodyColor = parseColor(getComputedStyle(document.body ?? document.documentElement).color);
   const text: [number, number, number] = [bodyColor[0], bodyColor[1], bodyColor[2]];
 
+  // WCAG contrast of an element's own text against what's really behind it: semi-transparent
+  // backgrounds are composited up to the first opaque one (or the canvas). Null when a
+  // background image or gradient is in the way, since we can't know its colors.
+  const channel = (c: number) => {
+    const s = c / 255;
+    return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  const lum = (c: number[]) =>
+    0.2126 * channel(c[0] ?? 0) + 0.7152 * channel(c[1] ?? 0) + 0.0722 * channel(c[2] ?? 0);
+  const over = (top: number[], alpha: number, under: number[]) =>
+    [0, 1, 2].map((i) => (top[i] ?? 0) * alpha + (under[i] ?? 0) * (1 - alpha));
+  const textContrastRatio = (el: Element, style: CSSStyleDeclaration): number | null => {
+    const layers: Array<[number, number, number, number]> = [];
+    let behind: number[] = canvas;
+    for (let node: Element | null = el; node; node = node.parentElement) {
+      const s = node === el ? style : getComputedStyle(node);
+      if (s.backgroundImage && s.backgroundImage !== 'none') return null;
+      const layer = parseColor(s.backgroundColor);
+      if (layer[3] >= 0.99) {
+        behind = [layer[0], layer[1], layer[2]];
+        break;
+      }
+      if (layer[3] > 0) layers.push(layer);
+    }
+    for (const layer of layers.reverse()) behind = over(layer, layer[3], behind);
+    const fg = parseColor(style.color);
+    const ink = over(fg, fg[3], behind);
+    const [hi, lo] = [lum(ink), lum(behind)].sort((x, y) => y - x) as [number, number];
+    return (hi + 0.05) / (lo + 0.05);
+  };
+
   const signature: string[] = [];
+  const textContrast = { samples: 0, belowEnhanced: 0 };
   for (const el of Array.from(document.body?.querySelectorAll('*') ?? [])) {
     if (signature.length >= options.sampleSize) break;
     const box = el.getBoundingClientRect();
     if (box.width === 0 || box.height === 0) continue;
     const style = getComputedStyle(el);
     signature.push(`${el.tagName}|${style.color}|${style.backgroundColor}|${style.borderTopColor}`);
+    const ownText = Array.from(el.childNodes).some(
+      (n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? '').trim() !== '',
+    );
+    if (!ownText || style.visibility === 'hidden') continue;
+    textContrast.samples += 1;
+    const ratio = textContrastRatio(el, style);
+    if (ratio === null || ratio < 7) textContrast.belowEnhanced += 1;
   }
 
   // --- Animations --------------------------------------------------------------
@@ -242,9 +285,9 @@ export async function collectPageFacts(options: CollectOptions): Promise<PageFac
     viewportMeta: meta('viewport'),
     colorSchemeMeta: meta('color-scheme'),
     rootColorScheme,
-    css: { features, lightDark, readableSheets, unreadableHrefs, hoverRevealRules },
+    css: { features, lightDark, readableSheets, unreadableHrefs, hoverRevealRules, motionRules },
     queried,
-    colors: { background, text, signature },
+    colors: { background, text, signature, textContrast },
     animations: { running, infinite },
     media,
     carousel: { candidates: candidates.length, advances },

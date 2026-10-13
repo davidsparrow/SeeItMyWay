@@ -57,6 +57,8 @@ export interface PageFacts {
     unreadableHrefs: string[];
     /** `:hover` rules that reveal content, with no `:focus` / `:focus-within` / `:focus-visible` twin. */
     hoverRevealRules: number;
+    /** `@keyframes` rules and `scroll-behavior: smooth` declarations: motion the page can make. */
+    motionRules: number;
   };
   /** `matchMedia()` queries the page's scripts made, by feature. */
   queried: FeatureCounts;
@@ -67,6 +69,11 @@ export interface PageFacts {
     text: [number, number, number];
     /** Per-element color signatures, in document order, for comparing loads. */
     signature: string[];
+    /**
+     * Sampled elements with their own visible text, and how many of them fall below 7:1 against
+     * their composited background (or sit on an image or gradient, where we can't tell).
+     */
+    textContrast: { samples: number; belowEnhanced: number };
   };
   animations: {
     running: number;
@@ -95,6 +102,8 @@ export interface ScanFacts {
   variants: Partial<Record<Variant, PageFacts>>;
   /** Media-feature mentions found in cross-origin stylesheet text, by feature. */
   externalCss: FeatureCounts;
+  /** `@keyframes` rules and smooth-scroll declarations found in cross-origin stylesheet text. */
+  externalMotionRules: number;
   /** Stylesheets that couldn't be read at all. */
   unreadableSheets: number;
 }
@@ -153,4 +162,4 @@ export interface ScanReport {
   notes: string[];
 }
 
-export const RUBRIC_VERSION = '1';
+export const RUBRIC_VERSION = '2';

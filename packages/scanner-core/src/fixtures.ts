@@ -1,7 +1,10 @@
 import { zeroCounts } from './analyze';
 import type { PageFacts, ScanFacts, Variant } from './types';
 
-/** A plain light page that listens for nothing. Tests override what they need. */
+/**
+ * A plain light page that listens for nothing, with no motion and no text-contrast samples (so
+ * neither "not applicable" pass applies unless a test sets it up). Tests override what they need.
+ */
 export function pageFacts(overrides: Partial<PageFacts> = {}): PageFacts {
   return {
     viewport: { width: 1280, height: 800 },
@@ -14,12 +17,14 @@ export function pageFacts(overrides: Partial<PageFacts> = {}): PageFacts {
       readableSheets: 1,
       unreadableHrefs: [],
       hoverRevealRules: 0,
+      motionRules: 0,
     },
     queried: zeroCounts(),
     colors: {
       background: [255, 255, 255],
       text: [40, 40, 40],
       signature: Array.from({ length: 50 }, (_, i) => `P|rgb(40, 40, 40)|rgba(0, 0, 0, 0)|${i}`),
+      textContrast: { samples: 0, belowEnhanced: 0 },
     },
     animations: { running: 0, infinite: 0 },
     media: [],
@@ -42,6 +47,7 @@ export function scanFacts(variants: Partial<Record<Variant, PageFacts>>): ScanFa
       ...variants,
     },
     externalCss: zeroCounts(),
+    externalMotionRules: 0,
     unreadableSheets: 0,
   };
 }

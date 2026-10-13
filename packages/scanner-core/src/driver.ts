@@ -150,6 +150,11 @@ export function countFeatureMentions(text: string): FeatureCounts {
   return counts;
 }
 
+/** `@keyframes` rules and `scroll-behavior: smooth` declarations in stylesheet text. */
+export function countMotionRules(text: string): number {
+  return (text.match(/@(?:-webkit-)?keyframes\b|scroll-behavior\s*:\s*smooth/gi) ?? []).length;
+}
+
 async function loadVariant(
   browser: BrowserLike,
   url: string,
@@ -271,6 +276,7 @@ export async function runScan(
   }
 
   const externalCss = countFeatureMentions('');
+  let externalMotionRules = 0;
   let unreadableSheets = 0;
   for (const href of variants.baseline?.css.unreadableHrefs ?? []) {
     const text = cssTexts.get(href);
@@ -280,11 +286,19 @@ export async function runScan(
     }
     const counts = countFeatureMentions(text);
     for (const feature of MEDIA_FEATURES) externalCss[feature] += counts[feature];
+    externalMotionRules += countMotionRules(text);
   }
 
   const baseline = loads.find(([v]) => v === 'baseline')?.[1];
   return {
-    facts: { url, finalUrl: baseline?.finalUrl ?? url, variants, externalCss, unreadableSheets },
+    facts: {
+      url,
+      finalUrl: baseline?.finalUrl ?? url,
+      variants,
+      externalCss,
+      externalMotionRules,
+      unreadableSheets,
+    },
     screenshots,
   };
 }

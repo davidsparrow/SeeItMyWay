@@ -11,7 +11,9 @@ function sampleReport(): ScanReport {
   const base = pageFacts();
   const facts = scanFacts({
     baseline: base,
-    dark: pageFacts({ colors: { background: [13, 14, 19], text: [240, 240, 240], signature: [] } }),
+    dark: pageFacts({
+      colors: { ...base.colors, background: [13, 14, 19], text: [240, 240, 240], signature: [] },
+    }),
     'reduced-motion': base,
   });
   return buildReport(

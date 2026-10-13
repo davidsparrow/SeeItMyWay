@@ -83,9 +83,15 @@ entry whenever a decision trades long-term cleanliness for V0 speed.
   | bbc.com                            |    50 | First attempt failed with the generic error; the retry succeeded and matched local Chromium     |
 
   Each score was cross-checked by running the same driver and rubric in local Chromium 141. Findings:
-  - **Rubric v2 candidates (product decision):** a page with no motion at all fails
-    `reduced-motion-listens`, and a page that's already high-contrast fails `contrast` when nothing
-    changes. Both may deserve "not applicable" (full points) instead.
+  - **Rubric v2 (done, product-owner decision):** a page with no motion at all failed
+    `reduced-motion-listens`, and an already high-contrast page failed `contrast` when nothing
+    changed. Both now pass as "not applicable" on positive evidence (`docs/scanner-rubric.md`);
+    example.com goes from 70 to 95 and the other pages keep their scores.
+  - **Single loads can flip a check.** MDN's contrast check came back "supported" in 1 of 4 runs: that
+    load was collected mid-render, so ≥ 2 % of its colors differed with no contrast rule anywhere.
+    The rubric is deterministic given the facts, but the facts aren't, between loads of a live page.
+    Mitigation: load the baseline twice and require the dark and contrast changes to beat the
+    baseline-against-baseline noise (one more browser load per scan, against Browser Run's limits).
   - **Screenshots:** under wrangler's local harness every GitHub view came back solid black, though
     the collected facts were right. The same page renders correctly in Playwright with both Chrome 126
     and Chromium 141 (with our init script and collector), so it's specific to the local harness.

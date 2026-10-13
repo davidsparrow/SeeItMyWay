@@ -37,6 +37,24 @@ test('scanner calibration: the Bramble fixture without SeeItMyWay is known-bad',
   expect(score).toBe(32);
 });
 
+test('scanner calibration: a still, high-contrast page has nothing to adapt (rubric v2)', async ({
+  browser,
+}) => {
+  const { facts, checks, score } = await scan(browser, `${DEMO_URL}/still.html`);
+  const base = facts.variants.baseline;
+  expect(base?.css.motionRules).toBe(0);
+  expect(base?.colors.textContrast.samples).toBeGreaterThanOrEqual(5);
+  expect(base?.colors.textContrast.belowEnhanced).toBe(0);
+  expect(checks['reduced-motion-listens']).toMatchObject({
+    status: 'pass',
+    title: 'No motion to reduce',
+  });
+  expect(checks.contrast).toMatchObject({ status: 'pass', title: 'Already high contrast' });
+  expect(checks['color-scheme'].status).toBe('fail');
+  // Everything but dark mode (20) and half of forced colors (5).
+  expect(score).toBe(75);
+});
+
 for (const fixture of ['index.html', 'script-tag.html']) {
   test(`scanner calibration: the Bramble fixture with the SDK (${fixture}) is known-good`, async ({
     browser,
