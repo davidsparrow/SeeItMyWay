@@ -60,7 +60,7 @@ and `sdk` composes them. Nothing under `packages/` imports from `apps/`, and not
 
 ## Getting started
 
-Requires Node 22.12+ and pnpm 10 (`corepack enable`).
+Requires Node 24 (`.nvmrc`) and pnpm 10 (`corepack enable`).
 
 ```bash
 pnpm install
@@ -117,7 +117,7 @@ phone that asks for reduced motion; that phone just gets calm motion, and the UI
 
 - **Web (Vercel): deployed.** Production deploys from `main` through Vercel's Git integration. Setup,
   env vars and the CLI path are in [`docs/deploy/vercel.md`](./docs/deploy/vercel.md): Root Directory
-  `apps/web`, Node 22, and `apps/web/vercel.json` builds through Turborepo so the SDK is bundled first.
+  `apps/web`, Node 24, and `apps/web/vercel.json` builds through Turborepo so the SDK is bundled first.
   [`.env.example`](./.env.example) lists every environment variable and where it goes.
 - **Events (Cloudflare Worker + D1): deploy-ready, not deployed yet.** See
   [`apps/events/README.md`](./apps/events/README.md): `wrangler d1 create`, migrations, `wrangler deploy`

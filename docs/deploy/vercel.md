@@ -26,7 +26,7 @@ config change (`NEXT_PUBLIC_SITE_URL`), not a code change.
    can't infer: the build command `cd ../.. && pnpm exec turbo run build --filter=@simw/web`, so the
    SDK is built and copied to `/sdk/simw.global.js` before `next build`. Vercel detects pnpm 10 from
    `packageManager` and installs the whole workspace from the repo root.
-6. **Node.js version:** 22.x (Settings → Build and Deployment → Node.js Version).
+6. **Node.js version:** 24.x, matching `.nvmrc` and CI (Settings → Build and Deployment → Node.js Version).
 7. **Environment variables** (Settings → Environment Variables). All optional:
 
    | Name                      | Environments        | Value                                                     |
